@@ -64,6 +64,3 @@ retain their separate licenses. See the in-app Settings → Licences screen,
 ## Contact
 
 The repository maintainer's verified support channel is the [Ocho issue tracker](https://github.com/daniel-kindl/ocho/issues).
-No separate legal publisher identity or postal address is asserted here; the
-maintainer should replace this placeholder with the final legal publisher/contact
-details before a store submission if required.

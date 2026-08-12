@@ -19,6 +19,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - **Updater code is isolated to the GitHub flavor.** The Play artifact no longer
   carries network or package-install permissions, updater components, or updater UI.
   CI now tests and publishes the appropriate flavor-specific artifacts.
+- **GitHub Pages publishes with releases.** The site is validated and deployed by a
+  least-privilege job in `release.yml` after the tagged release succeeds.
 
 ---
 

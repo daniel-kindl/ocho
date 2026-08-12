@@ -239,3 +239,42 @@ jobs:
         run: |
           gh release edit "${{ steps.version.outputs.VERSION }}" \
             --draft=false --prerelease=false --latest
+
+  deploy-pages:
+    name: Publish GitHub Pages
+    needs: release
+    if: needs.release.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout tagged release
+        uses: actions/checkout@v7
+
+      - name: Validate static site
+        run: |
+          set -euo pipefail
+          test -s docs/index.html
+          test -s docs/privacy-policy.html
+          test -s docs/styles.css
+          grep -Fq 'Google Play coming soon' docs/index.html
+          grep -Fq 'privacy-policy.html' docs/index.html
+          ! find docs -type f \( -name '*.keystore' -o -name '*.jks' -o -name '*.aab' -o -name '*.apk' \) | grep .
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: docs
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

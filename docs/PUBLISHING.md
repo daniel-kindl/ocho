@@ -158,8 +158,10 @@ Then open `http://127.0.0.1:8000/`. The expected project Pages URL is:
 
 `https://daniel-kindl.github.io/ocho/`
 
-The `pages.yml` workflow validates the static files and deploys the `docs/` directory
-with least-privilege Pages permissions. In repository settings, the maintainer must
-enable Pages with **Source: GitHub Actions** if it is not already enabled. The
-workflow cannot change that repository setting. The Google Play CTA intentionally
-remains “Google Play coming soon” until a real listing URL exists.
+The `release.yml` workflow validates and deploys the `docs/` directory after the
+tagged release has built and published successfully. It uses a separate, least-
+privilege Pages job in the same release workflow, so the site changes only when a
+release is made. In repository settings, the maintainer must enable Pages with
+**Source: GitHub Actions** if it is not already enabled. The workflow cannot change
+that repository setting. The Google Play CTA intentionally remains “Google Play
+coming soon” until a real listing URL exists.
