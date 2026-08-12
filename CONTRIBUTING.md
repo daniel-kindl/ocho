@@ -115,17 +115,20 @@ feat(setup)!: remove deprecated preset import format
 
 ## Update channels
 
-Ocho ships outside Google Play and updates itself from GitHub Releases. There are
-two channels, and they are invisible to each other by construction:
+Ocho has Play and GitHub distribution flavors. Only the GitHub flavor updates itself
+from GitHub Releases. Development builds remain a separate testing channel:
 
 | Channel | `applicationId` | Reads | Published by |
 |---------|-----------------|-------|--------------|
-| Stable | `dev.danielkindl.ocho` | `releases/latest` | `release.yml`, on a version tag |
-| Dev | `dev.danielkindl.ocho.dev` | Newest prerelease | `dev-ci.yml`, on every push to `dev` |
+| GitHub Stable | `dev.danielkindl.ocho` | `releases/latest` | `release.yml`, on a version tag |
+| GitHub Dev | `dev.danielkindl.ocho.dev` | Newest prerelease | `dev-ci.yml`, on every push to `dev` |
+| Play | `dev.danielkindl.ocho` | Google Play | Manual Play Console upload; no updater |
 
-`releases/latest` excludes prereleases by GitHub's own definition, so a stable
-install can never be offered a dev build. The differing `applicationId` means both
-apps can be installed at once, with separate presets and settings.
+`releases/latest` excludes prereleases by GitHub's own definition, so a stable GitHub
+install can never be offered a dev build. The GitHub dev `applicationId` means both
+GitHub apps can be installed at once, with separate presets and settings. Play and
+GitHub release signing compatibility must be decided before cross-channel migration;
+see [docs/PUBLISHING.md](docs/PUBLISHING.md).
 
 Dev builds are versioned `<versionName>-dev.<CI run number>`, signed with the
 release key, and pruned to the newest five. The release key matters here: CI's debug
@@ -140,10 +143,9 @@ exact multiple of the interval, a remainder longer than the 3s lead-in, a remain
 shorter than it, and an interval that outlasts the whole workout. Those four are where
 the lead-in and the final numeral are decided.
 
-`di/AppModule` hands the repository an empty list on the stable channel, so the presets
-never appear there. The definitions are still compiled into the stable APK as unused
-data; keeping them in the shared source set is what lets them be unit-tested, and a few
-hundred bytes is a fair price.
+`di/AppModule` enables the presets only for the `dev` build type, so they never appear
+in a release build. The definitions remain shared because they are workout behavior,
+not updater code.
 
 Two guards in `release.yml` exist because dev tags contain a hyphen. Don't remove
 them:
@@ -185,8 +187,9 @@ Steps to release:
      under Conventional Commits. A breaking commit needs a major release, a
      `feat:` needs at least a minor.
 
-   If all of that passes, it builds a signed `assembleRelease` APK and
-   publishes a GitHub Release automatically.
+   If all of that passes, it lints and builds both release variants, retains the Play
+   AAB as a workflow artifact, and publishes the signed GitHub APK automatically.
+   It does not upload anything to Google Play.
 
 Required repository secrets (Settings, then Secrets and variables, then
 Actions) for the release workflow to sign the APK:

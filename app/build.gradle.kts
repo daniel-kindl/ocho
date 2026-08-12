@@ -37,13 +37,25 @@ android {
         applicationId = "dev.danielkindl.ocho"
         minSdk = 26
         targetSdk = 36
-        versionCode = 12
-        versionName = "3.3.1"
+        versionCode = 13
+        versionName = "3.4.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
 
-        // Read only by AppModule, which turns these into a domain-level UpdateConfig.
-        buildConfigField("String", "UPDATE_REPO", "\"daniel-kindl/ocho\"")
+    }
+
+    flavorDimensions += "distribution"
+
+    productFlavors {
+        create("play") {
+            dimension = "distribution"
+            buildConfigField("boolean", "SELF_UPDATER_ENABLED", "false")
+        }
+        create("github") {
+            dimension = "distribution"
+            buildConfigField("boolean", "SELF_UPDATER_ENABLED", "true")
+            buildConfigField("String", "UPDATE_REPO", "\"daniel-kindl/ocho\"")
+        }
     }
 
     signingConfigs {
@@ -71,7 +83,6 @@ android {
         debug {
             isDebuggable = true
             applicationIdSuffix = ".debug"
-            buildConfigField("String", "UPDATE_CHANNEL", "\"dev\"")
         }
         release {
             isMinifyEnabled = true
@@ -82,7 +93,6 @@ android {
             )
             val hasSigningConfig = signingConfigs.getByName("release").storeFile != null
             if (hasSigningConfig) signingConfig = signingConfigs.getByName("release")
-            buildConfigField("String", "UPDATE_CHANNEL", "\"stable\"")
         }
         // Testing channel: installs alongside the stable app and self-updates from
         // GitHub prereleases. Inherits release's minification deliberately — an R8
@@ -93,7 +103,6 @@ android {
             applicationIdSuffix = ".dev"
             versionNameSuffix = devBuildNumber?.let { "-dev.$it" } ?: "-dev.local"
             isDebuggable = false
-            buildConfigField("String", "UPDATE_CHANNEL", "\"dev\"")
             // Must be the release key, not CI's per-run debug key: successive dev
             // APKs signed by different keys fail with INSTALL_FAILED_UPDATE_INCOMPATIBLE.
             val hasSigningConfig = signingConfigs.getByName("release").storeFile != null
@@ -192,7 +201,12 @@ kapt {
 detekt {
     config.setFrom(rootProject.file("detekt.yml"))
     buildUponDefaultConfig = true
-    source.setFrom("src/main/kotlin", "src/test/kotlin")
+    source.setFrom(
+        "src/main/kotlin",
+        "src/test/kotlin",
+        "src/github/kotlin",
+        "src/play/kotlin",
+    )
 }
 
 /**
@@ -203,8 +217,9 @@ detekt {
  * purpose: gating would reward tests written to touch lines over tests that assert
  * something.
  *
- * Only the `debug` variant is measured, because `testDebugUnitTest` is the only suite
- * that runs. The exclusions below decide whether the number means anything at all:
+ * Only the `githubDebug` variant is measured, because `testGithubDebugUnitTest` is
+ * the representative suite that runs. The exclusions below decide whether the
+ * number means anything at all:
  * measured across every class it would mostly describe Compose, which this project
  * verifies by reading rather than by running.
  */
@@ -255,7 +270,7 @@ kover {
 
         // Off during `check`: the reports are produced by an explicit CI step so a
         // local `./gradlew check` stays as fast as it was.
-        variant("debug") {
+        variant("githubDebug") {
             xml { onCheck = false }
             html { onCheck = false }
 

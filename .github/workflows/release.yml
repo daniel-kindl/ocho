@@ -116,7 +116,7 @@ jobs:
           echo "Version checks passed for $TAG"
 
       - name: Run full test suite
-        run: ./gradlew testDebugUnitTest --stacktrace
+        run: ./gradlew testGithubDebugUnitTest --stacktrace
 
       - name: Decode signing keystore
         env:
@@ -130,18 +130,28 @@ jobs:
           echo "$KEYSTORE_BASE64" | base64 -d > "${{ runner.temp }}/release.keystore"
           echo "KEYSTORE_FILE=${{ runner.temp }}/release.keystore" >> "$GITHUB_ENV"
 
-      - name: Build signed release APK
+      - name: Lint both release variants
+        run: ./gradlew lintPlayRelease lintGithubRelease --stacktrace
+
+      - name: Build signed release variants
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: ./gradlew assembleRelease --stacktrace
+        run: ./gradlew bundlePlayRelease assembleGithubRelease --stacktrace
+
+      - name: Retain Play AAB for manual Console upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: play-release-bundle
+          path: app/build/outputs/bundle/playRelease/*.aab
+          retention-days: 14
 
       - name: Compute SHA-256 checksum
         id: checksum
         run: |
           set -euo pipefail
-          APK=$(ls app/build/outputs/apk/release/*.apk | head -n 1)
+          APK=$(ls app/build/outputs/apk/github/release/*.apk | head -n 1)
           # `sha256sum -c` resolves the path in the file relative to the working
           # directory, so the digest is generated from inside the APK's own
           # directory to keep the recorded name bare.
@@ -160,7 +170,7 @@ jobs:
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v4
         with:
-          subject-path: app/build/outputs/apk/release/*.apk
+          subject-path: app/build/outputs/apk/github/release/*.apk
 
       - name: Extract version from tag
         id: version
@@ -216,8 +226,8 @@ jobs:
             ---
             **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ steps.changelog.outputs.PREV_TAG }}...${{ steps.version.outputs.VERSION }}
           files: |
-            app/build/outputs/apk/release/*.apk
-            app/build/outputs/apk/release/*.apk.sha256
+            app/build/outputs/apk/github/release/*.apk
+            app/build/outputs/apk/github/release/*.apk.sha256
           draft: true
           prerelease: false
 
@@ -229,3 +239,42 @@ jobs:
         run: |
           gh release edit "${{ steps.version.outputs.VERSION }}" \
             --draft=false --prerelease=false --latest
+
+  deploy-pages:
+    name: Publish GitHub Pages
+    needs: release
+    if: needs.release.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout tagged release
+        uses: actions/checkout@v7
+
+      - name: Validate static site
+        run: |
+          set -euo pipefail
+          test -s docs/index.html
+          test -s docs/privacy-policy.html
+          test -s docs/styles.css
+          grep -Fq 'Google Play coming soon' docs/index.html
+          grep -Fq 'privacy-policy.html' docs/index.html
+          ! find docs -type f \( -name '*.keystore' -o -name '*.jks' -o -name '*.aab' -o -name '*.apk' \) | grep .
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: docs
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

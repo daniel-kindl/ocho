@@ -15,11 +15,12 @@ Timer. If you find those names anywhere, they are stale.
 ## Commands
 
 ```bash
-./gradlew check                        # tests + detekt + lint. Run before calling anything done.
-./gradlew koverLogDebug                # line coverage per package
-./gradlew assembleDebug                # debug APK
-./gradlew assembleDev -PdevBuildNumber=1   # dev-channel APK
-./gradlew assembleRelease              # signed; needs keystore.properties
+./gradlew check                              # tests + detekt + lint. Run before calling anything done.
+./gradlew koverLogGithubDebug                # line coverage per package
+./gradlew assembleGithubDebug                # GitHub debug APK
+./gradlew assembleGithubDev -PdevBuildNumber=1 # GitHub dev-channel APK
+./gradlew bundlePlayRelease                  # signed Play AAB
+./gradlew assembleGithubRelease              # signed GitHub APK
 ```
 
 If Gradle reports an invalid `JAVA_HOME`, do not repoint it. The machine-scope
@@ -34,13 +35,14 @@ the following patch release. Delete the user-scope `JAVA_HOME`, and any user-sco
 Three lint checks are disabled in `app/build.gradle.kts` because they report on the
 environment, not the code; don't add to that list to make a build pass.
 
-**Everything public in `src/main` needs KDoc**, enforced by detekt. Write *why*,
+**Everything public in the app source sets needs KDoc**, enforced by detekt. Write *why*,
 not *what*: the code already says what. `TimerEngineImpl`'s header is the standard.
 Tests are exempt; their names already state intent.
 
 **`domain/` must not import `android.*`.** `Clock` in `core/` exists so engine logic
-is testable without Android. `BuildConfig` is read in exactly one place,
-`di/AppModule.kt`, which converts it into plain values.
+is testable without Android. `BuildConfig` is read only by the DI modules: shared
+build-type behavior lives in `di/AppModule.kt`, while GitHub updater configuration
+lives in `github/.../di/GithubDistributionModule.kt`.
 
 **No business logic in composables.** It belongs in the ViewModel or domain layer.
 
@@ -59,8 +61,9 @@ add a screen or a preset type per mode; that is what this release removed.
 ## Layout
 
 `core/` clock and formatting · `domain/` model, engines, repository interfaces ·
-`data/` DataStore repos, audio, vibration, `session/` (foreground service), `update/`
-(the only network code) · `ui/` screens and ViewModels · `di/` Hilt bindings.
+`data/` DataStore repos, audio, vibration, `session/` (foreground service) ·
+`github/` updater implementation and `play/` no-op distribution bindings · `ui/`
+screens and ViewModels · `di/` shared Hilt bindings.
 
 ## Parallelising with subagents
 
@@ -112,11 +115,11 @@ All work branches off `dev`. `main` advances only via release PR. See
 
 ## Testing
 
-`domain/`, `data/repository`, `data/update`, and the non-Compose parts of `ui/`
+`domain/`, `data/repository`, the GitHub `data/update`, and the non-Compose parts of `ui/`
 (setup state, timeline segments) have unit tests. Composables are thin by design and
 untested.
 
-**Coverage is reported, never gated.** `./gradlew koverLogDebug` prints it per
+**Coverage is reported, never gated.** `./gradlew koverLogGithubDebug` prints it per
 package; CI copies that into the job summary. Do not add a threshold, and do not
 write tests to move the number. If a figure looks wrong, check the exclusions in the
 `kover` block before writing anything.

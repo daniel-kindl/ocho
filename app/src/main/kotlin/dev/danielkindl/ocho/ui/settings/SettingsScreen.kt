@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -19,7 +17,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -36,18 +33,13 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.danielkindl.ocho.R
-import dev.danielkindl.ocho.ui.components.ErrorPlate
-import dev.danielkindl.ocho.ui.components.SessionProgressBar
 
 /**
- * Feedback toggles, the in-app updater, and app info.
- *
- * Two view models rather than one: settings are trivial state, while the update flow
- * is a multi-step state machine with its own failure modes, and merging them would
- * put download progress in the same object as a pair of booleans.
+ * Feedback toggles, distribution-specific update controls, and app information.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,10 +47,8 @@ fun SettingsScreen(
     onNavigateUp: () -> Unit,
     onOpenLicenses: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
-    updateViewModel: UpdateViewModel = hiltViewModel(),
 ) {
     val settings by viewModel.settings.collectAsStateWithLifecycle()
-    val updateState by updateViewModel.uiState.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
     val versionName = remember {
@@ -143,19 +133,7 @@ fun SettingsScreen(
                 },
             )
             HorizontalDivider()
-            UpdateSection(
-                state = updateState,
-                onCheck = updateViewModel::checkForUpdates,
-                onDownload = updateViewModel::startDownload,
-                onInstall = {
-                    if (updateViewModel.canInstallPackages()) {
-                        updateViewModel.startInstall()
-                    } else {
-                        context.startActivity(updateViewModel.unknownSourcesSettingsIntent())
-                    }
-                },
-            )
-
+            DistributionUpdateSection()
             HorizontalDivider()
 
             // Required, not decorative: the bundled fonts and icons are licensed on
@@ -170,6 +148,24 @@ fun SettingsScreen(
                     )
                 },
                 modifier = Modifier.clickable(onClick = onOpenLicenses),
+            )
+            HorizontalDivider()
+            ListItem(
+                headlineContent = { Text("Privacy Policy") },
+                supportingContent = {
+                    Text(
+                        "How Ocho handles settings, workouts, and network access",
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    context.startActivity(
+                        android.content.Intent(
+                            android.content.Intent.ACTION_VIEW,
+                            PRIVACY_POLICY_URI.toUri(),
+                        )
+                    )
+                },
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -229,64 +225,4 @@ fun SettingsScreen(
     }
 }
 
-@Composable
-private fun UpdateSection(
-    state: UpdateUiState,
-    onCheck: () -> Unit,
-    onDownload: () -> Unit,
-    onInstall: () -> Unit,
-) {
-    when (state) {
-        is UpdateUiState.Idle, is UpdateUiState.UpToDate ->
-            ListItem(
-                headlineContent = { Text("Check for updates") },
-                supportingContent = if (state is UpdateUiState.UpToDate) {
-                    { Text("You're up to date", style = MaterialTheme.typography.bodyMedium) }
-                } else {
-                    null
-                },
-                trailingContent = { TextButton(onClick = onCheck) { Text("Check") } },
-            )
-
-        is UpdateUiState.Checking ->
-            ListItem(
-                headlineContent = { Text("Checking for updates…") },
-                trailingContent = { CircularProgressIndicator(modifier = Modifier.height(24.dp)) },
-            )
-
-        is UpdateUiState.Available ->
-            ListItem(
-                headlineContent = { Text("Update available: ${state.update.tagName}") },
-                supportingContent = {
-                    Text(state.update.releaseNotes, style = MaterialTheme.typography.bodyMedium)
-                },
-                trailingContent = { Button(onClick = onDownload) { Text("Download") } },
-            )
-
-        is UpdateUiState.Downloading ->
-            ListItem(
-                headlineContent = { Text("Downloading update… ${state.progressPercent}%") },
-                supportingContent = {
-                    SessionProgressBar(progress = state.progressPercent / PERCENT_MAX)
-                },
-            )
-
-        is UpdateUiState.ReadyToInstall ->
-            ListItem(
-                headlineContent = { Text("Update ${state.update.tagName} ready to install") },
-                trailingContent = { Button(onClick = onInstall) { Text("Install") } },
-            )
-
-        // An error is a plate inside the layout, never a colour applied to the
-        // surrounding surface — see ErrorPlate for why that separation is structural.
-        is UpdateUiState.Error ->
-            ErrorPlate(
-                message = state.message,
-                actionLabel = "Try again",
-                onAction = onCheck,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-            )
-    }
-}
-
-private const val PERCENT_MAX = 100f
+private const val PRIVACY_POLICY_URI = "https://daniel-kindl.github.io/ocho/privacy-policy.html"
