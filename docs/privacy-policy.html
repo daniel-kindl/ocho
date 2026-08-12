@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ocho privacy policy</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="page narrow">
+    <a class="back-link" href="index.html">← Back to Ocho</a>
+    <article>
+      <p class="eyebrow">Ocho</p>
+      <h1>Privacy policy</h1>
+      <p class="muted">Last updated: 2026-08-12</p>
+
+      <p>Ocho is an offline-first workout timer. The verified source contains no
+      personal-data collection, analytics, crash reporting, advertising, accounts,
+      or cloud workout synchronisation.</p>
+
+      <h2>Local data</h2>
+      <p>Workout settings and saved workout presets are stored locally in Android
+      DataStore preferences. Ocho does not upload them.</p>
+
+      <h2>Permissions and network access</h2>
+      <p>Both variants use vibration, foreground-service, wake-lock, and notification
+      permissions for reliable interval timing. The Play build has no network or
+      package-install permission.</p>
+      <p>The GitHub build additionally checks the public GitHub Releases API and uses
+      Android DownloadManager to fetch a release APK. It requests
+      <code>REQUEST_INSTALL_PACKAGES</code> so the user can manually start an install;
+      Android still requires the user to allow unknown-app installation. It does not
+      silently install updates.</p>
+
+      <h2>Licenses</h2>
+      <p>Ocho's own source is GPLv3. Third-party fonts, icons, and libraries retain
+      their separate licenses. Read the <a href="https://github.com/daniel-kindl/ocho/blob/main/LICENSE">GPLv3 license</a> and
+      <a href="https://github.com/daniel-kindl/ocho/blob/main/THIRD-PARTY-NOTICES.md">third-party notices</a>.</p>
+
+      <h2>Contact</h2>
+      <p>For support, use the verified <a href="https://github.com/daniel-kindl/ocho/issues">Ocho issue tracker</a>.
+      The maintainer should replace this placeholder with final legal publisher
+      details before a store submission if required.</p>
+
+      <p class="muted"><a href="https://github.com/daniel-kindl/ocho/blob/main/docs/PRIVACY_POLICY.md">View the source policy in the repository</a>.</p>
+    </article>
+  </main>
+</body>
+</html>

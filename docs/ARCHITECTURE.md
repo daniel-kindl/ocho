@@ -13,17 +13,19 @@ see the [README](../README.md).
 | Android Studio | Hedgehog 2023.1+ |
 | JDK | 17 |
 | Min Android SDK | 26 (Android 8.0) |
-| Target SDK | 34 |
+| Target SDK | 36 |
 
 ```bash
 ./gradlew check                            # tests + detekt + lint
-./gradlew assembleDebug                    # debug APK
-./gradlew assembleDev -PdevBuildNumber=1   # dev-channel APK
-./gradlew assembleRelease                  # signed release APK
+./gradlew assembleGithubDebug              # GitHub debug APK
+./gradlew assembleGithubDev -PdevBuildNumber=1 # GitHub dev-channel APK
+./gradlew bundlePlayRelease                # signed Play AAB
+./gradlew assembleGithubRelease            # signed GitHub APK
 ```
 
 Warnings fail the build. Kotlin, detekt, and Android Lint all run with
-warnings-as-errors, and every public declaration in `src/main` must have KDoc.
+warnings-as-errors, and every public declaration in the app source sets must have
+KDoc.
 
 ---
 
@@ -49,12 +51,12 @@ Clean Architecture with MVVM. The domain layer contains no `android.*` imports,
 which is what makes the timing logic testable without an emulator.
 
 ```
-app/src/main/kotlin/dev/danielkindl/ocho/
+app/src/main/kotlin/dev/danielkindl/ocho/       # shared source
+├── DistributionStartup.kt                     # flavor-provided app startup hook
 ├── core/               Clock (injectable, for deterministic tests), duration formatting
 ├── domain/
 │   ├── model/          TimerConfig, TabataConfig, AmrapConfig, events, WorkoutPreset,
-│   │                   SemVer, UpdateConfig, SessionRequest (sealed, one variant per
-│   │                   mode), SessionSnapshot
+│   │                   SessionRequest (sealed, one variant per mode), SessionSnapshot
 │   ├── engine/         AbstractPausableEngine, TimerEngine + impl, TabataEngine + impl,
 │   │                   and a factory each. WorkoutEngine is the mode-agnostic strategy
 │   │                   interface over them, implemented by EmomWorkoutEngine,
@@ -69,19 +71,28 @@ app/src/main/kotlin/dev/danielkindl/ocho/
 │   │                   SessionService (foreground service + partial wake lock),
 │   │                   SessionNotifications (ongoing notification and its controls),
 │   │                   AndroidSessionServiceLauncher (starts and stops the service)
-│   ├── repository/     DataStore implementations over a shared JsonListDataStore
-│   └── update/         The only network code: GitHub Releases API, DownloadManager,
-│                       PackageInstaller
-├── di/                 AppModule: Hilt bindings, and the only reader of BuildConfig
+│   └── repository/     DataStore implementations over a shared JsonListDataStore
+├── di/                 Shared Hilt bindings and build-type-dependent preset setup
 └── ui/
     ├── navigation/     AppNavigation, two routes total: setup/{mode} and session/{...}
     ├── home/           Mode selection
     ├── setup/          One setup screen, state and ViewModel for every mode
     ├── session/        One session screen and ViewModel for every mode
-    ├── settings/       Settings + update flow ViewModels
+    ├── settings/       Settings + distribution-specific update section
     ├── licenses/       Third-party licence notices
     ├── components/     WheelPicker, DurationPicker, PresetsSection, session scaffolding
     └── theme/          Colour ramp, three-typeface system, Material 3 scale
+
+app/src/github/                                     # GitHub-only source
+├── data/update/        GitHub Releases API, DownloadManager, PackageInstaller
+├── domain/model/       Update models and semantic-version comparison
+├── domain/repository/  Update repository interface
+├── di/                 GitHub updater bindings and startup check
+└── ui/settings/        GitHub updater controls
+
+app/src/play/                                       # Play-only source
+├── di/                 No-op distribution startup binding
+└── ui/settings/        Empty updater section
 ```
 
 ---
@@ -223,7 +234,7 @@ This keeps the anchoring intact across any number of pauses.
 and view models are thin by design and verified by reading, which is also the only
 option here: the development environment has no emulator.
 
-`./gradlew koverLogDebug` prints line coverage per package. Coverage is reported and
+`./gradlew koverLogGithubDebug` prints line coverage per package. Coverage is reported and
 never gated, in CI or locally. A percentage is easy to move by writing tests that
 touch lines without asserting anything, so a threshold would reward exactly the tests
 worth least. It is grouped by package rather than shown as one figure for the same

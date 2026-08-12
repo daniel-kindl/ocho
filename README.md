@@ -10,6 +10,8 @@ when you're mid-effort and not looking at the screen.
 [![API 26+](https://img.shields.io/badge/API-26%2B-brightgreen)](https://developer.android.com/)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.4.10-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 
+Project site: [daniel-kindl.github.io/ocho](https://daniel-kindl.github.io/ocho/)
+
 *An **ocho** is a figure-eight step in tango. It's also Spanish for **eight**, the
 round count of a classic Tabata.*
 
@@ -55,17 +57,18 @@ every trace of colour removed:
 | Presets | Save, name, load, and delete configurations, separately per mode |
 | Progress and summary | A progress bar during the session, and a recap on completion |
 | Exit confirmation | The back gesture and Stop both ask before ending a running session |
-| In-app updates | Checks GitHub Releases and installs updates without a store |
+| In-app updates | GitHub variant checks GitHub Releases and installs updates without a store |
 | Workout-first UI | Large high-contrast display, screen stays on, one-hand friendly |
 
 ---
 
 ## Install
 
-Download the APK from the [latest release](https://github.com/daniel-kindl/ocho/releases/latest).
-
-Ocho is not on Google Play, so Android will ask you to allow installing unknown
-apps. Once installed it updates itself: Settings, then Check for updates.
+Ocho has two alternative distribution channels. The [GitHub APK](https://github.com/daniel-kindl/ocho/releases/latest)
+is manually installed and may require Android's unknown-app installation permission;
+it retains the GitHub self-updater in Settings. The Play variant will be linked from
+the [project site](https://daniel-kindl.github.io/ocho/) once its listing exists and
+does not contain the GitHub self-updater.
 
 ### Update channels
 
@@ -99,8 +102,9 @@ own rounds.
 name is pre-filled from the durations, so edit it or accept it. Tap a chip to load,
 or the delete control to remove it.
 
-**Settings.** The icon on the home screen toggles sound and vibration
-independently, and holds the update checker and the licence notices.
+**Settings.** The icon on the home screen toggles sound and vibration independently,
+holds the licence and privacy-policy links, and shows the GitHub updater only in the
+GitHub build.
 
 ---
 
@@ -108,7 +112,9 @@ independently, and holds the update checker and the licence notices.
 
 Build requirements, the Gradle commands, release signing, the package layout, and the
 reasoning behind the timing, session, and colour design are in
-[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Variant publishing and GPLv3 compliance
+are documented in [docs/PUBLISHING.md](docs/PUBLISHING.md); the privacy policy is in
+[docs/PRIVACY_POLICY.md](docs/PRIVACY_POLICY.md).
 
 ---
 

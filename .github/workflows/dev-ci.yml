@@ -26,20 +26,20 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run unit tests
-        run: ./gradlew testDebugUnitTest --stacktrace
+        run: ./gradlew testGithubDebugUnitTest --stacktrace
 
       # Report-only, never gated. There is no coverage threshold anywhere in this
       # repository on purpose: a percentage is easy to move by writing tests that
       # touch lines without asserting anything, and gating rewards exactly that.
       #
-      # koverLogDebug prints the per-package breakdown, copied into the job summary
+      # koverLogGithubDebug prints the per-package breakdown, copied into the job summary
       # so it is visible during review without downloading anything. The aggregate
       # and the per-file detail live in the uploaded HTML report. See the kover block
       # in app/build.gradle.kts for what is excluded and why.
       - name: Measure coverage
         run: |
           set -euo pipefail
-          ./gradlew koverLogDebug koverXmlReportDebug koverHtmlReportDebug --stacktrace \
+          ./gradlew koverLogGithubDebug koverXmlReportGithubDebug koverHtmlReportGithubDebug --stacktrace \
             | tee gradle-coverage.log
           {
             echo "## Coverage"
@@ -57,21 +57,21 @@ jobs:
         with:
           name: coverage-report
           path: |
-            app/build/reports/kover/htmlDebug/
-            app/build/reports/kover/reportDebug.xml
+            app/build/reports/kover/htmlGithubDebug/
+            app/build/reports/kover/reportGithubDebug.xml
           retention-days: 7
 
       - name: Run detekt
         run: ./gradlew detekt --stacktrace
 
       - name: Build debug APK
-        run: ./gradlew assembleDebug --stacktrace
+        run: ./gradlew assembleGithubDebug --stacktrace
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v7
         with:
           name: debug-apk
-          path: app/build/outputs/apk/debug/*.apk
+          path: app/build/outputs/apk/github/debug/*.apk
           retention-days: 7
 
       - name: Upload test results
@@ -132,13 +132,13 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: ./gradlew assembleDev -PdevBuildNumber=${{ github.run_number }} --stacktrace
+        run: ./gradlew assembleGithubDev -PdevBuildNumber=${{ github.run_number }} --stacktrace
 
       - name: Compute SHA-256 checksum
         id: checksum
         run: |
           set -euo pipefail
-          APK=$(ls app/build/outputs/apk/dev/*.apk | head -n 1)
+          APK=$(ls app/build/outputs/apk/github/dev/*.apk | head -n 1)
           # `sha256sum -c` resolves the path in the file relative to the working
           # directory, so the digest is generated from inside the APK's own
           # directory to keep the recorded name bare.
@@ -157,7 +157,7 @@ jobs:
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v4
         with:
-          subject-path: app/build/outputs/apk/dev/*.apk
+          subject-path: app/build/outputs/apk/github/dev/*.apk
 
       - name: Resolve dev version
         id: version
@@ -203,8 +203,8 @@ jobs:
             See [SECURITY.md](https://github.com/${{ github.repository }}/blob/main/SECURITY.md)
             for what each check does and does not prove.
           files: |
-            app/build/outputs/apk/dev/*.apk
-            app/build/outputs/apk/dev/*.apk.sha256
+            app/build/outputs/apk/github/dev/*.apk
+            app/build/outputs/apk/github/dev/*.apk.sha256
           draft: true
           prerelease: true
           make_latest: false

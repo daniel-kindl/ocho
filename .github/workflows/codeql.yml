@@ -44,7 +44,7 @@ jobs:
       #
       # Manual rather than autobuild. Autobuild would reach for `gradle build`, which
       # here drags in the release variant, detekt and lint, all of which dev-ci.yml
-      # already runs. assembleDebug compiles every source file and nothing else.
+      # already runs. assembleGithubDebug compiles the common code and GitHub updater.
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
         with:
@@ -55,7 +55,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build
-        run: ./gradlew assembleDebug --stacktrace
+        run: ./gradlew assembleGithubDebug --stacktrace
 
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v4
