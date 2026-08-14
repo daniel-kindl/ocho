@@ -209,6 +209,17 @@ h3 { margin: 0; font-size: 1.35rem; }
 .coming-note-index { color: var(--green-bright); }
 .coming-note-text { color: var(--muted); }
 
+.capture-section { background: var(--bg); }
+.capture-heading { max-width: 680px; margin-bottom: 3rem; }
+.capture-heading .section-lede { max-width: 620px; }
+.capture-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(2.5rem, 5vw, 4rem) 1.5rem; }
+.capture-card { min-width: 0; margin: 0; }
+.capture-card .phone-shell-small { max-width: 230px; margin: 0 auto; }
+.capture-card:nth-child(2n) .phone-shell { transform: rotate(-1.5deg); }
+.capture-card:nth-child(3n) .phone-shell { transform: rotate(1.5deg); }
+.capture-card figcaption { display: flex; flex-direction: column; gap: .25rem; margin: 1rem auto 0; max-width: 230px; color: var(--muted); font-family: var(--mono); font-size: .64rem; line-height: 1.35; text-transform: uppercase; }
+.capture-card figcaption strong { color: var(--ink); font-weight: 400; }
+
 .download-section { border-bottom: 1px solid var(--line); padding: clamp(4rem, 8vw, 6rem) 0; background: var(--bg-soft); }
 .download-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, .9fr); gap: clamp(3rem, 10vw, 10rem); }
 .download-section .eyebrow { color: var(--green-bright); }
@@ -287,6 +298,8 @@ code { padding: .1rem .3rem; border-radius: 3px; background: var(--panel); color
   .mode-gallery { grid-template-columns: 1fr; gap: 2rem; }
   .mode-phone-row { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; }
   .mode-phone-setup, .mode-phone-work { transform: translateY(1.5rem) rotate(0); }
+  .capture-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.5rem 1rem; }
+  .capture-card .phone-shell-small { max-width: 230px; }
   .mode-legend { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 3rem; border-top: 1px solid var(--line); border-left: 0; }
   .mode-legend span, .mode-legend span:first-child { padding: 1rem .75rem 0 0; border-top: 0; border-bottom: 0; }
   .download-copy { margin-top: 3rem; padding: 1rem 0 0; border-top: 1px solid var(--line); border-left: 0; }
@@ -320,6 +333,8 @@ code { padding: .1rem .3rem; border-radius: 3px; background: var(--panel); color
   .mode-phone-row { display: block; }
   .mode-phone { max-width: 250px; margin: 0 auto 2rem; }
   .mode-phone-setup, .mode-phone-work { transform: none; }
+  .capture-grid { grid-template-columns: 1fr; }
+  .capture-card .phone-shell-small { max-width: 250px; }
   .mode-legend { grid-template-columns: 1fr; gap: 0; margin-top: 1rem; }
   .mode-legend span { padding: .8rem 0; border-bottom: 1px solid var(--line); }
 }

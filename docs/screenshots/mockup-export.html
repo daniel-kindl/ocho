@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Ocho phone mockup export</title>
+  <style>
+    :root {
+      --work: #b3282d;
+      --rest: #5ca47c;
+      --bg: #0c110f;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 420px; height: 740px; margin: 0; background: transparent; }
+    body { overflow: hidden; }
+    .canvas { display: grid; width: 420px; height: 740px; place-items: center; }
+    .phone-shell {
+      position: relative;
+      z-index: 1;
+      width: 300px;
+      padding: 40px 10px 10px;
+      border: 2px solid #4b5a52;
+      border-radius: 36px;
+      background: #080b0a;
+      box-shadow: 0 28px 60px rgba(0, 0, 0, .5), 0 0 0 1px rgba(255, 255, 255, .06);
+    }
+    .phone-shell.work { transform: rotate(2.5deg); }
+    .phone-shell.rest { transform: rotate(2deg); }
+    .phone-shell.setup { transform: rotate(-2deg); }
+    .phone-speaker {
+      position: absolute;
+      z-index: 2;
+      top: 15px;
+      left: 50%;
+      width: 58px;
+      height: 5px;
+      border-radius: 999px;
+      background: #101512;
+      transform: translateX(-50%);
+    }
+    .phone-screen { overflow: hidden; border-radius: 25px; background: var(--bg); }
+    .phone-screen.work { background: var(--work); }
+    .phone-screen.rest { background: var(--rest); }
+    .phone-screen img { display: block; width: 100%; height: auto; }
+    .phone-home-indicator { display: none; }
+  </style>
+</head>
+<body>
+  <main class="canvas">
+    <div id="phone" class="phone-shell">
+      <div class="phone-speaker" aria-hidden="true"></div>
+      <div id="screen" class="phone-screen"><img id="screen-image" alt=""></div>
+      <div class="phone-home-indicator" aria-hidden="true"></div>
+    </div>
+  </main>
+  <script>
+    const screens = {
+      home: "v2/home.png",
+      "emom-setup": "v2/emom-setup.png",
+      prepare: "v2/prepare.png",
+      "emom-work": "v2/emom-work.png",
+      "emom-paused": "v2/emom-paused.png",
+      "tabata-setup": "v2/tabata-setup.png",
+      "tabata-work": "v2/tabata-work.png",
+      "tabata-rest": "v2/tabata-rest.png",
+      finish: "v2/finish.png"
+    };
+    const key = (location.hash.slice(1) || "home").toLowerCase();
+    const selected = screens[key] ? key : "home";
+    const styleKey = selected.startsWith("work") ? "work" : selected.startsWith("rest") ? "rest" : selected;
+    document.getElementById("phone").classList.add(styleKey);
+    document.getElementById("screen").classList.add(styleKey);
+    document.getElementById("screen-image").src = screens[selected];
+    document.getElementById("screen-image").alt = `Ocho ${selected} screen`;
+  </script>
+</body>
+</html>
