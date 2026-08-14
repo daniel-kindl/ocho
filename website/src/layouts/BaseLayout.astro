@@ -1,0 +1,45 @@
+---
+import '../styles/global.css';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import { withBase } from '../utils/paths';
+
+interface Props {
+  title: string;
+  description: string;
+  currentPage?: 'home' | 'privacy';
+  type?: 'website' | 'article';
+}
+
+const { title, description, currentPage = 'home', type = 'website' } = Astro.props;
+const canonicalPath = Astro.url.pathname.replace(/\/index\.html$/, '/');
+const canonicalUrl = Astro.site ? new URL(canonicalPath, Astro.site) : new URL(canonicalPath, Astro.url);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content={description}>
+    <meta name="robots" content="index,follow">
+    <title>{title}</title>
+    <link rel="canonical" href={canonicalUrl.href}>
+    <link rel="icon" type="image/png" sizes="512x512" href={withBase('favicon.png')}>
+    <meta property="og:type" content={type}>
+    <meta property="og:site_name" content="Ocho">
+    <meta property="og:title" content={title}>
+    <meta property="og:description" content={description}>
+    <meta property="og:url" content={canonicalUrl.href}>
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content={title}>
+    <meta name="twitter:description" content={description}>
+  </head>
+  <body>
+    <SiteHeader currentPage={currentPage} />
+    <main id="main-content">
+      <slot />
+    </main>
+    <SiteFooter currentPage={currentPage} />
+  </body>
+</html>

@@ -32,7 +32,7 @@
 
 @font-face {
   font-family: "Space Grotesk";
-  src: url("fonts/space_grotesk.ttf") format("truetype");
+  src: url("../assets/fonts/space_grotesk.ttf") format("truetype");
   font-display: swap;
   font-style: normal;
   font-weight: 100 900;
@@ -40,7 +40,7 @@
 
 @font-face {
   font-family: "IBM Plex Sans";
-  src: url("fonts/ibm_plex_sans.ttf") format("truetype");
+  src: url("../assets/fonts/ibm_plex_sans.ttf") format("truetype");
   font-display: swap;
   font-style: normal;
   font-weight: 100 900;
@@ -48,7 +48,7 @@
 
 @font-face {
   font-family: "JetBrains Mono";
-  src: url("fonts/jetbrains_mono.ttf") format("truetype");
+  src: url("../assets/fonts/jetbrains_mono.ttf") format("truetype");
   font-display: swap;
   font-style: normal;
   font-weight: 100 900;

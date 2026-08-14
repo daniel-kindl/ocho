@@ -1,0 +1,28 @@
+---
+import Icon from './Icon.astro';
+import { withBase } from '../utils/paths';
+
+interface Props {
+  currentPage?: 'home' | 'privacy';
+}
+
+const { currentPage = 'home' } = Astro.props;
+const homeHref = withBase('');
+const privacyHref = withBase('privacy-policy.html');
+---
+
+<a class="skip-link" href="#main-content">Skip to content</a>
+
+<header class="site-header">
+  <div class="page nav-shell">
+    <a class="wordmark" href={homeHref} aria-label="Ocho home">och<span>o</span></a>
+    <p class="nav-context"><Icon name="activity" class="icon icon-sm" /><span class="nav-pulse" aria-hidden="true"></span>Android interval timer</p>
+    <nav aria-label="Primary navigation">
+      <a href={`${homeHref}#session`}>Session</a>
+      <a href={`${homeHref}#modes`}>Modes</a>
+      {currentPage === 'home' && <a href={`${homeHref}#screenshots`}>Screenshots</a>}
+      <a href={`${homeHref}#download`}>Download</a>
+      <a href={privacyHref} aria-current={currentPage === 'privacy' ? 'page' : undefined}>Privacy</a>
+    </nav>
+  </div>
+</header>

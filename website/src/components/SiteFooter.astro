@@ -1,0 +1,18 @@
+---
+import { withBase } from '../utils/paths';
+
+interface Props {
+  currentPage?: 'home' | 'privacy';
+}
+
+const { currentPage = 'home' } = Astro.props;
+const privacyHref = withBase('privacy-policy.html');
+---
+
+<footer>
+  <div class="page footer-inner">
+    <span class="footer-wordmark">och<span>o</span></span>
+    <span>open source interval timer</span>
+    <div class="footer-links"><a href="https://github.com/daniel-kindl/ocho">Source</a><a href={privacyHref} aria-current={currentPage === 'privacy' ? 'page' : undefined}>Privacy</a><a href="https://github.com/daniel-kindl/ocho/issues">Support</a></div>
+  </div>
+</footer>

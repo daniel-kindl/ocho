@@ -1,0 +1,20 @@
+---
+import { withBase } from '../utils/paths';
+
+interface Props {
+  image: string;
+  alt: string;
+  loading?: 'eager' | 'lazy';
+  small?: boolean;
+  class?: string;
+}
+
+const { image, alt, loading = 'lazy', small = true, class: className = '' } = Astro.props;
+const shellClass = ['phone-shell', small ? 'phone-shell-small' : '', className].filter(Boolean).join(' ');
+---
+
+<div class={shellClass}>
+  <div class="phone-speaker" aria-hidden="true"></div>
+  <div class="phone-screen"><img src={withBase(image)} loading={loading} alt={alt} /></div>
+  <div class="phone-home-indicator" aria-hidden="true"></div>
+</div>

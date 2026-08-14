@@ -20,17 +20,17 @@ round count of a classic Tabata.*
 ## Screenshots
 
 <p align="center">
-  <img src="docs/screenshots/mockups/home.png" width="24%" alt="Home screen with cards for EMOM, Tabata and AMRAP inside a Pixel 9a mockup.">
-  <img src="docs/screenshots/mockups/tabata-setup.png" width="24%" alt="Tabata setup with 20 rounds, 45 seconds of work and 15 seconds of rest inside a Pixel 9a mockup.">
-  <img src="docs/screenshots/mockups/tabata-work.png" width="24%" alt="Tabata work phase showing 43 seconds remaining in round 1 of 20 inside a Pixel 9a mockup.">
-  <img src="docs/screenshots/mockups/tabata-rest.png" width="24%" alt="Tabata rest phase showing 8 seconds remaining in round 1 of 20 inside a Pixel 9a mockup.">
+  <img src="website/public/screenshots/mockups/home.png" width="24%" alt="Home screen with cards for EMOM, Tabata and AMRAP inside a Pixel 9a mockup.">
+  <img src="website/public/screenshots/mockups/tabata-setup.png" width="24%" alt="Tabata setup with 20 rounds, 45 seconds of work and 15 seconds of rest inside a Pixel 9a mockup.">
+  <img src="website/public/screenshots/mockups/tabata-work.png" width="24%" alt="Tabata work phase showing 43 seconds remaining in round 1 of 20 inside a Pixel 9a mockup.">
+  <img src="website/public/screenshots/mockups/tabata-rest.png" width="24%" alt="Tabata rest phase showing 8 seconds remaining in round 1 of 20 inside a Pixel 9a mockup.">
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/mockups/emom-setup.png" width="24%" alt="EMOM setup screen inside a Pixel 9a mockup.">
-  <img src="docs/screenshots/mockups/prepare.png" width="24%" alt="Prepare countdown before the first interval inside a Pixel 9a mockup.">
-  <img src="docs/screenshots/mockups/emom-paused.png" width="24%" alt="Paused EMOM session inside a Pixel 9a mockup.">
-  <img src="docs/screenshots/mockups/finish.png" width="24%" alt="Completed workout summary inside a Pixel 9a mockup.">
+  <img src="website/public/screenshots/mockups/emom-setup.png" width="24%" alt="EMOM setup screen inside a Pixel 9a mockup.">
+  <img src="website/public/screenshots/mockups/prepare.png" width="24%" alt="Prepare countdown before the first interval inside a Pixel 9a mockup.">
+  <img src="website/public/screenshots/mockups/emom-paused.png" width="24%" alt="Paused EMOM session inside a Pixel 9a mockup.">
+  <img src="website/public/screenshots/mockups/finish.png" width="24%" alt="Completed workout summary inside a Pixel 9a mockup.">
 </p>
 
 These Pixel 9a captures cover the full flow: choosing a mode, configuring a set,
@@ -116,6 +116,21 @@ reasoning behind the timing, session, and colour design are in
 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Variant publishing and GPLv3 compliance
 are documented in [docs/PUBLISHING.md](docs/PUBLISHING.md); the privacy policy is in
 [docs/PRIVACY_POLICY.md](docs/PRIVACY_POLICY.md).
+
+---
+
+## Website
+
+The GitHub Pages site is an Astro project in `website/`. Run it locally with:
+
+```bash
+cd website
+npm ci
+npm run dev
+```
+
+Create the production static output with `npm run build`. Pushes to `main` deploy
+`website/dist/` to GitHub Pages through the Pages workflow.
 
 ---
 

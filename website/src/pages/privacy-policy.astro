@@ -1,30 +1,16 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Ocho privacy policy: an offline-first Android interval timer with no accounts, analytics, or cloud workout synchronisation.">
-  <title>Ocho — privacy policy</title>
-  <link rel="icon" type="image/png" sizes="512x512" href="favicon.png">
-  <link rel="stylesheet" href="styles.css?v=1323695">
-</head>
-<body>
-  <a class="skip-link" href="#main-content">Skip to content</a>
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../utils/paths';
 
-  <header class="site-header">
-    <div class="page nav-shell">
-      <a class="wordmark" href="index.html" aria-label="Ocho home">och<span>o</span></a>
-      <p class="nav-context"><svg class="icon icon-sm" aria-hidden="true"><use href="icons/ocho-icons.svg#activity"></use></svg><span class="nav-pulse" aria-hidden="true"></span>Android interval timer</p>
-      <nav aria-label="Primary navigation">
-        <a href="index.html#session">Session</a>
-        <a href="index.html#modes">Modes</a>
-        <a href="index.html#download">Download</a>
-        <a href="privacy-policy.html" aria-current="page">Privacy</a>
-      </nav>
-    </div>
-  </header>
+const homeHref = withBase('');
+---
 
-  <main id="main-content">
+<BaseLayout
+  title="Ocho — privacy policy"
+  description="Ocho privacy policy: an offline-first Android interval timer with no accounts, analytics, or cloud workout synchronisation."
+  currentPage="privacy"
+  type="article"
+>
     <section class="policy-section" aria-labelledby="policy-title">
       <div class="page policy-layout">
         <div class="policy-intro">
@@ -33,7 +19,7 @@
           <p class="policy-lede">Ocho is an offline-first workout timer. Your sessions stay on your device, with no account or feed between you and the work.</p>
           <div class="policy-intro-meta">
             <span>Last updated: 2026-08-12</span>
-            <a class="text-link" href="index.html">← Back to Ocho</a>
+            <a class="text-link" href={homeHref}>← Back to Ocho</a>
           </div>
         </div>
 
@@ -65,14 +51,4 @@
         </article>
       </div>
     </section>
-  </main>
-
-  <footer>
-    <div class="page footer-inner">
-      <span class="footer-wordmark">och<span>o</span></span>
-      <span>open source interval timer</span>
-      <div class="footer-links"><a href="https://github.com/daniel-kindl/ocho">Source</a><a href="privacy-policy.html" aria-current="page">Privacy</a><a href="https://github.com/daniel-kindl/ocho/issues">Support</a></div>
-    </div>
-  </footer>
-</body>
-</html>
+</BaseLayout>

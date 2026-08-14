@@ -14,3 +14,8 @@ keystore.properties
 
 # Design-tool export, not part of the versioned codebase
 /Ocho logo design/
+
+# Astro website
+/website/node_modules/
+/website/dist/
+/website/.astro/

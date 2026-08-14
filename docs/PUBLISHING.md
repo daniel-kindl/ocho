@@ -146,22 +146,27 @@ the existing prerelease updater channel.
 
 ## GitHub Pages
 
-The static site source lives in `docs/index.html`, `docs/styles.css`, and
-`docs/privacy-policy.html`; screenshots are reused from `docs/screenshots/`. Preview
-it locally with:
+The static site is an Astro project under `website/`. Preview it locally with:
 
 ```bash
-python3 -m http.server 8000 --directory docs
+cd website
+npm ci
+npm run dev
 ```
 
-Then open `http://127.0.0.1:8000/`. The expected project Pages URL is:
+The production build can be generated with:
+
+```bash
+npm run build
+```
+
+Then open the development URL shown by Astro. The expected project Pages URL is:
 
 `https://daniel-kindl.github.io/ocho/`
 
-The `release.yml` workflow validates and deploys the `docs/` directory after the
-tagged release has built and published successfully. It uses a separate, least-
-privilege Pages job in the same release workflow, so the site changes only when a
-release is made. In repository settings, the maintainer must enable Pages with
-**Source: GitHub Actions** if it is not already enabled. The workflow cannot change
-that repository setting. The Google Play CTA intentionally remains “Google Play
-coming soon” until a real listing URL exists.
+The `pages.yml` workflow builds `website/` and deploys `website/dist/` after every
+push to `main`. The Android release workflow does not deploy the website. In
+repository settings, the maintainer must enable Pages with **Source: GitHub Actions**
+if it is not already enabled. The workflow cannot change that repository setting.
+The Google Play CTA intentionally remains “Google Play coming soon” until a real
+listing URL exists.
