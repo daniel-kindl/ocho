@@ -27,7 +27,6 @@ import dev.danielkindl.ocho.ui.components.PhaseClock
 import dev.danielkindl.ocho.ui.components.PhaseLabel
 import dev.danielkindl.ocho.ui.components.PhaseScaffold
 import dev.danielkindl.ocho.ui.components.PrimarySessionControl
-import dev.danielkindl.ocho.ui.components.RequestNotificationPermission
 import dev.danielkindl.ocho.ui.components.SUBDUED_ON_PLATE
 import dev.danielkindl.ocho.ui.components.SecondarySessionControl
 import dev.danielkindl.ocho.ui.components.SessionColumn
@@ -55,8 +54,6 @@ fun SessionScreen(
     viewModel: SessionViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-
-    RequestNotificationPermission()
 
     SessionLifecycleScaffold(
         status = state.status,

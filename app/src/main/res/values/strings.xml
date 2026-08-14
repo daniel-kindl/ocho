@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Ocho</string>
+    <string name="notification_permission_setup">SETUP</string>
+    <string name="notification_permission_title">Keep your session in view.</string>
+    <string name="notification_permission_body">Allow notifications to keep your active workout visible when you leave Ocho.</string>
+    <string name="notification_permission_allow">Allow notifications</string>
+    <string name="notification_permission_not_now">Not now</string>
+    <string name="notification_permission_footer">You can change this permission later in Android Settings.</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_notifications_allowed">Allowed. Tap to manage Ocho notification access.</string>
+    <string name="settings_notifications_blocked">Not allowed. Tap to let Ocho show active workouts.</string>
+    <string name="settings_notifications_status_allowed">Allowed</string>
+    <string name="settings_notifications_status_blocked">Blocked</string>
 </resources>
