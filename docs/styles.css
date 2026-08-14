@@ -333,8 +333,8 @@ code { padding: .1rem .3rem; border-radius: 3px; background: var(--panel); color
   .mode-phone-row { display: block; }
   .mode-phone { max-width: 250px; margin: 0 auto 2rem; }
   .mode-phone-setup, .mode-phone-work { transform: none; }
-  .capture-grid { grid-template-columns: 1fr; }
-  .capture-card .phone-shell-small { max-width: 250px; }
+  .capture-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem .75rem; }
+  .capture-card .phone-shell-small { max-width: none; }
   .mode-legend { grid-template-columns: 1fr; gap: 0; margin-top: 1rem; }
   .mode-legend span { padding: .8rem 0; border-bottom: 1px solid var(--line); }
 }
