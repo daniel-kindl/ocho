@@ -119,20 +119,35 @@ that prevent modification or redistribution must remain disabled for this GPL bu
 
 No new proprietary runtime dependency is used by the flavor split.
 
-## Manual Google Play release
+## Google Play release
 
-Google Play publishing is intentionally not automated. The maintainer must still:
+The first Play app setup remains manual. The maintainer must:
 
 1. Configure the Play listing and Play App Signing intentionally, resolving the key
    compatibility choice above.
-2. Build and inspect `bundlePlayRelease` from the intended source revision.
-3. Upload the AAB manually in Play Console and complete the required store/privacy
-   declarations.
+2. Complete the required store, privacy, and app-content declarations.
+3. Upload the first `bundlePlayRelease` manually, preferably to internal testing, so
+   the Play app and its initial release are established.
 4. Ensure Google Play Automatic Protection, installer checks, anti-tamper, and similar
-   restrictions are disabled.
+   restrictions remain disabled.
 
-No Play service account, Developer API credential, or Play upload action is needed or
-present in this repository.
+After that setup, the tagged release workflow builds `bundlePlayRelease` and uploads
+it to the production track as a **draft**. It uses the `PLAY_SERVICE_ACCOUNT_JSON`
+secret from the `play-upload` GitHub environment. The maintainer reviews the draft
+and starts the rollout manually in Play Console; the workflow does not publish to
+users automatically.
+
+While production access is pending, run **Dev CI** manually from the `dev` branch in
+the GitHub Actions UI. Enter the exact API track name of the Closed-testing track.
+The candidate job builds `bundlePlayRelease` and `assembleGithubRelease` from the
+same revision and version, uploads the AAB as a completed Closed-testing release,
+and retains the matching APK as a GitHub Actions artifact. This is intentionally a
+manual candidate workflow: Play will reject another upload with the same version
+code, so bump `versionCode` and `versionName` once before preparing the next
+candidate.
+
+After production access is granted, promote the tested Closed-testing release to
+Production in Play Console instead of uploading the same version code again.
 
 ## GitHub Releases
 
@@ -141,8 +156,10 @@ draft GitHub Release. It validates the tag, runs the GitHub unit tests, signs
 `assembleGithubRelease` with CI-provided secrets, computes a checksum, publishes
 build provenance, and publishes the APK. It does not publish to Google Play.
 
-Development builds use `assembleGithubDev -PdevBuildNumber=<run number>` and retain
-the existing prerelease updater channel.
+The ordinary push-based `dev` CI continues to publish the separate GitHub
+development APK channel using `assembleGithubDev -PdevBuildNumber=<run number>`.
+The manual Play candidate path uses the stable-package `playRelease` and
+`githubRelease` variants so their versions match the production artifacts.
 
 ## GitHub Pages
 
