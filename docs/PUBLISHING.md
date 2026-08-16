@@ -124,8 +124,8 @@ its existing platform-only updater dependencies.
 
 Play publishing is intentionally blocked in CI until the maintainer explicitly
 authorizes enabling it. The release workflow may build and retain the Play AAB as
-an artifact, but it does not upload anything to Google Play. There is currently no
-manual Play upload workflow either.
+an artifact, but it does not upload anything to Google Play. The only Play upload
+path is the explicit manual `workflow_dispatch` candidate described below.
 
 When Play publishing is authorized, the maintainer must first:
 
@@ -137,11 +137,16 @@ When Play publishing is authorized, the maintainer must first:
 4. Ensure Google Play Automatic Protection, installer checks, anti-tamper, and similar
    restrictions remain disabled.
 
-After that setup and explicit authorization, the Play upload workflow can be
-enabled to upload a production **draft** using the `PLAY_SERVICE_ACCOUNT_JSON`
-secret from the `play-upload` GitHub environment. The maintainer would review the
-draft and start the rollout manually in Play Console; CI would not publish to users
-automatically.
+While production access is pending, run **Dev CI** manually from the `dev` branch
+in the GitHub Actions UI and enter the exact API track name of the Closed-testing
+track. This is the only workflow that can upload to Play, and it requires that
+explicit manual dispatch. It uploads a completed Closed-testing candidate and
+retains the matching APK as a GitHub Actions artifact; it does not publish to the
+production track.
+
+After production access is granted, promote the tested Closed-testing release to
+Production in Play Console. A future production-upload workflow must be enabled
+explicitly before CI can upload a production draft.
 
 ## GitHub Releases
 
