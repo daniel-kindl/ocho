@@ -9,13 +9,25 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+---
+
+## [3.6.0] - 2026-08-16
+
 ### Added
+- **Custom Timer.** Configure sets, work time, and rest time for a fixed interval
+  workout, with presets and a visual timeline.
+- **Two-step onboarding.** A short introduction is followed by the notification
+  permission choice, with a clear progress indicator and transition animation.
 - **Play and GitHub distribution variants.** The Play build is an AAB with Play's
   flexible in-app update flow; the GitHub build remains an APK with its GitHub
   Releases updater. The project site and hosted privacy policy are now part of the
   repository.
 
 ### Changed
+- **Setup and session presentation.** Timer configuration is shared across modes,
+  the Custom Timer wheel is centered, and work/rest phase values are more readable.
+- **Website screenshots and phone mockups.** The project site now shows current
+  Pixel 9a captures for all four modes, including Custom Timer.
 - **Updater code is isolated by distribution.** The GitHub flavor retains its
   release-APK installer, while the Play flavor carries only the Play-managed update
   client and controls. CI now tests and publishes the appropriate artifacts.
@@ -380,7 +392,8 @@ derived from a domain rather than the product name, so future renames are cosmet
 
 ---
 
-[Unreleased]: https://github.com/daniel-kindl/ocho/compare/v3.3.1...HEAD
+[Unreleased]: https://github.com/daniel-kindl/ocho/compare/v3.6.0...HEAD
+[3.6.0]: https://github.com/daniel-kindl/ocho/compare/v3.5.0...v3.6.0
 [3.3.1]: https://github.com/daniel-kindl/ocho/compare/v3.3.0...v3.3.1
 [3.3.0]: https://github.com/daniel-kindl/ocho/compare/v3.2.1...v3.3.0
 [3.2.1]: https://github.com/daniel-kindl/ocho/compare/v3.2.0...v3.2.1

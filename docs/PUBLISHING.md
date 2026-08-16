@@ -15,9 +15,9 @@ The commands below are run from the repository root with JDK 17:
 ## Distribution variants
 
 The `distribution` flavor dimension contains `play` and `github`. Both release
-variants use application ID `dev.danielkindl.ocho`, version name `3.5.0`, and version
-code 14 in this revision. The version code must increase for every published update;
-the previous GitHub release used version code 13.
+variants use application ID `dev.danielkindl.ocho`, version name `3.6.0`, and version
+code 15 in this revision. The version code must increase for every published update;
+the previous GitHub release used version code 14.
 
 The flavor/build-type application IDs are:
 
