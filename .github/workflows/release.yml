@@ -13,8 +13,6 @@ jobs:
     # every push to `dev` starts this workflow and fails it on the SemVer check.
     if: "!contains(github.ref_name, '-')"
     runs-on: ubuntu-latest
-    environment:
-      name: play-upload
     permissions:
       contents: write
       # Required by actions/attest-build-provenance: it mints an OIDC token to
@@ -148,18 +146,6 @@ jobs:
           name: play-release-bundle
           path: app/build/outputs/bundle/playRelease/*.aab
           retention-days: 14
-
-      # Uploads a draft to Play Console. The maintainer reviews and rolls it out
-      # manually from the production track; this workflow never publishes it.
-      - name: Upload Play AAB as production draft
-        uses: r0adkll/upload-google-play@v1.1.5
-        with:
-          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName: dev.danielkindl.ocho
-          releaseFiles: app/build/outputs/bundle/playRelease/app-play-release.aab
-          tracks: production
-          status: draft
-          releaseName: ${{ github.ref_name }}
 
       - name: Compute SHA-256 checksum
         id: checksum

@@ -120,9 +120,14 @@ that prevent modification or redistribution must remain disabled for this GPL bu
 The Play flavor uses Google's Play In-App Updates runtime; the GitHub flavor retains
 its existing platform-only updater dependencies.
 
-## Google Play release
+## Google Play release (approval required)
 
-The first Play app setup remains manual. The maintainer must:
+Play publishing is intentionally blocked in CI until the maintainer explicitly
+authorizes enabling it. The release workflow may build and retain the Play AAB as
+an artifact, but it does not upload anything to Google Play. There is currently no
+manual Play upload workflow either.
+
+When Play publishing is authorized, the maintainer must first:
 
 1. Configure the Play listing and Play App Signing intentionally, resolving the key
    compatibility choice above.
@@ -132,23 +137,11 @@ The first Play app setup remains manual. The maintainer must:
 4. Ensure Google Play Automatic Protection, installer checks, anti-tamper, and similar
    restrictions remain disabled.
 
-After that setup, the tagged release workflow builds `bundlePlayRelease` and uploads
-it to the production track as a **draft**. It uses the `PLAY_SERVICE_ACCOUNT_JSON`
-secret from the `play-upload` GitHub environment. The maintainer reviews the draft
-and starts the rollout manually in Play Console; the workflow does not publish to
-users automatically.
-
-While production access is pending, run **Dev CI** manually from the `dev` branch in
-the GitHub Actions UI. Enter the exact API track name of the Closed-testing track.
-The candidate job builds `bundlePlayRelease` and `assembleGithubRelease` from the
-same revision and version, uploads the AAB as a completed Closed-testing release,
-and retains the matching APK as a GitHub Actions artifact. This is intentionally a
-manual candidate workflow: Play will reject another upload with the same version
-code, so bump `versionCode` and `versionName` once before preparing the next
-candidate.
-
-After production access is granted, promote the tested Closed-testing release to
-Production in Play Console instead of uploading the same version code again.
+After that setup and explicit authorization, the Play upload workflow can be
+enabled to upload a production **draft** using the `PLAY_SERVICE_ACCOUNT_JSON`
+secret from the `play-upload` GitHub environment. The maintainer would review the
+draft and start the rollout manually in Play Console; CI would not publish to users
+automatically.
 
 ## GitHub Releases
 
