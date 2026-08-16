@@ -66,6 +66,7 @@ class PlayUpdateCoordinator @Inject constructor(
     /** Current Play update state. */
     val state: StateFlow<PlayUpdateState> = _state.asStateFlow()
 
+    @Suppress("DEPRECATION")
     private val installListener = InstallStateUpdatedListener { installState ->
         when (installState.installStatus()) {
             InstallStatus.DOWNLOADING -> {
@@ -79,6 +80,10 @@ class PlayUpdateCoordinator @Inject constructor(
             InstallStatus.INSTALLED -> _state.value = PlayUpdateState.UpToDate
             InstallStatus.CANCELED -> _state.value = PlayUpdateState.Idle
             InstallStatus.FAILED -> _state.value = PlayUpdateState.Error("Play update failed")
+            InstallStatus.PENDING,
+            InstallStatus.INSTALLING,
+            InstallStatus.REQUIRES_UI_INTENT,
+            InstallStatus.UNKNOWN -> Unit
         }
     }
 
