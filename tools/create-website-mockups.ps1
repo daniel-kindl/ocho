@@ -1,6 +1,6 @@
 param(
     [string]$RepoRoot = (Split-Path -Parent $PSScriptRoot),
-    [string]$ScreenshotDirectory = (Join-Path (Split-Path -Parent $PSScriptRoot) "website/public/screenshots/v2"),
+    [string]$ScreenshotDirectory = (Join-Path (Split-Path -Parent $PSScriptRoot) "website/public/screenshots/v3"),
     [string]$OutputDirectory = (Join-Path (Split-Path -Parent $PSScriptRoot) "website/public/screenshots/mockups")
 )
 
