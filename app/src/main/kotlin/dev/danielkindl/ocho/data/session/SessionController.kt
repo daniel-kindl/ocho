@@ -209,12 +209,14 @@ class SessionController @Inject constructor(
         is SessionRequest.Emom -> WorkoutMode.EMOM
         is SessionRequest.Tabata -> WorkoutMode.TABATA
         is SessionRequest.Amrap -> WorkoutMode.AMRAP
+        is SessionRequest.Custom -> WorkoutMode.CUSTOM
     }
 
     private fun SessionRequest.totalDurationMillis(): Long = when (this) {
         is SessionRequest.Emom -> config.totalDurationMillis
         is SessionRequest.Tabata -> config.totalDurationMillis
         is SessionRequest.Amrap -> config.totalDurationMillis
+        is SessionRequest.Custom -> config.totalDurationMillis
     }
 
     private companion object {

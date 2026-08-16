@@ -61,13 +61,14 @@
       "emom-work": "v2/emom-work.png",
       "emom-paused": "v2/emom-paused.png",
       "tabata-setup": "v2/tabata-setup.png",
+      "custom-setup": "v2/custom-setup.png",
       "tabata-work": "v2/tabata-work.png",
       "tabata-rest": "v2/tabata-rest.png",
       finish: "v2/finish.png"
     };
     const key = (location.hash.slice(1) || "home").toLowerCase();
     const selected = screens[key] ? key : "home";
-    const styleKey = selected.startsWith("work") ? "work" : selected.startsWith("rest") ? "rest" : selected;
+    const styleKey = selected.includes("work") ? "work" : selected.includes("rest") ? "rest" : selected.includes("setup") ? "setup" : selected;
     document.getElementById("phone").classList.add(styleKey);
     document.getElementById("screen").classList.add(styleKey);
     document.getElementById("screen-image").src = screens[selected];

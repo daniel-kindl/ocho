@@ -4,8 +4,8 @@ Guidance for AI agents working in this repository.
 
 ## What this is
 
-**Ocho** is a native Android interval timer (Kotlin, Compose, Hilt) with three modes:
-EMOM, Tabata and AMRAP. Read `README.md` for the feature list and usage, and
+**Ocho** is a native Android interval timer (Kotlin, Compose, Hilt) with four modes:
+EMOM, Tabata, AMRAP and Custom Timer. Read `README.md` for the feature list and usage, and
 `docs/ARCHITECTURE.md` for the package layout, session ownership, the unified
 workout stack, and the drift-free timing explanation; none of it is repeated here.
 
@@ -52,7 +52,8 @@ per-tick deltas. Preserve this in `domain/engine/`.
 
 **One stack serves every mode.** One setup screen, one session screen, one preset
 type, two routes. A new mode is a `SessionRequest` variant, a `WorkoutEngine` adapter,
-a home card and a `when` branch in three places the compiler will point at. Do not
+a home card and the compiler-directed branches that connect planning, engines,
+navigation, and setup. Do not
 add a screen or a preset type per mode; that is what this release removed.
 
 **Never read, print, or commit** `keystore.properties`, `release.keystore`, or
@@ -62,7 +63,7 @@ add a screen or a preset type per mode; that is what this release removed.
 
 `core/` clock and formatting · `domain/` model, engines, repository interfaces ·
 `data/` DataStore repos, audio, vibration, `session/` (foreground service) ·
-`github/` updater implementation and `play/` no-op distribution bindings · `ui/`
+`github/` GitHub APK updater and `play/` Play Store updater bindings · `ui/`
 screens and ViewModels · `di/` shared Hilt bindings.
 
 ## Parallelising with subagents

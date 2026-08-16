@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.danielkindl.ocho.data.session.SessionController
 import dev.danielkindl.ocho.domain.model.AmrapConfig
+import dev.danielkindl.ocho.domain.model.CustomConfig
 import dev.danielkindl.ocho.domain.model.Phase
 import dev.danielkindl.ocho.domain.model.SessionRequest
 import dev.danielkindl.ocho.domain.model.SessionSnapshot
@@ -43,6 +44,9 @@ class SessionViewModel @Inject constructor(
 
     /** Rest phase for Tabata, unused otherwise. */
     private val secondMillis: Long = checkNotNull(savedStateHandle["second"])
+
+    /** Set count for Custom Timer, unused otherwise. */
+    private val thirdValue: Long = checkNotNull(savedStateHandle["third"])
 
     /** Current session state, seeded so the screen has something to draw immediately. */
     val uiState: StateFlow<SessionSnapshot> = sessionController.snapshot
@@ -88,6 +92,14 @@ class SessionViewModel @Inject constructor(
 
         WorkoutMode.AMRAP -> SessionRequest.Amrap(
             AmrapConfig(totalDurationMillis = totalMillis)
+        )
+
+        WorkoutMode.CUSTOM -> SessionRequest.Custom(
+            CustomConfig(
+                setCount = thirdValue.toInt(),
+                workMillis = firstMillis,
+                restMillis = secondMillis,
+            )
         )
     }
 

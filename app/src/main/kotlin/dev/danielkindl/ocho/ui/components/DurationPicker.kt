@@ -24,6 +24,7 @@ fun DurationPicker(
     onMinutesChange: (Int) -> Unit,
     onSecondsChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
+    compact: Boolean = false,
 ) {
     Column(
         modifier = modifier,
@@ -31,40 +32,50 @@ fun DurationPicker(
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.titleMedium,
+            style = if (compact) MaterialTheme.typography.titleSmall
+            else MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface,
         )
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(if (compact) 4.dp else 8.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 WheelPicker(
                     count = 100,
                     selected = minutes,
                     onSelect = onMinutesChange,
+                    itemHeight = if (compact) 32.dp else 44.dp,
+                    pickerWidth = if (compact) 54.dp else 80.dp,
+                    contentDescription = "$label minutes",
                 )
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(if (compact) 2.dp else 4.dp))
                 Text(
                     text = "min",
-                    style = MaterialTheme.typography.labelLarge,
+                    style = if (compact) MaterialTheme.typography.labelMedium
+                    else MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             Text(
                 text = ":",
-                style = MaterialTheme.typography.headlineMedium,
+                style = if (compact) MaterialTheme.typography.titleMedium
+                else MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(horizontal = 8.dp),
+                modifier = Modifier.padding(horizontal = if (compact) 4.dp else 8.dp),
             )
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 WheelPicker(
                     count = 60,
                     selected = seconds,
                     onSelect = onSecondsChange,
+                    itemHeight = if (compact) 32.dp else 44.dp,
+                    pickerWidth = if (compact) 54.dp else 80.dp,
+                    contentDescription = "$label seconds",
                 )
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(if (compact) 2.dp else 4.dp))
                 Text(
                     text = "sec",
-                    style = MaterialTheme.typography.labelLarge,
+                    style = if (compact) MaterialTheme.typography.labelMedium
+                    else MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }

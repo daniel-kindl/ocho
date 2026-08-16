@@ -23,6 +23,7 @@ import dev.danielkindl.ocho.core.format.formatElapsed
 import dev.danielkindl.ocho.domain.model.Phase
 import dev.danielkindl.ocho.domain.model.SessionSnapshot
 import dev.danielkindl.ocho.domain.model.SessionStatus
+import dev.danielkindl.ocho.domain.model.WorkoutMode
 import dev.danielkindl.ocho.ui.components.PhaseClock
 import dev.danielkindl.ocho.ui.components.PhaseLabel
 import dev.danielkindl.ocho.ui.components.PhaseScaffold
@@ -115,7 +116,7 @@ private fun CompleteContent(state: SessionSnapshot, onPlate: Color, onDone: () -
             // managed. Omitted rather than shown as zero.
             if (state.totalRounds > 0) {
                 Spacer(Modifier.height(8.dp))
-                SubduedLine("${state.totalRounds} rounds", onPlate)
+                SubduedLine("${state.totalRounds} ${state.mode.progressUnit()}", onPlate)
             }
         }
         SecondarySessionControl(label = "Done", onPlate = onPlate, onClick = onDone)
@@ -140,7 +141,8 @@ private fun RunningContent(
             if (state.totalRounds > 0) {
                 Spacer(Modifier.height(12.dp))
                 SubduedLine(
-                    text = "round ${state.currentRound}/${state.totalRounds}",
+                    text = "${state.mode.progressUnit().dropLast(1)} " +
+                        "${state.currentRound}/${state.totalRounds}",
                     onPlate = onPlate,
                     style = MaterialTheme.typography.titleMedium,
                 )
@@ -165,6 +167,9 @@ private fun RunningContent(
         }
     }
 }
+
+private fun WorkoutMode.progressUnit(): String =
+    if (this == WorkoutMode.CUSTOM) "sets" else "rounds"
 
 /** Secondary text on a phase plate, at the shared subdued opacity. */
 @Composable

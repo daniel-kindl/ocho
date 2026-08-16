@@ -25,8 +25,9 @@ Both variants use the permissions needed for workout timing:
 - `POST_NOTIFICATIONS` allows the ongoing workout notification on Android 13 and
   newer. The workout can still run if notification access is denied.
 
-The Play variant has no network or package-install permission. It does not contain
-the GitHub updater.
+The Play variant has no package-install permission and does not contain the GitHub
+APK updater. It may ask Google Play for update availability through the Play-managed
+In-App Updates library; Ocho does not download or install an APK itself.
 
 The GitHub variant additionally uses:
 
@@ -53,7 +54,8 @@ the launch-time check in the GitHub variant. The Play variant makes no Ocho netw
 requests.
 
 Ocho does not send workout data, settings, identifiers, advertising IDs, contacts,
-location, or health data to these endpoints.
+location, or health data to these endpoints. Feedback is sent only when the user
+explicitly chooses email or the public issue tracker from Settings.
 
 ## Third parties and licenses
 
@@ -63,4 +65,5 @@ retain their separate licenses. See the in-app Settings → Licences screen,
 
 ## Contact
 
-The repository maintainer's verified support channel is the [Ocho issue tracker](https://github.com/daniel-kindl/ocho/issues).
+The repository maintainer's support channels are [support@danielkindl.dev](mailto:support@danielkindl.dev)
+and the [Ocho issue tracker](https://github.com/daniel-kindl/ocho/issues).

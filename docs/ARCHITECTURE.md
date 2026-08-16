@@ -55,12 +55,12 @@ app/src/main/kotlin/dev/danielkindl/ocho/       # shared source
 ├── DistributionStartup.kt                     # flavor-provided app startup hook
 ├── core/               Clock (injectable, for deterministic tests), duration formatting
 ├── domain/
-│   ├── model/          TimerConfig, TabataConfig, AmrapConfig, events, WorkoutPreset,
+│   ├── model/          TimerConfig, TabataConfig, AmrapConfig, CustomConfig, events, WorkoutPreset,
 │   │                   SessionRequest (sealed, one variant per mode), SessionSnapshot
 │   ├── engine/         AbstractPausableEngine, TimerEngine + impl, TabataEngine + impl,
 │   │                   and a factory each. WorkoutEngine is the mode-agnostic strategy
 │   │                   interface over them, implemented by EmomWorkoutEngine,
-│   │                   TabataWorkoutEngine and AmrapWorkoutEngine, resolved by
+│   │                   TabataWorkoutEngine, AmrapWorkoutEngine and CustomWorkoutEngine, resolved by
 │   │                   WorkoutEngineFactory
 │   └── repository/     Repository interfaces
 ├── data/
@@ -79,6 +79,7 @@ app/src/main/kotlin/dev/danielkindl/ocho/       # shared source
     ├── setup/          One setup screen, state and ViewModel for every mode
     ├── session/        One session screen and ViewModel for every mode
     ├── settings/       Settings + distribution-specific update section
+    ├── onboarding/     Two-step first-run setup before the normal app flow
     ├── licenses/       Third-party licence notices
     ├── components/     WheelPicker, DurationPicker, PresetsSection, session scaffolding
     └── theme/          Colour ramp, three-typeface system, Material 3 scale
@@ -91,8 +92,10 @@ app/src/github/                                     # GitHub-only source
 └── ui/settings/        GitHub updater controls
 
 app/src/play/                                       # Play-only source
-├── di/                 No-op distribution startup binding
-└── ui/settings/        Empty updater section
+├── data/update/        Play Store in-app update coordinator
+├── di/                 Play update startup binding
+├── ui/home/            Non-blocking Play update banner
+└── ui/settings/        Play-managed update controls
 ```
 
 ---
@@ -231,8 +234,9 @@ This keeps the anchoring intact across any number of pauses.
 ## Testing and coverage
 
 `domain/` and `data/` carry the unit tests, because they carry the logic. Composables
-and view models are thin by design and verified by reading, which is also the only
-option here: the development environment has no emulator.
+and view models are thin by design and verified by reading. End-to-end checks use the
+documented Pixel 9a AVD when it is available; on the development machine its startup
+can take two minutes or more.
 
 `./gradlew koverLogGithubDebug` prints line coverage per package. Coverage is reported and
 never gated, in CI or locally. A percentage is easy to move by writing tests that

@@ -26,6 +26,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,14 +57,19 @@ internal const val POST_NOTIFICATIONS_PERMISSION = "android.permission.POST_NOTI
  * No-op below Android 13, where the permission is granted at install time.
  */
 @Composable
-fun NotificationPermissionGate(content: @Composable () -> Unit) {
+fun NotificationPermissionGate(
+    skipInitialPrompt: Boolean = false,
+    content: @Composable () -> Unit,
+) {
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { /* Granted or not, the app continues normally. */ }
 
     var showPermissionScreen by remember {
-        mutableStateOf(shouldRequestNotificationPermission(context))
+        mutableStateOf(
+            !skipInitialPrompt && shouldRequestNotificationPermission(context),
+        )
     }
 
     if (!showPermissionScreen) {
@@ -80,6 +86,37 @@ fun NotificationPermissionGate(content: @Composable () -> Unit) {
     )
 }
 
+/** Runs the notification rationale as the second first-run setup step. */
+@Composable
+fun NotificationPermissionOnboardingStep(onComplete: () -> Unit) {
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { /* Granted or not, setup is complete. */ }
+
+    var showPermissionScreen by remember {
+        mutableStateOf(shouldRequestNotificationPermission(context))
+    }
+
+    if (!showPermissionScreen) {
+        LaunchedEffect(Unit) { onComplete() }
+        return
+    }
+
+    NotificationPermissionScreen(
+        onAllow = {
+            launcher.launch(POST_NOTIFICATIONS_PERMISSION)
+            showPermissionScreen = false
+            onComplete()
+        },
+        onNotNow = {
+            showPermissionScreen = false
+            onComplete()
+        },
+        showProgress = true,
+    )
+}
+
 private fun shouldRequestNotificationPermission(context: Context): Boolean {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
         ContextCompat.checkSelfPermission(
@@ -92,6 +129,7 @@ private fun shouldRequestNotificationPermission(context: Context): Boolean {
 private fun NotificationPermissionScreen(
     onAllow: () -> Unit,
     onNotNow: () -> Unit,
+    showProgress: Boolean = false,
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -120,6 +158,10 @@ private fun NotificationPermissionScreen(
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary,
                 )
+            }
+
+            if (showProgress) {
+                SetupProgress(currentStep = 2)
             }
 
             Spacer(Modifier.weight(1f))

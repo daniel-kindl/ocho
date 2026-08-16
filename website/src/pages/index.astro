@@ -7,14 +7,14 @@ import PhoneMockup from '../components/PhoneMockup.astro';
 
 <BaseLayout
   title="Ocho — interval timer for Android"
-  description="Ocho is an offline-first Android interval timer for EMOM, Tabata, and AMRAP workouts."
+  description="Ocho is an offline-first Android interval timer for EMOM, Tabata, AMRAP, and Custom Timer workouts."
 >
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-grid page">
         <div class="hero-copy">
           <p class="eyebrow"><span>OCHO / 01</span><span>ANDROID TIMER</span></p>
           <h1 id="hero-title">Keep your eyes<br><em>on the work.</em></h1>
-          <p class="hero-lede">A clear interval timer for EMOM, Tabata, and AMRAP workouts. The clock stays big. The phase stays obvious.</p>
+          <p class="hero-lede">A clear interval timer for EMOM, Tabata, AMRAP, and Custom Timer workouts. The clock stays big. The phase stays obvious.</p>
           <DownloadActions class="hero-actions" />
           <div class="hero-meta">
             <span>Android 8.0+</span>
@@ -25,7 +25,7 @@ import PhoneMockup from '../components/PhoneMockup.astro';
 
         <div class="session-dashboard" aria-label="Ocho session preview">
           <div class="phone-stage">
-            <PhoneMockup image="screenshots/v2/tabata-work.png" small={false} alt="Ocho Tabata work phase screen showing 43 seconds remaining in round 1 of 20." loading="eager" />
+            <PhoneMockup image="screenshots/v2/tabata-work.png" small={false} alt="Ocho Tabata work phase screen showing the current interval." loading="eager" />
           </div>
           <div class="run-timeline" aria-label="Tabata run timeline">
             <span class="timeline-prepare"></span><span class="timeline-work"></span><span class="timeline-rest"></span><span class="timeline-work"></span><span class="timeline-rest"></span><span class="timeline-complete"></span>
@@ -59,7 +59,7 @@ import PhoneMockup from '../components/PhoneMockup.astro';
         <figure class="setup-visual">
           <div class="screen-pair">
             <PhoneMockup image="screenshots/v2/tabata-setup.png" class="setup-phone" alt="Ocho Tabata setup screen with duration pickers and a visual round preview." />
-            <PhoneMockup image="screenshots/v2/tabata-rest.png" class="rest-phone" alt="Ocho Tabata rest phase screen showing 8 seconds remaining in round 1 of 20." />
+            <PhoneMockup image="screenshots/v2/tabata-rest.png" class="rest-phone" alt="Ocho Tabata rest phase screen showing the recovery interval." />
           </div>
           <figcaption><span><Icon name="settings" />SETUP / TABATA</span><span><Icon name="activity" />REST / 00:08</span></figcaption>
         </figure>
@@ -71,17 +71,18 @@ import PhoneMockup from '../components/PhoneMockup.astro';
         <div class="modes-heading">
           <p class="eyebrow"><span>OCHO / 03</span><span>CHOOSE A RHYTHM</span></p>
           <h2 id="modes-title">Choose your timer.</h2>
-          <p class="section-lede">Three formats. No feed, profile, or subscription between you and the start button.</p>
+          <p class="section-lede">Four formats. No feed, profile, or subscription between you and the start button.</p>
         </div>
         <div class="mode-gallery">
           <div class="mode-legend" aria-label="Ocho workout modes">
             <span><strong>EMOM</strong><small>continuous work</small></span>
             <span><strong>Tabata</strong><small>work / rest</small></span>
             <span><strong>AMRAP</strong><small>one unbroken block</small></span>
+            <span><strong>Custom</strong><small>sets / intervals</small></span>
           </div>
           <div class="mode-phone-row">
           <figure class="mode-phone mode-phone-home">
-            <PhoneMockup image="screenshots/v2/home.png" alt="Ocho home screen with EMOM, Tabata, and AMRAP workout modes." />
+            <PhoneMockup image="screenshots/v2/home.png" alt="Ocho home screen with EMOM, Tabata, AMRAP, and Custom Timer workout modes." />
             <figcaption><span>01 / CHOOSE</span><span>pick a mode</span></figcaption>
           </figure>
           <figure class="mode-phone mode-phone-setup">
@@ -89,7 +90,7 @@ import PhoneMockup from '../components/PhoneMockup.astro';
             <figcaption><span>02 / CONFIGURE</span><span>set the pace</span></figcaption>
           </figure>
           <figure class="mode-phone mode-phone-work">
-            <PhoneMockup image="screenshots/v2/tabata-work.png" alt="Ocho Tabata work phase screen showing 43 seconds remaining in round 1 of 20." />
+            <PhoneMockup image="screenshots/v2/tabata-work.png" alt="Ocho Tabata work phase showing the current interval." />
             <figcaption><span>03 / START</span><span>keep moving</span></figcaption>
           </figure>
           </div>
@@ -113,6 +114,12 @@ import PhoneMockup from '../components/PhoneMockup.astro';
             <div class="mode-preview amrap-preview" aria-hidden="true"><span></span></div>
             <span class="mode-card-meta">one block / no interval beeps</span>
           </article>
+          <article class="mode-card">
+            <div class="mode-card-top"><span class="mode-number">04</span><svg class="icon mode-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path></svg></div>
+            <div class="mode-card-main"><h3>Custom Timer</h3><p>Set your own rounds and intervals.</p></div>
+            <div class="mode-preview tabata-preview" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <span class="mode-card-meta">work / rest / no final rest</span>
+          </article>
         </div>
         <div class="coming-note" aria-label="More workout modes coming soon">
           <span class="coming-note-index">04 / NEXT</span>
@@ -130,7 +137,7 @@ import PhoneMockup from '../components/PhoneMockup.astro';
         </div>
         <div class="capture-grid">
           <figure class="capture-card">
-            <PhoneMockup image="screenshots/v2/home.png" alt="Ocho home screen with EMOM, Tabata, and AMRAP workout modes." />
+            <PhoneMockup image="screenshots/v2/home.png" alt="Ocho home screen with EMOM, Tabata, AMRAP, and Custom Timer workout modes." />
             <figcaption><strong>01 / CHOOSE</strong><span>pick a mode</span></figcaption>
           </figure>
           <figure class="capture-card">
@@ -154,16 +161,20 @@ import PhoneMockup from '../components/PhoneMockup.astro';
             <figcaption><strong>06 / TABATA SETUP</strong><span>build the rhythm</span></figcaption>
           </figure>
           <figure class="capture-card">
-            <PhoneMockup image="screenshots/v2/tabata-work.png" alt="Ocho Tabata work phase showing 43 seconds remaining in round 1 of 20." />
+            <PhoneMockup image="screenshots/v2/tabata-work.png" alt="Ocho Tabata work phase showing the current interval." />
             <figcaption><strong>07 / TABATA WORK</strong><span>push the interval</span></figcaption>
           </figure>
           <figure class="capture-card">
-            <PhoneMockup image="screenshots/v2/tabata-rest.png" alt="Ocho Tabata rest phase showing 8 seconds remaining in round 1 of 20." />
-            <figcaption><strong>08 / TABATA REST</strong><span>recover for the next round</span></figcaption>
+            <PhoneMockup image="screenshots/v2/custom-setup.png" class="setup-phone" alt="Ocho Custom Timer setup screen with rounds, work time, and rest time controls." />
+            <figcaption><strong>08 / CUSTOM SETUP</strong><span>make it yours</span></figcaption>
+          </figure>
+          <figure class="capture-card">
+            <PhoneMockup image="screenshots/v2/tabata-rest.png" alt="Ocho Tabata rest phase showing the recovery interval." />
+            <figcaption><strong>09 / TABATA REST</strong><span>recover for the next round</span></figcaption>
           </figure>
           <figure class="capture-card">
             <PhoneMockup image="screenshots/v2/finish.png" alt="Ocho complete screen showing the finished workout summary." />
-            <figcaption><strong>09 / COMPLETE</strong><span>finish strong</span></figcaption>
+            <figcaption><strong>10 / COMPLETE</strong><span>finish strong</span></figcaption>
           </figure>
         </div>
       </div>

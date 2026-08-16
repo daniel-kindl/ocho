@@ -20,11 +20,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import dev.danielkindl.ocho.R
 import androidx.compose.ui.unit.dp
 
 /**
- * Reusable preset row: header with a "Save" button, chips for each preset.
+ * Reusable preset row: header with a save button, chips for each preset.
  *
  * Generic so it works with any preset type — callers supply [getKey] and
  * [getLabel] to extract display information without coupling to a specific model.
@@ -45,6 +47,7 @@ fun <T> PresetsSection(
     saveEnabled: Boolean,
     modifier: Modifier = Modifier,
     canDelete: (T) -> Boolean = { true },
+    showEmptyMessage: Boolean = true,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
@@ -63,7 +66,7 @@ fun <T> PresetsSection(
                 Text("Save")
             }
         }
-        if (presets.isEmpty()) {
+        if (presets.isEmpty() && showEmptyMessage) {
             Text(
                 "Presets appear here after you save a workout.",
                 style = MaterialTheme.typography.bodySmall,
@@ -73,6 +76,9 @@ fun <T> PresetsSection(
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(presets, key = { getKey(it) }) { preset ->
                     InputChip(
+                        modifier = Modifier.semantics {
+                            contentDescription = "Load preset ${getLabel(preset)}"
+                        },
                         selected = false,
                         onClick = { onPresetClick(preset) },
                         label = { Text(getLabel(preset)) },
@@ -95,7 +101,7 @@ fun <T> PresetsSection(
 
 @Composable
 private fun DeletePresetIcon(label: String, onClick: () -> Unit) {
-    IconButton(onClick = onClick, modifier = Modifier.size(20.dp)) {
+    IconButton(onClick = onClick, modifier = Modifier.size(48.dp)) {
         Icon(
             painterResource(R.drawable.ic_x),
             contentDescription = "Delete $label",

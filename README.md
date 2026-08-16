@@ -20,10 +20,10 @@ round count of a classic Tabata.*
 ## Screenshots
 
 <p align="center">
-  <img src="website/public/screenshots/mockups/home.png" width="24%" alt="Home screen with cards for EMOM, Tabata and AMRAP inside a Pixel 9a mockup.">
+  <img src="website/public/screenshots/mockups/home.png" width="24%" alt="Home screen with cards for EMOM, Tabata, AMRAP and Custom Timer inside a Pixel 9a mockup.">
   <img src="website/public/screenshots/mockups/tabata-setup.png" width="24%" alt="Tabata setup with 20 rounds, 45 seconds of work and 15 seconds of rest inside a Pixel 9a mockup.">
-  <img src="website/public/screenshots/mockups/tabata-work.png" width="24%" alt="Tabata work phase showing 43 seconds remaining in round 1 of 20 inside a Pixel 9a mockup.">
-  <img src="website/public/screenshots/mockups/tabata-rest.png" width="24%" alt="Tabata rest phase showing 8 seconds remaining in round 1 of 20 inside a Pixel 9a mockup.">
+  <img src="website/public/screenshots/mockups/tabata-work.png" width="24%" alt="Tabata work phase showing the current interval inside a Pixel 9a mockup.">
+  <img src="website/public/screenshots/mockups/tabata-rest.png" width="24%" alt="Tabata rest phase showing the recovery interval inside a Pixel 9a mockup.">
 </p>
 
 <p align="center">
@@ -31,6 +31,10 @@ round count of a classic Tabata.*
   <img src="website/public/screenshots/mockups/prepare.png" width="24%" alt="Prepare countdown before the first interval inside a Pixel 9a mockup.">
   <img src="website/public/screenshots/mockups/emom-paused.png" width="24%" alt="Paused EMOM session inside a Pixel 9a mockup.">
   <img src="website/public/screenshots/mockups/finish.png" width="24%" alt="Completed workout summary inside a Pixel 9a mockup.">
+</p>
+
+<p align="center">
+  <img src="website/public/screenshots/mockups/custom-setup.png" width="24%" alt="Custom Timer setup with centered sets, work, and rest controls inside a Pixel 9a mockup.">
 </p>
 
 These Pixel 9a captures cover the full flow: choosing a mode, configuring a set,
@@ -49,6 +53,7 @@ readable across a room. Work and rest are separated by lightness as well as hue.
 | EMOM timer | Total duration and interval length, set with drum-roll mm:ss pickers |
 | Tabata timer | Total, work, and rest durations; phases alternate automatically |
 | AMRAP timer | Total duration only; one unbroken block with no interval beeps |
+| Custom Timer | Fixed set count with configurable work and rest durations; no final rest |
 | Phase colours | A full-screen amber, red, green, or violet plate per phase, readable across a room and distinguishable without colour vision |
 | Run timeline | Proportional preview of a workout's shape before you start it |
 | Sound feedback | Distinct tones per event, on the alarm stream so silent mode can't mute them |
@@ -58,7 +63,7 @@ readable across a room. Work and rest are separated by lightness as well as hue.
 | Presets | Save, name, load, and delete configurations, separately per mode |
 | Progress and summary | A progress bar during the session, and a recap on completion |
 | Exit confirmation | The back gesture and Stop both ask before ending a running session |
-| In-app updates | GitHub variant checks GitHub Releases and installs updates without a store |
+| In-app updates | GitHub variant uses GitHub Releases; Play variant uses Play-managed updates |
 | Workout-first UI | Large high-contrast display, screen stays on, one-hand friendly |
 
 ---
@@ -67,9 +72,8 @@ readable across a room. Work and rest are separated by lightness as well as hue.
 
 Ocho has two alternative distribution channels. The [GitHub APK](https://github.com/daniel-kindl/ocho/releases/latest)
 is manually installed and may require Android's unknown-app installation permission;
-it retains the GitHub self-updater in Settings. The Play variant will be linked from
-the [project site](https://daniel-kindl.github.io/ocho/) once its listing exists and
-does not contain the GitHub self-updater.
+it retains the GitHub self-updater in Settings. The Play variant uses Play-managed
+flexible updates and does not contain the GitHub APK installer.
 
 ### Update channels
 
@@ -99,13 +103,16 @@ a light green rest one.
 round counter, just the clock counting down and a 3-2-1 before it stops. Count your
 own rounds.
 
+**Custom Timer.** Set the number of work sets, work duration, and rest duration.
+Rest runs between sets only, so the final work set ends the session immediately.
+
 **Presets.** Tap Save in the Presets row to store the current configuration. The
-name is pre-filled from the durations, so edit it or accept it. Tap a chip to load,
-or the delete control to remove it.
+name is pre-filled from the configuration, so edit it or accept it. Tap a chip to
+load, or the delete control to remove it.
 
 **Settings.** The icon on the home screen toggles sound and vibration independently,
-holds the licence and privacy-policy links, and shows the GitHub updater only in the
-GitHub build.
+holds feedback, licence, and privacy-policy links, and shows the distribution's
+update flow.
 
 ---
 

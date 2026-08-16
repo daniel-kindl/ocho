@@ -32,5 +32,8 @@ class DefaultWorkoutEngineFactory(
 
             is SessionRequest.Amrap ->
                 AmrapWorkoutEngine(request.config, timerEngineFactory, scope)
+
+            is SessionRequest.Custom ->
+                CustomWorkoutEngine(request.config, tabataEngineFactory, scope)
         }
 }

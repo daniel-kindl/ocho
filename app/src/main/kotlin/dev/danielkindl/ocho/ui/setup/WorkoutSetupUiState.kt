@@ -1,6 +1,7 @@
 package dev.danielkindl.ocho.ui.setup
 
 import dev.danielkindl.ocho.domain.model.AmrapConfig
+import dev.danielkindl.ocho.domain.model.CustomConfig
 import dev.danielkindl.ocho.domain.model.SessionRequest
 import dev.danielkindl.ocho.domain.model.TabataConfig
 import dev.danielkindl.ocho.domain.model.TimerConfig
@@ -20,12 +21,13 @@ import dev.danielkindl.ocho.domain.model.toPlan
  * cheap and the pickers produce them all identically.
  *
  * Defaults are per-mode sensible: a 20 minute EMOM on the minute, 45s/15s Tabata
- * cycles, a 20 minute AMRAP. All startable without touching a picker.
+ * cycles, a 1 minute AMRAP. All startable without touching a picker.
  *
  * @property mode which workout is being configured. Fixed for the lifetime of the
  *   screen; changing mode means navigating to a different setup destination.
  * @property totalMinutes minutes component of the total duration. Read by all modes.
  * @property totalSeconds seconds component of the total duration. Read by all modes.
+ * @property setCount number of Custom Timer work sets. Ignored elsewhere.
  * @property intervalMinutes minutes component of the EMOM interval. Ignored elsewhere.
  * @property intervalSeconds seconds component of the EMOM interval. Ignored elsewhere.
  * @property workMinutes minutes component of the Tabata work phase. Ignored elsewhere.
@@ -37,6 +39,7 @@ data class WorkoutSetupUiState(
     val mode: WorkoutMode,
     val totalMinutes: Int = 20,
     val totalSeconds: Int = 0,
+    val setCount: Int = 8,
     val intervalMinutes: Int = 1,
     val intervalSeconds: Int = 0,
     val workMinutes: Int = 0,
@@ -46,7 +49,11 @@ data class WorkoutSetupUiState(
 ) {
     /** Total duration in milliseconds, as the engines want it. All modes. */
     val totalDurationMillis: Long
-        get() = minutesSecondsToMillis(totalMinutes, totalSeconds)
+        get() = if (mode == WorkoutMode.CUSTOM) {
+            setCount * workMillis + (setCount - 1).coerceAtLeast(0) * restMillis
+        } else {
+            minutesSecondsToMillis(totalMinutes, totalSeconds)
+        }
 
     /** EMOM interval length in milliseconds. */
     val intervalMillis: Long
@@ -71,6 +78,7 @@ data class WorkoutSetupUiState(
             WorkoutMode.EMOM -> intervalMillis > 0
             WorkoutMode.TABATA -> workMillis > 0 && restMillis > 0
             WorkoutMode.AMRAP -> true
+            WorkoutMode.CUSTOM -> setCount > 0 && workMillis > 0 && restMillis >= 0
         }
 
     /** True when an EMOM interval exceeds its total, so no interval events will fire. */
@@ -101,7 +109,12 @@ data class WorkoutSetupUiState(
                 "$roundCount × ($work work / $rest rest)"
             }
 
-            WorkoutMode.AMRAP -> "as many rounds as possible"
+            WorkoutMode.AMRAP -> formatDuration(totalMinutes, totalSeconds)
+            WorkoutMode.CUSTOM -> {
+                val work = formatDuration(workMinutes, workSeconds)
+                val rest = formatDuration(restMinutes, restSeconds)
+                if (restMillis > 0) "$setCount × ($work work / $rest rest)" else "$setCount × $work work"
+            }
         }
 
     /** Suggested preset name, used when the user leaves the field blank. */
@@ -118,6 +131,11 @@ data class WorkoutSetupUiState(
             }
 
             WorkoutMode.AMRAP -> total
+            WorkoutMode.CUSTOM -> {
+                val work = formatDuration(workMinutes, workSeconds)
+                val rest = formatDuration(restMinutes, restSeconds)
+                if (restMillis > 0) "$setCount × $work work / $rest rest" else "$setCount × $work work"
+            }
         }
     }
 
@@ -146,12 +164,25 @@ data class WorkoutSetupUiState(
         WorkoutMode.AMRAP -> SessionRequest.Amrap(
             AmrapConfig(totalDurationMillis = totalDurationMillis)
         )
+
+        WorkoutMode.CUSTOM -> SessionRequest.Custom(
+            CustomConfig(
+                setCount = setCount,
+                workMillis = workMillis,
+                restMillis = restMillis,
+            )
+        )
     }
 
     /** Replaces the picker values with a saved preset's. */
     fun withPreset(preset: WorkoutPreset): WorkoutSetupUiState = copy(
         totalMinutes = preset.totalMinutes,
         totalSeconds = preset.totalSeconds,
+        setCount = if (mode == WorkoutMode.CUSTOM) {
+            preset.setCount.coerceIn(1, 99)
+        } else {
+            preset.setCount
+        },
         intervalMinutes = preset.intervalMinutes,
         intervalSeconds = preset.intervalSeconds,
         workMinutes = preset.workMinutes,
@@ -161,17 +192,43 @@ data class WorkoutSetupUiState(
     )
 
     /** Captures the current pickers as a saveable preset under [name] and [id]. */
-    fun toPreset(id: String, name: String): WorkoutPreset = WorkoutPreset(
-        id = id,
-        name = name.trim().ifEmpty { defaultPresetName() },
-        mode = mode,
-        totalMinutes = totalMinutes,
-        totalSeconds = totalSeconds,
-        intervalMinutes = intervalMinutes,
-        intervalSeconds = intervalSeconds,
-        workMinutes = workMinutes,
-        workSeconds = workSeconds,
-        restMinutes = restMinutes,
-        restSeconds = restSeconds,
-    )
+    fun toPreset(id: String, name: String): WorkoutPreset {
+        val (presetTotalMinutes, presetTotalSeconds) = if (mode == WorkoutMode.CUSTOM) {
+            totalDurationMillis.toPickerMinutesSeconds()
+        } else {
+            totalMinutes to totalSeconds
+        }
+        return WorkoutPreset(
+            id = id,
+            name = name.trim().ifEmpty { defaultPresetName() },
+            mode = mode,
+            totalMinutes = presetTotalMinutes,
+            totalSeconds = presetTotalSeconds,
+            setCount = setCount,
+            intervalMinutes = intervalMinutes,
+            intervalSeconds = intervalSeconds,
+            workMinutes = workMinutes,
+            workSeconds = workSeconds,
+            restMinutes = restMinutes,
+            restSeconds = restSeconds,
+        )
+    }
+
+    private fun Long.toPickerMinutesSeconds(): Pair<Int, Int> {
+        val totalSeconds = this / 1_000L
+        return (totalSeconds / 60L).toInt() to (totalSeconds % 60L).toInt()
+    }
+
+    /** Factory for the mode-specific defaults shown when a setup screen opens. */
+    companion object {
+        /** Creates the mode-specific defaults shown when a setup screen opens. */
+        fun initial(mode: WorkoutMode): WorkoutSetupUiState =
+            WorkoutSetupUiState(mode = mode).let { state ->
+                when (mode) {
+                    WorkoutMode.AMRAP -> state.copy(totalMinutes = 1)
+                    WorkoutMode.CUSTOM -> state.copy(workSeconds = 20, restSeconds = 10)
+                    else -> state
+                }
+            }
+    }
 }

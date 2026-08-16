@@ -60,6 +60,36 @@ class WorkoutPlanTest {
     }
 
     @Test
+    fun `a Custom Timer has rest only between sets`() {
+        val plan = SessionRequest.Custom(
+            CustomConfig(setCount = 3, workMillis = 10_000, restMillis = 5_000)
+        ).toPlan()
+
+        assertEquals(
+            listOf(
+                PlannedSegment(Phase.WORK, 10_000),
+                PlannedSegment(Phase.REST, 5_000),
+                PlannedSegment(Phase.WORK, 10_000),
+                PlannedSegment(Phase.REST, 5_000),
+                PlannedSegment(Phase.WORK, 10_000),
+            ),
+            plan.segments,
+        )
+        assertEquals(40_000L, plan.totalDurationMillis)
+        assertEquals(3, plan.totalRounds)
+    }
+
+    @Test
+    fun `a Custom Timer with zero rest stays entirely in work phases`() {
+        val plan = SessionRequest.Custom(
+            CustomConfig(setCount = 3, workMillis = 10_000, restMillis = 0)
+        ).toPlan()
+
+        assertEquals(listOf(Phase.WORK, Phase.WORK, Phase.WORK), plan.segments.map { it.phase })
+        assertEquals(30_000L, plan.totalDurationMillis)
+    }
+
+    @Test
     fun `a Tabata alternates work and rest for the whole duration`() {
         // The classic 4min of 20s work and 10s rest: 8 cycles, 16 phases.
         val plan = SessionRequest.Tabata(

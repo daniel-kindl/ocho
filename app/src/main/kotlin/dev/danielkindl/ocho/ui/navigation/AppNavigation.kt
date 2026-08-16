@@ -32,10 +32,11 @@ private const val ROUTE_SETUP = "setup/{mode}"
  * One session destination for every mode.
  *
  * `first` and `second` carry whatever the mode needs: interval for EMOM, work and
- * rest for Tabata, neither for AMRAP. Deliberately generic names, because naming
+ * rest for Tabata, or work and rest for Custom. `third` carries Custom's set count.
+ * Deliberately generic names, because naming
  * them after one mode's meaning would mislead in the other two.
  */
-private const val ROUTE_SESSION = "session/{mode}/{total}/{first}/{second}"
+private const val ROUTE_SESSION = "session/{mode}/{total}/{first}/{second}/{third}"
 
 /** Builds a concrete setup route. */
 internal fun setupRoute(mode: WorkoutMode): String = "setup/${mode.name}"
@@ -59,6 +60,14 @@ internal fun sessionRoute(request: SessionRequest): String = when (request) {
         WorkoutMode.AMRAP,
         request.config.totalDurationMillis,
     )
+
+    is SessionRequest.Custom -> sessionRoute(
+        WorkoutMode.CUSTOM,
+        request.config.totalDurationMillis,
+        request.config.workMillis,
+        request.config.restMillis,
+        request.config.setCount.toLong(),
+    )
 }
 
 private fun sessionRoute(
@@ -66,7 +75,8 @@ private fun sessionRoute(
     total: Long,
     first: Long = 0L,
     second: Long = 0L,
-): String = "session/${mode.name}/$total/$first/$second"
+    third: Long = 0L,
+): String = "session/${mode.name}/$total/$first/$second/$third"
 
 /**
  * The whole navigation graph: home, setup, session, settings and licences.
@@ -125,6 +135,7 @@ fun AppNavigation(activeSessionViewModel: ActiveSessionViewModel = hiltViewModel
                 navArgument("total") { type = NavType.LongType },
                 navArgument("first") { type = NavType.LongType },
                 navArgument("second") { type = NavType.LongType },
+                navArgument("third") { type = NavType.LongType },
             ),
         ) {
             SessionScreen(

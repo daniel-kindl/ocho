@@ -18,4 +18,7 @@ sealed interface SessionRequest {
 
     /** @property config the validated AMRAP duration. */
     data class Amrap(val config: AmrapConfig) : SessionRequest
+
+    /** @property config the validated fixed-set durations. */
+    data class Custom(val config: CustomConfig) : SessionRequest
 }

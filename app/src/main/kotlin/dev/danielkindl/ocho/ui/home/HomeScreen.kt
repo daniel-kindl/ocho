@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -60,6 +62,7 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(padding)
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -72,10 +75,12 @@ fun HomeScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
+            DistributionUpdateBanner()
+
             TimerTypeCard(
                 title = "EMOM",
                 subtitle = "Every minute on the minute",
-                description = "One continuous work phase with a beep at every interval boundary.",
+                description = "Repeat a timed interval with a beep at each minute.",
                 icon = painterResource(R.drawable.ic_activity),
                 onClick = { onOpenMode(WorkoutMode.EMOM) },
             )
@@ -94,6 +99,14 @@ fun HomeScreen(
                 description = "One unbroken block with no interval beeps, counting down to the finish.",
                 icon = painterResource(R.drawable.ic_zap),
                 onClick = { onOpenMode(WorkoutMode.AMRAP) },
+            )
+
+            TimerTypeCard(
+                title = "Custom Timer",
+                subtitle = "Custom sets and intervals",
+                description = "Set your own rounds, work time, and rest time.",
+                icon = painterResource(R.drawable.ic_rotate_cw),
+                onClick = { onOpenMode(WorkoutMode.CUSTOM) },
             )
         }
     }

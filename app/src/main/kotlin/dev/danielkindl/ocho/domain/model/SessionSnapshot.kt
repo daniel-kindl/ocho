@@ -56,4 +56,7 @@ enum class WorkoutMode {
 
     /** As many rounds as possible: one unbroken effort with no interval beeps. */
     AMRAP,
+
+    /** Fixed work sets separated by configurable rest phases. */
+    CUSTOM,
 }

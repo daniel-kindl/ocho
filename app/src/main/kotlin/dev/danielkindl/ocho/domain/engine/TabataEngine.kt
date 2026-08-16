@@ -2,6 +2,7 @@ package dev.danielkindl.ocho.domain.engine
 
 import dev.danielkindl.ocho.domain.model.TabataConfig
 import dev.danielkindl.ocho.domain.model.TabataEvent
+import dev.danielkindl.ocho.domain.model.WorkoutPlan
 import kotlinx.coroutines.flow.SharedFlow
 
 /**
@@ -20,6 +21,9 @@ interface TabataEngine {
 
     /** Begins a workout, cancelling any session already in progress. */
     fun start(config: TabataConfig)
+
+    /** Begins a planned phase sequence, cancelling any session already in progress. */
+    fun start(plan: WorkoutPlan)
 
     /** Freezes elapsed time. Time spent paused does not count toward the workout. */
     fun pause()

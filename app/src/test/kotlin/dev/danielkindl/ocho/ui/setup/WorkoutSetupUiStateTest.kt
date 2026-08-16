@@ -52,6 +52,24 @@ class WorkoutSetupUiStateTest {
         totalSeconds = totalSeconds,
     )
 
+    private fun custom(
+        setCount: Int = 8,
+        workSeconds: Int = 20,
+        restSeconds: Int = 10,
+    ) = WorkoutSetupUiState(
+        mode = WorkoutMode.CUSTOM,
+        setCount = setCount,
+        workSeconds = workSeconds,
+        restSeconds = restSeconds,
+    )
+
+    @Test
+    fun `mode defaults use a one minute AMRAP`() {
+        assertEquals(20, WorkoutSetupUiState.initial(WorkoutMode.EMOM).totalMinutes)
+        assertEquals(1, WorkoutSetupUiState.initial(WorkoutMode.AMRAP).totalMinutes)
+        assertEquals(60_000L, WorkoutSetupUiState.initial(WorkoutMode.AMRAP).totalDurationMillis)
+    }
+
     // EMOM validation
 
     @Test
@@ -132,6 +150,27 @@ class WorkoutSetupUiStateTest {
     fun `AMRAP reports no round count`() {
         // Its rounds are whatever the athlete manages, which the app cannot know.
         assertEquals(0, amrap().roundCount)
+    }
+
+    @Test
+    fun `Custom Timer derives total duration and counts sets`() {
+        val state = custom(setCount = 3, workSeconds = 10, restSeconds = 5)
+
+        assertTrue(state.isValid)
+        assertEquals(40_000L, state.totalDurationMillis)
+        assertEquals(3, state.roundCount)
+    }
+
+    @Test
+    fun `Custom Timer does not require a final rest`() {
+        val state = custom(setCount = 1, workSeconds = 10, restSeconds = 0)
+
+        assertTrue(state.isValid)
+        assertEquals(10_000L, state.totalDurationMillis)
+        assertEquals(
+            "1 × 10s work",
+            state.patternLabel,
+        )
     }
 
     // Preset naming
@@ -232,7 +271,10 @@ class WorkoutSetupUiStateTest {
     @Test
     fun `Tabata pattern label over a table of configurations`() {
         val state = tabata(totalMinutes = 4, workSeconds = 20, restSeconds = 10)
-        assertEquals("8 × (20s work / 10s rest)", state.patternLabel)
+        assertEquals(
+            "8 × (20s work / 10s rest)",
+            state.patternLabel,
+        )
     }
 
     @Test
@@ -267,6 +309,19 @@ class WorkoutSetupUiStateTest {
         // A blank name falls back to the generated one rather than saving an unlabelled preset.
         assertEquals("4min / 20s work / 10s rest", preset.name)
         assertEquals(original, tabata().withPreset(preset))
+    }
+
+    @Test
+    fun `a Custom Timer preset round-trips its set count`() {
+        val original = custom(setCount = 5, workSeconds = 20, restSeconds = 10)
+        val preset = original.toPreset(id = "custom", name = "")
+        val restored = custom().withPreset(preset)
+
+        assertEquals(5, preset.setCount)
+        assertEquals(original.setCount, restored.setCount)
+        assertEquals(original.workMillis, restored.workMillis)
+        assertEquals(original.restMillis, restored.restMillis)
+        assertEquals(original.totalDurationMillis, restored.totalDurationMillis)
     }
 
     @Test

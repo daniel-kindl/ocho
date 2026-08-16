@@ -2,6 +2,7 @@ package dev.danielkindl.ocho.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,12 +15,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.shape.RoundedCornerShape
 import dev.danielkindl.ocho.ui.theme.JetBrainsMonoFamily
 
 private const val VIRTUAL_MULTIPLIER = 1_000
@@ -42,6 +51,7 @@ fun WheelPicker(
     itemHeight: Dp = 44.dp,
     pickerWidth: Dp = 80.dp,
     formatter: (Int) -> String = { "%02d".format(it) },
+    contentDescription: String = "Value picker",
 ) {
     val virtualCount = count * VIRTUAL_MULTIPLIER
     // Align to a known multiple so modulo is clean, then back off by 1 so
@@ -52,6 +62,9 @@ fun WheelPicker(
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = initialIndex)
     val snapBehavior = rememberSnapFlingBehavior(lazyListState = listState)
     val fadeColor = MaterialTheme.colorScheme.background
+    val centerIndex by remember {
+        derivedStateOf { listState.firstVisibleItemIndex + 1 }
+    }
 
     // Notify parent when scroll settles; center = FVI + 1.
     LaunchedEffect(listState.isScrollInProgress) {
@@ -84,7 +97,12 @@ fun WheelPicker(
         LazyColumn(
             state = listState,
             flingBehavior = snapBehavior,
-            modifier = Modifier.matchParentSize(),
+            modifier = Modifier
+                .matchParentSize()
+                .semantics {
+                    this.contentDescription = contentDescription
+                    stateDescription = formatter(selected)
+                },
         ) {
             items(virtualCount) { virtualIndex ->
                 Box(
@@ -96,7 +114,11 @@ fun WheelPicker(
                     Text(
                         text = formatter(virtualIndex % count),
                         style = MaterialTheme.typography.headlineMedium.copy(fontFamily = JetBrainsMonoFamily),
-                        color = MaterialTheme.colorScheme.onSurface,
+                        color = if (virtualIndex == centerIndex) {
+                            MaterialTheme.colorScheme.onSurface
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
                     )
                 }
             }
@@ -107,7 +129,16 @@ fun WheelPicker(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(itemHeight)
-                .align(Alignment.Center),
+                .align(Alignment.Center)
+                .background(
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+                    shape = RoundedCornerShape(8.dp),
+                )
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.55f),
+                    shape = RoundedCornerShape(8.dp),
+                ),
         ) {
             HorizontalDivider(modifier = Modifier.align(Alignment.TopCenter))
             HorizontalDivider(modifier = Modifier.align(Alignment.BottomCenter))

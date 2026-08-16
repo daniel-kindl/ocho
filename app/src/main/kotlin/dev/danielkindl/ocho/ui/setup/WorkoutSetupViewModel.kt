@@ -33,7 +33,7 @@ class WorkoutSetupViewModel @Inject constructor(
     private val mode: WorkoutMode =
         WorkoutMode.valueOf(checkNotNull(savedStateHandle["mode"]))
 
-    private val _uiState = MutableStateFlow(WorkoutSetupUiState(mode = mode))
+    private val _uiState = MutableStateFlow(WorkoutSetupUiState.initial(mode))
 
     /** Current picker values. */
     val uiState: StateFlow<WorkoutSetupUiState> = _uiState.asStateFlow()
@@ -49,6 +49,10 @@ class WorkoutSetupViewModel @Inject constructor(
     /** Sets total seconds, clamped to the picker's range. */
     fun setTotalSeconds(value: Int) =
         _uiState.update { it.copy(totalSeconds = value.coerceIn(0, MAX_SECONDS)) }
+
+    /** Sets Custom Timer work sets, clamped to the picker's range. */
+    fun setCount(value: Int) =
+        _uiState.update { it.copy(setCount = value.coerceIn(MIN_SETS, MAX_SETS)) }
 
     /** Sets EMOM interval minutes, clamped to the picker's range. */
     fun setIntervalMinutes(value: Int) =
@@ -91,6 +95,8 @@ class WorkoutSetupViewModel @Inject constructor(
     private companion object {
         const val MAX_MINUTES = 99
         const val MAX_SECONDS = 59
+        const val MIN_SETS = 1
+        const val MAX_SETS = 99
         const val SUBSCRIBE_TIMEOUT_MS = 5_000L
     }
 }

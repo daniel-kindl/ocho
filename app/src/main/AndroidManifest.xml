@@ -16,6 +16,13 @@
          ongoing notification is hidden. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.SENDTO" />
+            <data android:scheme="mailto" />
+        </intent>
+    </queries>
+
     <application
         android:name=".OchoApp"
         android:allowBackup="true"

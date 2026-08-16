@@ -29,7 +29,7 @@ The flavor/build-type application IDs are:
 
 | Variant | Task | Artifact | Channel behavior |
 | --- | --- | --- | --- |
-| Play release | `bundlePlayRelease` | `app/build/outputs/bundle/playRelease/app-play-release.aab` | Google Play upload; no self-updater |
+| Play release | `bundlePlayRelease` | `app/build/outputs/bundle/playRelease/app-play-release.aab` | Google Play upload; Play-managed flexible updater |
 | GitHub release | `assembleGithubRelease` | `app/build/outputs/apk/github/release/app-github-release.apk` | Manual GitHub Release APK; retains self-updater |
 
 The AAB is not directly installable. The GitHub artifact is an APK because GitHub
@@ -74,10 +74,10 @@ app/build/intermediates/merged_manifest/playRelease/processPlayReleaseMainManife
 app/build/intermediates/merged_manifest/githubRelease/processGithubReleaseMainManifest/AndroidManifest.xml
 ```
 
-The Play manifest must not contain `REQUEST_INSTALL_PACKAGES`, `INTERNET`,
-`FileProvider`, `InstallResultReceiver`, or updater metadata/components. The Play
-Settings implementation is a no-op for the update section, and the Play source set
-does not compile updater classes. The GitHub manifest intentionally contains
+The Play manifest must not contain `REQUEST_INSTALL_PACKAGES`, the GitHub updater's
+`FileProvider`, `InstallResultReceiver`, or GitHub updater metadata/components. The
+Play source set contains only the Play In-App Updates runtime and its user-driven
+flexible flow. The GitHub manifest intentionally contains
 `INTERNET`, `REQUEST_INSTALL_PACKAGES`, `FileProvider`, and
 `InstallResultReceiver`; its GitHub Settings implementation contains the existing
 check/download/install flow.
@@ -117,7 +117,8 @@ add a no-redistribution EULA or other restriction to either build. Google Play
 Automatic Protection, installer checks, anti-tamper protection, and similar features
 that prevent modification or redistribution must remain disabled for this GPL build.
 
-No new proprietary runtime dependency is used by the flavor split.
+The Play flavor uses Google's Play In-App Updates runtime; the GitHub flavor retains
+its existing platform-only updater dependencies.
 
 ## Google Play release
 

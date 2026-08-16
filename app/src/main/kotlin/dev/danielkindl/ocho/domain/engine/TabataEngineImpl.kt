@@ -6,6 +6,7 @@ import dev.danielkindl.ocho.domain.model.SessionRequest
 import dev.danielkindl.ocho.domain.model.TabataConfig
 import dev.danielkindl.ocho.domain.model.TabataEvent
 import dev.danielkindl.ocho.domain.model.TabataPhase
+import dev.danielkindl.ocho.domain.model.WorkoutPlan
 import dev.danielkindl.ocho.domain.model.toPlan
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -39,9 +40,12 @@ class TabataEngineImpl(
     private var job: Job? = null
 
     override fun start(config: TabataConfig) {
+        start(SessionRequest.Tabata(config).toPlan())
+    }
+
+    override fun start(plan: WorkoutPlan) {
         job?.cancel()
         resetPauseState()
-        val plan = SessionRequest.Tabata(config).toPlan()
         val segments = plan.segments
         job = scope.launch {
             val startTime = clock.currentTimeMillis()

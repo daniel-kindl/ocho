@@ -9,6 +9,7 @@ import dev.danielkindl.ocho.core.SystemClock
 import dev.danielkindl.ocho.data.audio.AudioPlayer
 import dev.danielkindl.ocho.data.audio.ToneAudioPlayer
 import dev.danielkindl.ocho.data.repository.SettingsRepositoryImpl
+import dev.danielkindl.ocho.data.repository.OnboardingRepositoryImpl
 import dev.danielkindl.ocho.data.repository.WorkoutPresetRepositoryImpl
 import dev.danielkindl.ocho.data.session.AndroidSessionServiceLauncher
 import dev.danielkindl.ocho.data.session.SessionServiceLauncher
@@ -21,6 +22,7 @@ import dev.danielkindl.ocho.domain.engine.WorkoutEngineFactory
 import dev.danielkindl.ocho.domain.model.BuiltInPresets
 import dev.danielkindl.ocho.domain.model.DEVICE_CHECK_PRESETS
 import dev.danielkindl.ocho.domain.repository.SettingsRepository
+import dev.danielkindl.ocho.domain.repository.OnboardingRepository
 import dev.danielkindl.ocho.domain.repository.WorkoutPresetRepository
 import dagger.Binds
 import dagger.Module
@@ -47,6 +49,11 @@ abstract class AppModule {
     @Binds
     @Singleton
     abstract fun bindSettingsRepository(impl: SettingsRepositoryImpl): SettingsRepository
+
+    /** Binds the DataStore-backed first-run setup state. */
+    @Binds
+    @Singleton
+    abstract fun bindOnboardingRepository(impl: OnboardingRepositoryImpl): OnboardingRepository
 
     /** Binds the DataStore-backed preset store, shared by every mode. */
     @Binds

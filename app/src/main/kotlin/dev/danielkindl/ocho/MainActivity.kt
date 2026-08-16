@@ -4,8 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import dev.danielkindl.ocho.ui.components.NotificationPermissionGate
 import dev.danielkindl.ocho.ui.navigation.AppNavigation
+import dev.danielkindl.ocho.ui.onboarding.OnboardingGate
 import dev.danielkindl.ocho.ui.theme.OchoTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,8 +28,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             OchoTheme {
-                NotificationPermissionGate {
-                    AppNavigation()
+                var onboardingFinishedInSession by rememberSaveable { mutableStateOf(false) }
+                OnboardingGate(
+                    onFinishedInSession = { onboardingFinishedInSession = true },
+                ) {
+                    NotificationPermissionGate(
+                        skipInitialPrompt = onboardingFinishedInSession,
+                    ) {
+                        AppNavigation()
+                    }
                 }
             }
         }

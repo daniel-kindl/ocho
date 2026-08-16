@@ -19,7 +19,7 @@ import org.junit.Test
  *
  * The invariant that survived the merge of the two stores is "save, then read back
  * identical durations", so that is what these assert. The mode filter and the
- * round trip across all three modes are new behaviour and tested separately below.
+ * round trip across all four modes are new behaviour and tested separately below.
  */
 class WorkoutPresetRepositoryImplTest {
 

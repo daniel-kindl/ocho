@@ -17,6 +17,7 @@ package dev.danielkindl.ocho.domain.model
  * @property mode which workout this configures. Setup screens list only their own.
  * @property totalMinutes minutes component of the total duration. All modes.
  * @property totalSeconds seconds component of the total duration. All modes.
+ * @property setCount number of Custom Timer work sets. Zero otherwise.
  * @property intervalMinutes minutes component of the EMOM interval. Zero otherwise.
  * @property intervalSeconds seconds component of the EMOM interval. Zero otherwise.
  * @property workMinutes minutes component of the Tabata work phase. Zero otherwise.
@@ -35,6 +36,7 @@ data class WorkoutPreset(
     val mode: WorkoutMode,
     val totalMinutes: Int,
     val totalSeconds: Int,
+    val setCount: Int = 0,
     val intervalMinutes: Int = 0,
     val intervalSeconds: Int = 0,
     val workMinutes: Int = 0,

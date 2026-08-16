@@ -1,14 +1,23 @@
 package dev.danielkindl.ocho.ui.setup
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -16,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -31,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.danielkindl.ocho.R
+import dev.danielkindl.ocho.core.format.formatElapsed
 import dev.danielkindl.ocho.domain.model.PREPARE_COUNTDOWN_MILLIS
 import dev.danielkindl.ocho.domain.model.SessionRequest
 import dev.danielkindl.ocho.domain.model.WorkoutMode
@@ -42,6 +53,7 @@ import dev.danielkindl.ocho.ui.components.ErrorPlate
 import dev.danielkindl.ocho.ui.components.PresetsSection
 import dev.danielkindl.ocho.ui.components.RunTimeline
 import dev.danielkindl.ocho.ui.components.SavePresetDialog
+import dev.danielkindl.ocho.ui.components.WheelPicker
 import dev.danielkindl.ocho.ui.components.toRunSegments
 
 /**
@@ -101,100 +113,278 @@ fun WorkoutSetupScreen(
                 },
             )
         },
+        bottomBar = {
+            Surface(
+                color = MaterialTheme.colorScheme.background,
+                tonalElevation = 2.dp,
+            ) {
+                Button(
+                    onClick = { onStartSession(state.toRequest()) },
+                    enabled = state.isValid,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 12.dp)
+                        .navigationBarsPadding()
+                        .height(52.dp),
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_play),
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp),
+                    )
+                    Spacer(Modifier.width(10.dp))
+                    Text("Start", style = MaterialTheme.typography.titleLarge)
+                }
+            }
+        },
     ) { padding ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
+                .padding(padding),
         ) {
-            DurationPicker(
-                label = "Total duration",
-                minutes = state.totalMinutes,
-                seconds = state.totalSeconds,
-                onMinutesChange = viewModel::setTotalMinutes,
-                onSecondsChange = viewModel::setTotalSeconds,
-            )
-
-            if (state.mode == WorkoutMode.EMOM) {
-                HorizontalDivider()
-                DurationPicker(
-                    label = "Interval",
-                    minutes = state.intervalMinutes,
-                    seconds = state.intervalSeconds,
-                    onMinutesChange = viewModel::setIntervalMinutes,
-                    onSecondsChange = viewModel::setIntervalSeconds,
-                )
-            }
-
-            if (state.mode == WorkoutMode.TABATA) {
-                HorizontalDivider()
-                DurationPicker(
-                    label = "Work",
-                    minutes = state.workMinutes,
-                    seconds = state.workSeconds,
-                    onMinutesChange = viewModel::setWorkMinutes,
-                    onSecondsChange = viewModel::setWorkSeconds,
-                )
-                HorizontalDivider()
-                DurationPicker(
-                    label = "Rest",
-                    minutes = state.restMinutes,
-                    seconds = state.restSeconds,
-                    onMinutesChange = viewModel::setRestMinutes,
-                    onSecondsChange = viewModel::setRestSeconds,
-                )
-            }
-
-            if (state.isValid) {
-                RunTimeline(
-                    segments = state.timelineSegments(),
-                    patternLabel = state.patternLabel,
-                    totalMillis = state.totalDurationMillis,
-                )
-            }
-
-            if (state.intervalExceedsTotal) {
-                ErrorPlate(
-                    message = "The interval is longer than the total duration, " +
-                        "so no interval beeps will fire. Shorten the interval or " +
-                        "lengthen the workout.",
-                )
-            }
-
-            PresetsSection(
-                presets = presets,
-                getKey = { it.id },
-                getLabel = { it.name },
-                onPresetClick = viewModel::loadPreset,
-                onDeleteClick = { presetToDelete = it },
-                onSavePreset = {
-                    dialogPresetName = state.defaultPresetName()
-                    showSaveDialog = true
-                },
-                saveEnabled = state.isValid,
-                canDelete = { !it.builtIn },
-            )
-
-            Button(
-                onClick = { onStartSession(state.toRequest()) },
-                enabled = state.isValid,
+            Column(
                 modifier = Modifier
+                    .fillMaxHeight()
+                    .widthIn(max = MAX_CONTENT_WIDTH)
                     .fillMaxWidth()
-                    .height(52.dp),
+                    .align(Alignment.TopCenter)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp)
+                    .padding(top = 12.dp, bottom = 96.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Icon(
-                    painterResource(R.drawable.ic_play),
-                    contentDescription = null,
-                    modifier = Modifier.size(20.dp),
+                SetupSummary(state)
+
+                SetupPanel {
+                    when (state.mode) {
+                    WorkoutMode.EMOM -> Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        CompactDurationPicker(
+                            label = "Total",
+                            minutes = state.totalMinutes,
+                            seconds = state.totalSeconds,
+                            onMinutesChange = viewModel::setTotalMinutes,
+                            onSecondsChange = viewModel::setTotalSeconds,
+                            modifier = Modifier.weight(1f),
+                        )
+                        CompactDurationPicker(
+                            label = "Interval",
+                            minutes = state.intervalMinutes,
+                            seconds = state.intervalSeconds,
+                            onMinutesChange = viewModel::setIntervalMinutes,
+                            onSecondsChange = viewModel::setIntervalSeconds,
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
+
+                    WorkoutMode.TABATA -> Column {
+                        CompactDurationPicker(
+                            label = "Total duration",
+                            minutes = state.totalMinutes,
+                            seconds = state.totalSeconds,
+                            onMinutesChange = viewModel::setTotalMinutes,
+                            onSecondsChange = viewModel::setTotalSeconds,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+                        PhasePickerRow(
+                            work = DurationPickerState(
+                                label = "Work",
+                                minutes = state.workMinutes,
+                                seconds = state.workSeconds,
+                                onMinutesChange = viewModel::setWorkMinutes,
+                                onSecondsChange = viewModel::setWorkSeconds,
+                            ),
+                            rest = DurationPickerState(
+                                label = "Rest",
+                                minutes = state.restMinutes,
+                                seconds = state.restSeconds,
+                                onMinutesChange = viewModel::setRestMinutes,
+                                onSecondsChange = viewModel::setRestSeconds,
+                            ),
+                        )
+                    }
+
+                    WorkoutMode.AMRAP -> CompactDurationPicker(
+                        label = "Total duration",
+                        minutes = state.totalMinutes,
+                        seconds = state.totalSeconds,
+                        onMinutesChange = viewModel::setTotalMinutes,
+                        onSecondsChange = viewModel::setTotalSeconds,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+
+                    WorkoutMode.CUSTOM -> Column {
+                        CountPicker(
+                            label = "Sets",
+                            count = state.setCount,
+                            onCountChange = viewModel::setCount,
+                            compact = true,
+                        )
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+                        PhasePickerRow(
+                            work = DurationPickerState(
+                                label = "Work",
+                                minutes = state.workMinutes,
+                                seconds = state.workSeconds,
+                                onMinutesChange = viewModel::setWorkMinutes,
+                                onSecondsChange = viewModel::setWorkSeconds,
+                            ),
+                            rest = DurationPickerState(
+                                label = "Rest",
+                                minutes = state.restMinutes,
+                                seconds = state.restSeconds,
+                                onMinutesChange = viewModel::setRestMinutes,
+                                onSecondsChange = viewModel::setRestSeconds,
+                            ),
+                        )
+                    }
+                }
+            }
+
+                if (state.intervalExceedsTotal) {
+                    ErrorPlate(
+                        message = "The interval is longer than the total duration, " +
+                            "so no interval beeps will fire. Shorten the interval or " +
+                            "lengthen the workout.",
+                    )
+                }
+
+                if (state.isValid) {
+                    SetupPanel {
+                        RunTimeline(
+                            segments = state.timelineSegments(),
+                        )
+                    }
+                }
+
+                PresetsSection(
+                    presets = presets,
+                    getKey = { it.id },
+                    getLabel = { it.name },
+                    onPresetClick = viewModel::loadPreset,
+                    onDeleteClick = { presetToDelete = it },
+                    onSavePreset = {
+                        dialogPresetName = state.defaultPresetName()
+                        showSaveDialog = true
+                    },
+                    saveEnabled = state.isValid,
+                    canDelete = { !it.builtIn },
+                    showEmptyMessage = false,
                 )
-                Spacer(Modifier.width(10.dp))
-                Text("Start", style = MaterialTheme.typography.titleLarge)
             }
         }
     }
+}
+
+@Composable
+private fun SetupSummary(state: WorkoutSetupUiState) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = state.totalDurationMillis.formatElapsed(),
+                    style = MaterialTheme.typography.displayMedium,
+                    modifier = Modifier.weight(1f),
+                )
+                Icon(
+                    painter = painterResource(state.mode.iconRes()),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(32.dp),
+                )
+            }
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = state.patternLabel,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        }
+    }
+}
+
+@Composable
+private fun SetupPanel(
+    content: @Composable () -> Unit,
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.background,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            content()
+        }
+    }
+}
+
+@Composable
+private fun PhasePickerRow(
+    work: DurationPickerState,
+    rest: DurationPickerState,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        CompactDurationPicker(
+            label = work.label,
+            minutes = work.minutes,
+            seconds = work.seconds,
+            onMinutesChange = work.onMinutesChange,
+            onSecondsChange = work.onSecondsChange,
+            modifier = Modifier.weight(1f),
+        )
+        CompactDurationPicker(
+            label = rest.label,
+            minutes = rest.minutes,
+            seconds = rest.seconds,
+            onMinutesChange = rest.onMinutesChange,
+            onSecondsChange = rest.onSecondsChange,
+            modifier = Modifier.weight(1f),
+        )
+    }
+}
+
+private data class DurationPickerState(
+    val label: String,
+    val minutes: Int,
+    val seconds: Int,
+    val onMinutesChange: (Int) -> Unit,
+    val onSecondsChange: (Int) -> Unit,
+)
+
+@Composable
+private fun CompactDurationPicker(
+    label: String,
+    minutes: Int,
+    seconds: Int,
+    onMinutesChange: (Int) -> Unit,
+    onSecondsChange: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    DurationPicker(
+        label = label,
+        minutes = minutes,
+        seconds = seconds,
+        onMinutesChange = onMinutesChange,
+        onSecondsChange = onSecondsChange,
+        modifier = modifier,
+        compact = true,
+    )
 }
 
 /** Screen title for a mode. EMOM and AMRAP are acronyms and stay capitalised. */
@@ -202,7 +392,17 @@ private fun WorkoutMode.title(): String = when (this) {
     WorkoutMode.EMOM -> "EMOM"
     WorkoutMode.TABATA -> "Tabata"
     WorkoutMode.AMRAP -> "AMRAP"
+    WorkoutMode.CUSTOM -> "Custom Timer"
 }
+
+private fun WorkoutMode.iconRes(): Int = when (this) {
+    WorkoutMode.EMOM -> R.drawable.ic_activity
+    WorkoutMode.TABATA -> R.drawable.ic_rotate_cw
+    WorkoutMode.AMRAP -> R.drawable.ic_zap
+    WorkoutMode.CUSTOM -> R.drawable.ic_rotate_cw
+}
+
+private val MAX_CONTENT_WIDTH = 640.dp
 
 /**
  * Builds the run timeline preview.
@@ -213,3 +413,41 @@ private fun WorkoutMode.title(): String = when (this) {
  */
 private fun WorkoutSetupUiState.timelineSegments() =
     toRequest().toPlan().toRunSegments(PREPARE_COUNTDOWN_MILLIS)
+
+@Composable
+private fun CountPicker(
+    label: String,
+    count: Int,
+    onCountChange: (Int) -> Unit,
+    compact: Boolean = false,
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = label,
+            style = if (compact) MaterialTheme.typography.titleSmall
+            else MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(8.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            WheelPicker(
+                count = 99,
+                selected = count - 1,
+                onSelect = { onCountChange(it + 1) },
+                formatter = { "%02d".format(it + 1) },
+                itemHeight = if (compact) 32.dp else 44.dp,
+                pickerWidth = if (compact) 54.dp else 80.dp,
+                contentDescription = "Sets",
+            )
+        }
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = "sets",
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}

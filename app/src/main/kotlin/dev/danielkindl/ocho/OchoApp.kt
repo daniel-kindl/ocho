@@ -7,8 +7,8 @@ import dagger.hilt.android.HiltAndroidApp
  * Application entry point and Hilt root.
  *
  * Distribution-specific startup work is injected through [DistributionStartup].
- * The Play implementation is a no-op; the GitHub implementation performs the
- * existing launch-time update check.
+ * The Play implementation performs a non-blocking Play-managed update check; the
+ * GitHub implementation performs the existing launch-time release check.
  */
 @HiltAndroidApp
 class OchoApp : Application() {

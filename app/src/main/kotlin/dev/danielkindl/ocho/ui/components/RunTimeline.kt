@@ -3,20 +3,16 @@ package dev.danielkindl.ocho.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import dev.danielkindl.ocho.core.format.formatElapsed
 import dev.danielkindl.ocho.domain.model.Phase
 import dev.danielkindl.ocho.domain.model.WorkoutPlan
 import dev.danielkindl.ocho.ui.theme.phaseTheme
@@ -49,58 +45,32 @@ data class RunSegment(val phase: Phase, val millis: Long)
  *
  * @param segments in running order. Zero-length segments are dropped, since a
  *   zero-weight child would fail to lay out.
- * @param patternLabel a short description of the structure, e.g. `8 × (20s work / 10s rest)`.
- * @param totalMillis the session length, rendered as the end time.
  */
 @Composable
 fun RunTimeline(
     segments: List<RunSegment>,
-    patternLabel: String,
-    totalMillis: Long,
     modifier: Modifier = Modifier,
 ) {
     val dark = isSystemInDarkTheme()
     val drawable = segments.filter { it.millis > 0 }
     if (drawable.isEmpty()) return
 
-    Column(modifier = modifier.fillMaxWidth()) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(TIMELINE_HEIGHT),
-            horizontalArrangement = Arrangement.spacedBy(SEGMENT_GAP),
-        ) {
-            drawable.forEach { segment ->
-                androidx.compose.foundation.layout.Box(
-                    modifier = Modifier
-                        .weight(segment.millis.toFloat())
-                        .fillMaxHeight()
-                        .clip(SegmentShape)
-                        .background(phaseTheme(segment.phase, dark).plate)
-                )
-            }
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            TimelineCaption("0:00")
-            TimelineCaption(patternLabel)
-            TimelineCaption(totalMillis.formatElapsed())
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(TIMELINE_HEIGHT),
+        horizontalArrangement = Arrangement.spacedBy(SEGMENT_GAP),
+    ) {
+        drawable.forEach { segment ->
+            Box(
+                modifier = Modifier
+                    .weight(segment.millis.toFloat())
+                    .fillMaxHeight()
+                    .clip(SegmentShape)
+                    .background(phaseTheme(segment.phase, dark).plate)
+            )
         }
     }
-}
-
-@Composable
-private fun TimelineCaption(text: String) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.labelSmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-    )
 }
 
 /**

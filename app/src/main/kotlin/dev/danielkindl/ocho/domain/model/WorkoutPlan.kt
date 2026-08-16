@@ -92,6 +92,22 @@ fun SessionRequest.toPlan(): WorkoutPlan = when (this) {
         totalRounds = 0,
     )
 
+    is SessionRequest.Custom -> {
+        val segments = buildList {
+            repeat(config.setCount) { index ->
+                add(PlannedSegment(Phase.WORK, config.workMillis))
+                if (index < config.setCount - 1 && config.restMillis > 0) {
+                    add(PlannedSegment(Phase.REST, config.restMillis))
+                }
+            }
+        }
+        WorkoutPlan(
+            segments = segments,
+            totalDurationMillis = config.totalDurationMillis,
+            totalRounds = config.setCount,
+        )
+    }
+
     is SessionRequest.Tabata -> {
         val segments = config.alternatingPhases()
         WorkoutPlan(

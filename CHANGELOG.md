@@ -10,15 +10,15 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
-- **Play and GitHub distribution variants.** The Play build is an updater-free AAB
-  for manual Console upload; the GitHub build remains an APK with its GitHub
+- **Play and GitHub distribution variants.** The Play build is an AAB with Play's
+  flexible in-app update flow; the GitHub build remains an APK with its GitHub
   Releases updater. The project site and hosted privacy policy are now part of the
   repository.
 
 ### Changed
-- **Updater code is isolated to the GitHub flavor.** The Play artifact no longer
-  carries network or package-install permissions, updater components, or updater UI.
-  CI now tests and publishes the appropriate flavor-specific artifacts.
+- **Updater code is isolated by distribution.** The GitHub flavor retains its
+  release-APK installer, while the Play flavor carries only the Play-managed update
+  client and controls. CI now tests and publishes the appropriate artifacts.
 - **GitHub Pages publishes with releases.** The site is validated and deployed by a
   least-privilege job in `release.yml` after the tagged release succeeds.
 

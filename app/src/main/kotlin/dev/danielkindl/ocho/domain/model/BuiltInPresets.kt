@@ -86,4 +86,15 @@ val DEVICE_CHECK_PRESETS: List<WorkoutPreset> = listOf(
         totalSeconds = 0,
         builtIn = true,
     ),
+    WorkoutPreset(
+        id = "built-in-custom",
+        name = "Custom 3 × 10/5",
+        mode = WorkoutMode.CUSTOM,
+        totalMinutes = 0,
+        totalSeconds = 40,
+        setCount = 3,
+        workSeconds = 10,
+        restSeconds = 5,
+        builtIn = true,
+    ),
 )

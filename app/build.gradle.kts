@@ -190,6 +190,13 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.org.json)
 
+    androidTestImplementation(libs.compose.ui.test.junit4)
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.junit)
+
+    add("playImplementation", libs.play.app.update)
+
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.test.manifest)
 }

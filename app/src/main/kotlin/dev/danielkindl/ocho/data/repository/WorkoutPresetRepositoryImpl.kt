@@ -37,6 +37,7 @@ class WorkoutPresetRepositoryImpl @Inject constructor(
                 mode = WorkoutMode.valueOf(obj.getString("mode")),
                 totalMinutes = obj.getInt("totalMinutes"),
                 totalSeconds = obj.getInt("totalSeconds"),
+                setCount = obj.optInt("setCount"),
                 intervalMinutes = obj.optInt("intervalMinutes"),
                 intervalSeconds = obj.optInt("intervalSeconds"),
                 workMinutes = obj.optInt("workMinutes"),
@@ -51,6 +52,7 @@ class WorkoutPresetRepositoryImpl @Inject constructor(
             obj.put("mode", preset.mode.name)
             obj.put("totalMinutes", preset.totalMinutes)
             obj.put("totalSeconds", preset.totalSeconds)
+            obj.put("setCount", preset.setCount)
             obj.put("intervalMinutes", preset.intervalMinutes)
             obj.put("intervalSeconds", preset.intervalSeconds)
             obj.put("workMinutes", preset.workMinutes)
