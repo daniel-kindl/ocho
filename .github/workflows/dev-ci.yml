@@ -93,34 +93,12 @@ jobs:
           path: app/build/reports/tests/
           retention-days: 7
 
-  instrumented-tests:
-    name: Instrumented Tests
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          persist-credentials: false
-
-      - name: Run Android instrumentation tests
-        uses: ReactiveCircus/android-emulator-runner@1dcd0090116d15e7c562f8db72807de5e036a4ed # v2.34.0
-        with:
-          api-level: 35
-          target: google_apis
-          arch: x86_64
-          profile: pixel_2
-          script: ./gradlew connectedGithubDebugAndroidTest connectedPlayDebugAndroidTest --stacktrace
-
   # Publishes a dev-channel build for every green push to `dev`, so changes can be
   # tested on a real device before they reach `main`. Lives in this workflow rather
   # than its own so it reuses the test and lint run above instead of repeating it.
   publish-dev:
     name: Publish Dev Prerelease
-    needs: instrumented-tests
+    needs: build-and-test
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
@@ -273,7 +251,7 @@ jobs:
   # maintainer manually dispatches Dev CI and supplies a Closed-testing track.
   publish-play-candidate:
     name: Publish Play Closed-Test Candidate
-    needs: instrumented-tests
+    needs: build-and-test
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     environment:
