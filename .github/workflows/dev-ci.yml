@@ -112,7 +112,7 @@ jobs:
           api-level: 35
           target: google_apis
           arch: x86_64
-          profile: Pixel_2
+          profile: pixel_2
           script: ./gradlew connectedGithubDebugAndroidTest connectedPlayDebugAndroidTest --stacktrace
 
   # Publishes a dev-channel build for every green push to `dev`, so changes can be
