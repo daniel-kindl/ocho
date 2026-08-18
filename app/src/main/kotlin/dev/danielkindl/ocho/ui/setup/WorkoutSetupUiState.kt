@@ -7,9 +7,54 @@ import dev.danielkindl.ocho.domain.model.TabataConfig
 import dev.danielkindl.ocho.domain.model.TimerConfig
 import dev.danielkindl.ocho.domain.model.WorkoutMode
 import dev.danielkindl.ocho.domain.model.WorkoutPreset
-import dev.danielkindl.ocho.domain.model.formatDuration
+import dev.danielkindl.ocho.domain.model.limitPresetName
 import dev.danielkindl.ocho.domain.model.minutesSecondsToMillis
 import dev.danielkindl.ocho.domain.model.toPlan
+
+/** A duration value kept separate from its localized display text. */
+data class DurationValue(
+    /** Minutes component. */
+    val minutes: Int,
+    /** Seconds component. */
+    val seconds: Int,
+)
+
+/** Structured setup information that the UI can render in the current locale. */
+sealed interface WorkoutPattern {
+    /** EMOM interval and calculated round count. */
+    data class Emom(
+        /** Number of intervals in the workout. */
+        val rounds: Int,
+        /** Length of each interval. */
+        val interval: DurationValue,
+    ) : WorkoutPattern
+
+    /** Tabata work/rest cycle and calculated round count. */
+    data class Tabata(
+        /** Number of work phases in the workout. */
+        val rounds: Int,
+        /** Length of the work phase. */
+        val work: DurationValue,
+        /** Length of the rest phase. */
+        val rest: DurationValue,
+    ) : WorkoutPattern
+
+    /** AMRAP total duration. */
+    data class Amrap(
+        /** Total workout duration. */
+        val total: DurationValue,
+    ) : WorkoutPattern
+
+    /** Custom work/rest sets. A zero rest value means no rest is configured. */
+    data class Custom(
+        /** Number of work sets. */
+        val sets: Int,
+        /** Length of each work phase. */
+        val work: DurationValue,
+        /** Length of each rest phase. */
+        val rest: DurationValue,
+    ) : WorkoutPattern
+}
 
 /**
  * Picker state for every workout mode.
@@ -97,47 +142,27 @@ data class WorkoutSetupUiState(
     val roundCount: Int
         get() = if (isValid) toRequest().toPlan().totalRounds else 0
 
-    /** Structure summary for the run timeline. */
-    val patternLabel: String
+    /** Structured summary for the run timeline; wording is resolved by the UI. */
+    val pattern: WorkoutPattern
         get() = when (mode) {
-            WorkoutMode.EMOM ->
-                "$roundCount × ${formatDuration(intervalMinutes, intervalSeconds)}"
-
-            WorkoutMode.TABATA -> {
-                val work = formatDuration(workMinutes, workSeconds)
-                val rest = formatDuration(restMinutes, restSeconds)
-                "$roundCount × ($work work / $rest rest)"
-            }
-
-            WorkoutMode.AMRAP -> formatDuration(totalMinutes, totalSeconds)
-            WorkoutMode.CUSTOM -> {
-                val work = formatDuration(workMinutes, workSeconds)
-                val rest = formatDuration(restMinutes, restSeconds)
-                if (restMillis > 0) "$setCount × ($work work / $rest rest)" else "$setCount × $work work"
-            }
+            WorkoutMode.EMOM -> WorkoutPattern.Emom(
+                rounds = roundCount,
+                interval = DurationValue(intervalMinutes, intervalSeconds),
+            )
+            WorkoutMode.TABATA -> WorkoutPattern.Tabata(
+                rounds = roundCount,
+                work = DurationValue(workMinutes, workSeconds),
+                rest = DurationValue(restMinutes, restSeconds),
+            )
+            WorkoutMode.AMRAP -> WorkoutPattern.Amrap(
+                total = DurationValue(totalMinutes, totalSeconds),
+            )
+            WorkoutMode.CUSTOM -> WorkoutPattern.Custom(
+                sets = setCount,
+                work = DurationValue(workMinutes, workSeconds),
+                rest = DurationValue(restMinutes, restSeconds),
+            )
         }
-
-    /** Suggested preset name, used when the user leaves the field blank. */
-    fun defaultPresetName(): String {
-        val total = formatDuration(totalMinutes, totalSeconds)
-        return when (mode) {
-            WorkoutMode.EMOM ->
-                "$total / ${formatDuration(intervalMinutes, intervalSeconds)}"
-
-            WorkoutMode.TABATA -> {
-                val work = formatDuration(workMinutes, workSeconds)
-                val rest = formatDuration(restMinutes, restSeconds)
-                "$total / $work work / $rest rest"
-            }
-
-            WorkoutMode.AMRAP -> total
-            WorkoutMode.CUSTOM -> {
-                val work = formatDuration(workMinutes, workSeconds)
-                val rest = formatDuration(restMinutes, restSeconds)
-                if (restMillis > 0) "$setCount × $work work / $rest rest" else "$setCount × $work work"
-            }
-        }
-    }
 
     /**
      * Converts these picker values into the request the engines consume.
@@ -192,7 +217,7 @@ data class WorkoutSetupUiState(
     )
 
     /** Captures the current pickers as a saveable preset under [name] and [id]. */
-    fun toPreset(id: String, name: String): WorkoutPreset {
+    fun toPreset(id: String, name: String, fallbackName: String): WorkoutPreset {
         val (presetTotalMinutes, presetTotalSeconds) = if (mode == WorkoutMode.CUSTOM) {
             totalDurationMillis.toPickerMinutesSeconds()
         } else {
@@ -200,7 +225,7 @@ data class WorkoutSetupUiState(
         }
         return WorkoutPreset(
             id = id,
-            name = name.trim().ifEmpty { defaultPresetName() },
+            name = name.trim().limitPresetName().ifEmpty { fallbackName.limitPresetName() },
             mode = mode,
             totalMinutes = presetTotalMinutes,
             totalSeconds = presetTotalSeconds,

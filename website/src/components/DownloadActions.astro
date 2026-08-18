@@ -3,10 +3,12 @@ interface Props {
   class?: string;
 }
 
+import { siteCopy as copy } from '../i18n';
+
 const { class: className = 'download-actions' } = Astro.props;
 ---
 
 <div class={className}>
-  <span class="cta cta-primary" aria-label="Google Play coming soon"><span class="cta-copy"><strong>Google Play</strong><small>coming soon</small></span><span class="cta-mark" aria-hidden="true"></span></span>
-  <a class="cta cta-secondary" href="https://github.com/daniel-kindl/ocho/releases/latest"><span class="cta-copy"><strong>GitHub APK</strong><small>available now</small></span><span class="cta-arrow" aria-hidden="true">↗</span></a>
+  <span class="cta cta-primary" aria-label={copy.downloads.playAria}><span class="cta-copy"><strong>{copy.downloads.playName}</strong><small>{copy.downloads.playStatus}</small></span><span class="cta-mark" aria-hidden="true"></span></span>
+  <a class="cta cta-secondary" href="https://github.com/daniel-kindl/ocho/releases/latest" aria-label={copy.downloads.githubAria}><span class="cta-copy"><strong>{copy.downloads.githubName}</strong><small>{copy.downloads.githubStatus}</small></span><span class="cta-arrow" aria-hidden="true">↗</span></a>
 </div>

@@ -10,14 +10,20 @@ see the [README](../README.md).
 
 | Tool | Version |
 |------|---------|
-| Android Studio | Hedgehog 2023.1+ |
+| Android Gradle Plugin | 9.3.1 |
+| Kotlin | 2.4.10 |
+| Gradle wrapper | 9.7 |
 | JDK | 17 |
+| Compile SDK | 37 |
 | Min Android SDK | 26 (Android 8.0) |
 | Target SDK | 36 |
 
 ```bash
 ./gradlew check                            # tests + detekt + lint
+./gradlew testGithubDebugUnitTest          # GitHub flavor JVM tests
+./gradlew testPlayDebugUnitTest            # Play flavor JVM tests
 ./gradlew assembleGithubDebug              # GitHub debug APK
+./gradlew assemblePlayDebug                # Play debug APK
 ./gradlew assembleGithubDev -PdevBuildNumber=1 # GitHub dev-channel APK
 ./gradlew bundlePlayRelease                # signed Play AAB
 ./gradlew assembleGithubRelease            # signed GitHub APK
@@ -85,18 +91,35 @@ app/src/main/kotlin/dev/danielkindl/ocho/       # shared source
     └── theme/          Colour ramp, three-typeface system, Material 3 scale
 
 app/src/github/                                     # GitHub-only source
-├── data/update/        GitHub Releases API, DownloadManager, PackageInstaller
+├── data/update/        GitHub Releases API, strict asset policy, persisted downloads,
+│                       DownloadManager, PackageInstaller
 ├── domain/model/       Update models and semantic-version comparison
 ├── domain/repository/  Update repository interface
 ├── di/                 GitHub updater bindings and startup check
 └── ui/settings/        GitHub updater controls
 
 app/src/play/                                       # Play-only source
-├── data/update/        Play Store in-app update coordinator
+├── data/update/        Play Store in-app update coordinator and testable Play adapter
 ├── di/                 Play update startup binding
 ├── ui/home/            Non-blocking Play update banner
 └── ui/settings/        Play-managed update controls
 ```
+
+---
+
+## Localization boundary
+
+The app is English-only today, but user-facing Android copy is kept in
+`app/src/main/res/values/strings.xml` and the generated locale configuration declares
+English as the default. Compose resolves text with `stringResource()` and quantity
+aware `pluralStringResource()`; services and receivers use `Context.getString()`.
+Setup and preset models expose structured durations and patterns rather than English
+labels, so future translations do not require changes to timing or persistence code.
+
+The Astro website follows the same boundary in `website/src/i18n/en.ts`, with shared
+access through `website/src/i18n/index.ts`. The repository's localization workflow,
+including how to add a second locale, is documented in
+[docs/LOCALIZATION.md](LOCALIZATION.md).
 
 ---
 
@@ -135,7 +158,14 @@ Above the session layer there is one of everything: one setup screen and state, 
 session screen, one preset type and one preset store. Modes differ only in which
 duration fields they use, so a screen per mode meant copying validation, preset
 handling and session rendering for each one. Adding AMRAP under that arrangement would
-have cost roughly 300 lines of near-identical code; it cost an adapter and a card.
+have cost roughly 300 lines of near-identical code; it cost an adapter and a reusable
+preset row.
+
+`PresetsSection` is shared by every mode. It receives a label and a mode-specific
+summary, then renders compact, full-row load targets with a separate 48dp delete
+action. Names are capped at 50 Unicode code points in the save dialog and again at
+the `WorkoutSetupUiState.toPreset` boundary, so UI input and programmatic saves have
+the same storage contract.
 
 The mode travels as a navigation argument rather than as a destination, which is why
 there are two routes rather than six:
@@ -233,10 +263,12 @@ This keeps the anchoring intact across any number of pauses.
 
 ## Testing and coverage
 
-`domain/` and `data/` carry the unit tests, because they carry the logic. Composables
-and view models are thin by design and verified by reading. End-to-end checks use the
-documented Pixel 9a AVD when it is available; on the development machine its startup
-can take two minutes or more.
+`domain/` and `data/` carry the unit tests, because they carry the logic. The updater
+also tests persisted download restoration, trusted asset selection, package identity,
+and both distribution-specific update state machines. Compose instrumentation tests
+cover Settings and Workout Setup semantics and accessibility. End-to-end checks use
+the configured Pixel 9a AVD; on the development machine its startup can take two
+minutes or more.
 
 `./gradlew koverLogGithubDebug` prints line coverage per package. Coverage is reported and
 never gated, in CI or locally. A percentage is easy to move by writing tests that

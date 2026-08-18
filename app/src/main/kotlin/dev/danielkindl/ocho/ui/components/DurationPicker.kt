@@ -10,7 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.danielkindl.ocho.R
 
 /**
  * MM:SS duration picker using a drum-roll scroll wheel.
@@ -45,11 +47,11 @@ fun DurationPicker(
                     onSelect = onMinutesChange,
                     itemHeight = if (compact) 32.dp else 44.dp,
                     pickerWidth = if (compact) 54.dp else 80.dp,
-                    contentDescription = "$label minutes",
+                    contentDescription = stringResource(R.string.duration_picker_minutes, label),
                 )
                 Spacer(Modifier.height(if (compact) 2.dp else 4.dp))
                 Text(
-                    text = "min",
+                    text = stringResource(R.string.duration_minutes_short),
                     style = if (compact) MaterialTheme.typography.labelMedium
                     else MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -69,11 +71,11 @@ fun DurationPicker(
                     onSelect = onSecondsChange,
                     itemHeight = if (compact) 32.dp else 44.dp,
                     pickerWidth = if (compact) 54.dp else 80.dp,
-                    contentDescription = "$label seconds",
+                    contentDescription = stringResource(R.string.duration_picker_seconds, label),
                 )
                 Spacer(Modifier.height(if (compact) 2.dp else 4.dp))
                 Text(
-                    text = "sec",
+                    text = stringResource(R.string.duration_seconds_short),
                     style = if (compact) MaterialTheme.typography.labelMedium
                     else MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,

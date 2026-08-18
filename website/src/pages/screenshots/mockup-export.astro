@@ -1,8 +1,11 @@
+---
+import { siteCopy as copy } from '../../i18n';
+---
 <!doctype html>
-<html lang="en">
+<html lang={copy.locale}>
 <head>
   <meta charset="utf-8">
-  <title>Ocho phone mockup export</title>
+  <title>{copy.tools.mockupExportTitle}</title>
   <style>
     :root {
       --work: #b3282d;
@@ -46,7 +49,7 @@
   </style>
 </head>
 <body>
-  <main class="canvas">
+    <main class="canvas" data-screen-alt-prefix={copy.tools.mockupScreenAltPrefix}>
     <div id="phone" class="phone-shell">
       <div class="phone-speaker" aria-hidden="true"></div>
       <div id="screen" class="phone-screen"><img id="screen-image" alt=""></div>
@@ -56,12 +59,16 @@
   <script>
     const screens = {
       home: "v3/home.png",
-      "emom-setup": "v3/emom-setup.png",
+      "emom-setup": "v4/emom-presets.png",
       prepare: "v3/prepare.png",
       "emom-work": "v3/emom-work.png",
       "emom-paused": "v3/emom-paused.png",
-      "tabata-setup": "v3/tabata-setup.png",
+      "tabata-setup": "v4/tabata-presets.png",
       "custom-setup": "v3/custom-setup.png",
+      presets: "v4/emom-presets.png",
+      "tabata-presets": "v4/tabata-presets.png",
+      "amrap-presets": "v4/amrap-presets.png",
+      "custom-presets": "v4/custom-presets.png",
       "tabata-work": "v3/tabata-work.png",
       "tabata-rest": "v3/tabata-rest.png",
       finish: "v3/finish.png"
@@ -72,7 +79,8 @@
     document.getElementById("phone").classList.add(styleKey);
     document.getElementById("screen").classList.add(styleKey);
     document.getElementById("screen-image").src = screens[selected];
-    document.getElementById("screen-image").alt = `Ocho ${selected} screen`;
+    const altPrefix = document.querySelector('.canvas').dataset.screenAltPrefix;
+    document.getElementById("screen-image").alt = `${altPrefix}${selected} screen`;
   </script>
 </body>
 </html>

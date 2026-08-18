@@ -3,6 +3,8 @@ package dev.danielkindl.ocho.ui.settings
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertIsToggleable
 import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isHeading
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -91,6 +93,16 @@ class SettingsAccessibilityTest {
         composeRule.onNodeWithText("Privacy Policy").performClick()
 
         assertEquals(listOf("feedback", "licences", "privacy"), actions)
+    }
+
+    @Test
+    fun extractedSettingsSectionsRemainVisibleAsHeadings() {
+        setSettings()
+
+        composeRule.onNode(hasText("Workout") and isHeading()).assertExists()
+        composeRule.onNode(hasText("Notifications") and isHeading()).assertExists()
+        composeRule.onNode(hasText("Updates") and isHeading()).assertExists()
+        composeRule.onNode(hasText("About") and isHeading()).assertExists()
     }
 
     @Test

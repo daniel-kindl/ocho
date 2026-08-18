@@ -11,9 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.danielkindl.ocho.R
 import dev.danielkindl.ocho.ui.components.ErrorPlate
 import dev.danielkindl.ocho.ui.components.SessionProgressBar
 
@@ -26,37 +28,51 @@ fun DistributionUpdateSection(
     val context = LocalContext.current
     when (val currentState = state) {
         is UpdateUiState.Idle, is UpdateUiState.UpToDate -> ListItem(
-            headlineContent = { Text("Check for updates") },
+            headlineContent = { Text(stringResource(R.string.update_check_for_updates)) },
             supportingContent = if (state is UpdateUiState.UpToDate) {
-                { Text("You're up to date", style = MaterialTheme.typography.bodyMedium) }
+                { Text(stringResource(R.string.update_up_to_date), style = MaterialTheme.typography.bodyMedium) }
             } else null,
-            trailingContent = { TextButton(onClick = updateViewModel::checkForUpdates) { Text("Check") } },
+            trailingContent = {
+                TextButton(onClick = updateViewModel::checkForUpdates) {
+                    Text(stringResource(R.string.update_check))
+                }
+            },
         )
         is UpdateUiState.Checking -> ListItem(
-            headlineContent = { Text("Checking for updates…") },
+            headlineContent = { Text(stringResource(R.string.update_checking)) },
             trailingContent = { CircularProgressIndicator() },
         )
         is UpdateUiState.Available -> ListItem(
-            headlineContent = { Text("Update available: ${currentState.update.tagName}") },
+            headlineContent = {
+                Text(stringResource(R.string.update_available_github, currentState.update.tagName))
+            },
             supportingContent = { Text(currentState.update.releaseNotes, style = MaterialTheme.typography.bodyMedium) },
-            trailingContent = { Button(onClick = updateViewModel::startDownload) { Text("Download") } },
+            trailingContent = {
+                Button(onClick = updateViewModel::startDownload) {
+                    Text(stringResource(R.string.update_download))
+                }
+            },
         )
         is UpdateUiState.Downloading -> ListItem(
-            headlineContent = { Text("Downloading update… ${currentState.progressPercent}%") },
+            headlineContent = {
+                Text(stringResource(R.string.update_downloading, currentState.progressPercent))
+            },
             supportingContent = { SessionProgressBar(progress = currentState.progressPercent / 100f) },
         )
         is UpdateUiState.ReadyToInstall -> ListItem(
-            headlineContent = { Text("Update ${currentState.update.tagName} ready to install") },
+            headlineContent = {
+                Text(stringResource(R.string.update_ready_github, currentState.update.tagName))
+            },
             trailingContent = {
                 Button(onClick = {
                     if (updateViewModel.canInstallPackages()) updateViewModel.startInstall()
                     else context.startActivity(updateViewModel.unknownSourcesSettingsIntent())
-                }) { Text("Install") }
+                }) { Text(stringResource(R.string.update_install)) }
             },
         )
         is UpdateUiState.Error -> ErrorPlate(
             message = currentState.message,
-            actionLabel = "Try again",
+            actionLabel = stringResource(R.string.update_try_again),
             onAction = updateViewModel::checkForUpdates,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
         )

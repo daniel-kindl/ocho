@@ -1,53 +1,52 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { withBase } from '../utils/paths';
+import { siteCopy as copy } from '../i18n';
 
 const homeHref = withBase('');
 ---
 
 <BaseLayout
-  title="Ocho — privacy policy"
-  description="Ocho privacy policy: an offline-first Android interval timer with no accounts, analytics, or cloud workout synchronisation."
+  title={copy.meta.privacyTitle}
+  description={copy.meta.privacyDescription}
   currentPage="privacy"
   type="article"
 >
     <section class="policy-section" aria-labelledby="policy-title">
       <div class="page policy-layout">
         <div class="policy-intro">
-          <p class="eyebrow"><span>OCHO / 05</span><span>PRIVACY</span></p>
-          <h1 id="policy-title">Privacy policy</h1>
-          <p class="policy-lede">Ocho is an offline-first workout timer. Your sessions stay on your device, with no account or feed between you and the work.</p>
+          <p class="eyebrow"><span>{copy.privacy.eyebrow}</span><span>{copy.privacy.category}</span></p>
+          <h1 id="policy-title">{copy.privacy.title}</h1>
+          <p class="policy-lede">{copy.privacy.lede}</p>
           <div class="policy-intro-meta">
-            <span>Last updated: 2026-08-12</span>
-            <a class="text-link" href={homeHref}>← Back to Ocho</a>
+            <span>{copy.privacy.lastUpdated}</span>
+            <a class="text-link" href={homeHref}>{copy.privacy.back}</a>
           </div>
         </div>
 
         <article class="policy-article">
           <div class="policy-summary">
-            <p class="policy-summary-label">In short</p>
-            <p class="policy-lead">The verified source contains no personal-data collection, analytics, crash reporting, advertising, accounts, or cloud workout synchronisation.</p>
+            <p class="policy-summary-label">{copy.privacy.summaryLabel}</p>
+            <p class="policy-lead">{copy.privacy.summaryLead}</p>
             <div class="policy-summary-points">
-              <span><strong>Local only</strong><small>settings stay on-device</small></span>
-              <span><strong>No tracking</strong><small>no analytics or ads</small></span>
-              <span><strong>Open source</strong><small>code and policy are public</small></span>
+              {copy.privacy.summaryPoints.map((point) => <span><strong>{point.title}</strong><small>{point.detail}</small></span>)}
             </div>
           </div>
 
-          <h2><span>01</span><span class="policy-heading">Local data</span></h2>
-          <p>Workout settings and saved workout presets are stored locally in Android DataStore preferences. Ocho does not upload them.</p>
+          <h2><span>{copy.privacy.sections[0].number}</span><span class="policy-heading">{copy.privacy.sections[0].title}</span></h2>
+          {copy.privacy.sections[0].paragraphs.map((paragraph) => <p>{paragraph}</p>)}
 
-          <h2><span>02</span><span class="policy-heading">Permissions and network access</span></h2>
-          <p>Both variants use vibration, foreground-service, wake-lock, and notification permissions for reliable interval timing. The Play build has no network or package-install permission; Play itself manages its optional in-app update flow, and Ocho does not download or install an APK.</p>
-          <p>The GitHub build additionally checks the public GitHub Releases API and uses Android DownloadManager to fetch a release APK. It requests <code>REQUEST_INSTALL_PACKAGES</code> so the user can manually start an install; Android still requires the user to allow unknown-app installation. It does not silently install updates.</p>
+          <h2><span>{copy.privacy.sections[1].number}</span><span class="policy-heading">{copy.privacy.sections[1].title}</span></h2>
+          <p>{copy.privacy.sections[1].paragraphs[0]}</p>
+          <p>{copy.privacy.sections[1].paragraphs[1].split('REQUEST_INSTALL_PACKAGES')[0]}<code>REQUEST_INSTALL_PACKAGES</code>{copy.privacy.sections[1].paragraphs[1].split('REQUEST_INSTALL_PACKAGES')[1]}</p>
 
-          <h2><span>03</span><span class="policy-heading">Licenses</span></h2>
-          <p>Ocho's own source is GPLv3. Third-party fonts, icons, and libraries retain their separate licenses. Read the <a href="https://github.com/daniel-kindl/ocho/blob/main/LICENSE">GPLv3 license</a> and <a href="https://github.com/daniel-kindl/ocho/blob/main/THIRD-PARTY-NOTICES.md">third-party notices</a>.</p>
+          <h2><span>{copy.privacy.sections[2].number}</span><span class="policy-heading">{copy.privacy.sections[2].title}</span></h2>
+          <p>{copy.privacy.licenseLead} <a href="https://github.com/daniel-kindl/ocho/blob/main/LICENSE">{copy.privacy.gplLicense}</a> {copy.privacy.licenseJoin} <a href="https://github.com/daniel-kindl/ocho/blob/main/THIRD-PARTY-NOTICES.md">{copy.privacy.thirdPartyNotices}</a>.</p>
 
-          <h2><span>04</span><span class="policy-heading">Contact</span></h2>
-          <p>For support, email <a href="mailto:support@danielkindl.dev">support@danielkindl.dev</a> or use the verified <a href="https://github.com/daniel-kindl/ocho/issues">Ocho issue tracker</a>.</p>
+          <h2><span>{copy.privacy.sections[3].number}</span><span class="policy-heading">{copy.privacy.sections[3].title}</span></h2>
+          <p>{copy.privacy.contactLead} <a href="mailto:support@daniel-kindl.dev">{copy.privacy.email}</a> {copy.privacy.contactJoin} <a href="https://github.com/daniel-kindl/ocho/issues">{copy.privacy.issueTracker}</a>.</p>
 
-          <p class="policy-source"><a href="https://github.com/daniel-kindl/ocho/blob/main/docs/PRIVACY_POLICY.md">View the source policy in the repository <span aria-hidden="true">↗</span></a></p>
+          <p class="policy-source"><a href="https://github.com/daniel-kindl/ocho/blob/main/docs/PRIVACY_POLICY.md">{copy.privacy.source} <span aria-hidden="true">↗</span></a></p>
         </article>
       </div>
     </section>

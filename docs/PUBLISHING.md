@@ -5,7 +5,7 @@ The commands below are run from the repository root with JDK 17:
 
 ```bash
 ./gradlew check
-./gradlew test
+./gradlew testGithubDebugUnitTest testPlayDebugUnitTest
 ./gradlew lintPlayRelease
 ./gradlew lintGithubRelease
 ./gradlew bundlePlayRelease
@@ -14,10 +14,9 @@ The commands below are run from the repository root with JDK 17:
 
 ## Distribution variants
 
-The `distribution` flavor dimension contains `play` and `github`. Both release
-variants use application ID `dev.danielkindl.ocho`, version name `3.6.0`, and version
-code 15 in this revision. The version code must increase for every published update;
-the previous GitHub release used version code 14.
+The `distribution` flavor dimension contains `play` and `github`. Release version name
+and version code are defined in `app/build.gradle.kts`; release tags must match the
+version name and version codes must increase for every published update.
 
 The flavor/build-type application IDs are:
 
@@ -151,7 +150,7 @@ explicitly before CI can upload a production draft.
 ## GitHub Releases
 
 The existing release workflow continues to publish the GitHub APK manually through a
-draft GitHub Release. It validates the tag, runs the GitHub unit tests, signs
+draft GitHub Release. It validates the tag, runs both flavor unit-test suites, signs
 `assembleGithubRelease` with CI-provided secrets, computes a checksum, publishes
 build provenance, and publishes the APK. It does not publish to Google Play.
 
@@ -180,8 +179,9 @@ Then open the development URL shown by Astro. The expected project Pages URL is:
 
 `https://daniel-kindl.github.io/ocho/`
 
-The `pages.yml` workflow builds `website/` and deploys `website/dist/` after every
-push to `main`. The Android release workflow does not deploy the website. In
+The `pages.yml` workflow validates website changes in pull requests and builds and
+deploys `website/dist/` after every push to `main`. The Android release workflow does
+not deploy the website. In
 repository settings, the maintainer must enable Pages with **Source: GitHub Actions**
 if it is not already enabled. The workflow cannot change that repository setting.
 The Google Play CTA intentionally remains “Google Play coming soon” until a real

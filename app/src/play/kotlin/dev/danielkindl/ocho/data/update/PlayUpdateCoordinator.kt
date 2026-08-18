@@ -4,14 +4,13 @@ import android.content.Context
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import com.google.android.play.core.appupdate.AppUpdateInfo
-import com.google.android.play.core.appupdate.AppUpdateManager
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.danielkindl.ocho.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -57,9 +56,9 @@ sealed interface PlayUpdateState {
  */
 @Singleton
 class PlayUpdateCoordinator @Inject constructor(
-    @ApplicationContext context: Context,
+    @ApplicationContext private val context: Context,
+    private val updateClient: PlayUpdateClient,
 ) {
-    private val updateManager: AppUpdateManager = AppUpdateManagerFactory.create(context)
     private val _state = MutableStateFlow<PlayUpdateState>(PlayUpdateState.Idle)
     private var availableInfo: AppUpdateInfo? = null
 
@@ -72,14 +71,20 @@ class PlayUpdateCoordinator @Inject constructor(
             InstallStatus.DOWNLOADING -> {
                 val total = installState.totalBytesToDownload()
                 val downloaded = installState.bytesDownloaded()
-                val progress = if (total > 0) (downloaded * 100 / total).toInt() else 0
+                val progress = if (total > 0) {
+                    (downloaded * 100 / total).toInt().coerceIn(0, 100)
+                } else {
+                    0
+                }
                 _state.value = PlayUpdateState.Downloading(progress)
             }
 
             InstallStatus.DOWNLOADED -> _state.value = PlayUpdateState.Downloaded
             InstallStatus.INSTALLED -> _state.value = PlayUpdateState.UpToDate
             InstallStatus.CANCELED -> _state.value = PlayUpdateState.Idle
-            InstallStatus.FAILED -> _state.value = PlayUpdateState.Error("Play update failed")
+            InstallStatus.FAILED -> _state.value = PlayUpdateState.Error(
+                context.getString(R.string.update_play_failed),
+            )
             InstallStatus.PENDING,
             InstallStatus.INSTALLING,
             InstallStatus.REQUIRES_UI_INTENT,
@@ -88,13 +93,13 @@ class PlayUpdateCoordinator @Inject constructor(
     }
 
     init {
-        updateManager.registerListener(installListener)
+        updateClient.registerListener(installListener)
     }
 
     /** Checks Play once without showing UI or interrupting the current screen. */
     fun checkForUpdates() {
         _state.value = PlayUpdateState.Checking
-        updateManager.appUpdateInfo
+        updateClient.appUpdateInfo
             .addOnSuccessListener { info ->
                 availableInfo = info.takeIf {
                     it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
@@ -107,7 +112,9 @@ class PlayUpdateCoordinator @Inject constructor(
                 }
             }
             .addOnFailureListener { error ->
-                _state.value = PlayUpdateState.Error(error.message ?: "Play update check failed")
+                _state.value = PlayUpdateState.Error(
+                    error.message ?: context.getString(R.string.update_play_check_failed),
+                )
             }
     }
 
@@ -116,7 +123,7 @@ class PlayUpdateCoordinator @Inject constructor(
         launcher: ActivityResultLauncher<IntentSenderRequest>,
     ) {
         val info = availableInfo ?: return
-        updateManager.startUpdateFlowForResult(
+        updateClient.startUpdateFlowForResult(
             info,
             launcher,
             AppUpdateOptions.newBuilder(AppUpdateType.FLEXIBLE).build(),
@@ -125,6 +132,6 @@ class PlayUpdateCoordinator @Inject constructor(
 
     /** Asks Play to install a downloaded flexible update and restart the app. */
     fun completeUpdate() {
-        updateManager.completeUpdate()
+        updateClient.completeUpdate()
     }
 }

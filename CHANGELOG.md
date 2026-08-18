@@ -9,6 +9,26 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Security
+- Harden the GitHub updater with strict official-asset validation, persisted download
+  recovery, app-owned APK cleanup, and package identity checks before installation.
+- Pin GitHub Actions, reduce workflow permissions, disable checkout credentials, and
+  add CodeQL coverage for workflow files.
+
+### Internal
+- Refactor Settings and Workout Setup composition into focused sections with expanded
+  JVM and Compose instrumentation coverage.
+- Refresh project, publishing, testing, and website documentation.
+
+### Changed
+- **Preset presentation.** Presets now use compact two-line rows with mode-aware
+  summaries for EMOM, Tabata, AMRAP, and Custom Timer, while keeping the delete
+  action independently accessible.
+- **Preset name safety.** Preset names are capped at 50 Unicode code points with a
+  live counter and safe truncation that does not split emoji or surrogate pairs.
+- **Preset documentation and visuals.** README, site content, phone mockups, and
+  store screenshots now reflect the current preset layout.
+
 ---
 
 ## [3.6.0] - 2026-08-16
@@ -31,8 +51,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - **Updater code is isolated by distribution.** The GitHub flavor retains its
   release-APK installer, while the Play flavor carries only the Play-managed update
   client and controls. CI now tests and publishes the appropriate artifacts.
-- **GitHub Pages publishes with releases.** The site is validated and deployed by a
-  least-privilege job in `release.yml` after the tagged release succeeds.
+- **GitHub Pages deployment.** The site is validated and deployed by a
+  least-privilege job in `pages.yml` after pushes to `main`.
 
 ---
 

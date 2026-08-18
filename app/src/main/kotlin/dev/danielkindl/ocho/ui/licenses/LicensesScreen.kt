@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.danielkindl.ocho.R
 
@@ -45,10 +46,13 @@ fun LicensesScreen(onNavigateUp: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Licences") },
+                title = { Text(stringResource(R.string.settings_licences)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateUp) {
-                        Icon(painterResource(R.drawable.ic_arrow_left), contentDescription = "Back")
+                        Icon(
+                            painterResource(R.drawable.ic_arrow_left),
+                            contentDescription = stringResource(R.string.action_back),
+                        )
                     }
                 },
             )

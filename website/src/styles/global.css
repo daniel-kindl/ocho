@@ -162,6 +162,15 @@ h3 { margin: 0; font-size: 1.35rem; }
 .setup-visual figcaption span, .home-visual figcaption span { display: inline-flex; align-items: center; gap: .35rem; }
 .setup-visual figcaption .icon { width: .9rem; height: .9rem; color: var(--green-bright); }
 
+.presets-section { background: var(--bg-soft); }
+.presets-section .signal-notes { margin-top: 2.5rem; }
+.presets-visual { max-width: 470px; margin: 0 auto; }
+.presets-visual > .phone-shell { width: min(300px, 70%); margin: 0 auto; }
+.presets-visual figcaption { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1rem; color: var(--muted); font-family: var(--mono); font-size: .64rem; text-transform: uppercase; }
+.presets-visual figcaption span { display: inline-flex; align-items: center; gap: .35rem; }
+.presets-visual figcaption span:first-child { color: var(--ink); }
+.presets-visual figcaption .icon { width: .9rem; height: .9rem; color: var(--green-bright); }
+
 .modes-section { background: var(--bg-soft); color: var(--ink); }
 .modes-section .eyebrow { color: var(--green-bright); }
 .modes-section .eyebrow span:first-child { color: var(--muted); }
@@ -294,6 +303,7 @@ code { padding: .1rem .3rem; border-radius: 3px; background: var(--panel); color
   .signal-label:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
   .section { padding: 6rem 0; }
   .setup-visual { margin: 4rem auto 0; }
+  .presets-visual { margin: 4rem auto 0; }
   .screen-pair { gap: .75rem; }
   .mode-gallery { grid-template-columns: 1fr; gap: 2rem; }
   .mode-phone-row { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; }

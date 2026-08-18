@@ -3,6 +3,7 @@ import '../styles/global.css';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import { withBase } from '../utils/paths';
+import { siteCopy as copy } from '../i18n';
 
 interface Props {
   title: string;
@@ -14,10 +15,13 @@ interface Props {
 const { title, description, currentPage = 'home', type = 'website' } = Astro.props;
 const canonicalPath = Astro.url.pathname.replace(/\/index\.html$/, '/');
 const canonicalUrl = Astro.site ? new URL(canonicalPath, Astro.site) : new URL(canonicalPath, Astro.url);
+const socialImageUrl = Astro.site
+  ? new URL(withBase('favicon.png'), Astro.site)
+  : new URL(withBase('favicon.png'), Astro.url);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={copy.locale}>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -31,9 +35,11 @@ const canonicalUrl = Astro.site ? new URL(canonicalPath, Astro.site) : new URL(c
     <meta property="og:title" content={title}>
     <meta property="og:description" content={description}>
     <meta property="og:url" content={canonicalUrl.href}>
+    <meta property="og:image" content={socialImageUrl.href}>
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content={title}>
     <meta name="twitter:description" content={description}>
+    <meta name="twitter:image" content={socialImageUrl.href}>
   </head>
   <body>
     <SiteHeader currentPage={currentPage} />

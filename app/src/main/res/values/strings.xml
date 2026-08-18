@@ -23,4 +23,174 @@
     <string name="settings_notifications_allowed">Allowed. Tap to manage access.</string>
     <string name="settings_notifications_blocked">Allow active workout notifications.</string>
     <string name="settings_notifications_status_allowed">Allowed</string>
+
+    <!-- Shared navigation and actions -->
+    <string name="action_back">Back</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_done">Done</string>
+    <string name="action_pause">Pause</string>
+    <string name="action_resume">Resume</string>
+    <string name="action_save">Save</string>
+    <string name="action_start">Start</string>
+    <string name="action_stop">Stop</string>
+    <string name="accessibility_settings">Settings</string>
+
+    <!-- Home -->
+    <string name="home_choose_timer">Choose a timer</string>
+    <string name="mode_emom_title">EMOM</string>
+    <string name="mode_emom_subtitle">Every minute on the minute</string>
+    <string name="mode_emom_description">Repeat a timed interval with a beep at each minute.</string>
+    <string name="mode_tabata_title">Tabata</string>
+    <string name="mode_tabata_subtitle">Alternating work and rest</string>
+    <string name="mode_tabata_description">Work and rest phases alternate, each with its own colour and beep.</string>
+    <string name="mode_amrap_title">AMRAP</string>
+    <string name="mode_amrap_subtitle">As many rounds as possible</string>
+    <string name="mode_amrap_description">One unbroken block with no interval beeps, counting down to the finish.</string>
+    <string name="mode_custom_title">Custom Timer</string>
+    <string name="mode_custom_subtitle">Custom sets and intervals</string>
+    <string name="mode_custom_description">Set your own rounds, work time, and rest time.</string>
+
+    <!-- Setup and picker labels -->
+    <string name="setup_back">Back</string>
+    <string name="setup_total">Total</string>
+    <string name="setup_interval">Interval</string>
+    <string name="setup_total_duration">Total duration</string>
+    <string name="setup_work">Work</string>
+    <string name="setup_rest">Rest</string>
+    <string name="setup_sets">Sets</string>
+    <string name="setup_sets_unit">sets</string>
+    <string name="setup_interval_error">The interval is longer than the total duration, so no interval beeps will fire. Shorten the interval or lengthen the workout.</string>
+    <string name="duration_picker_value">Value picker</string>
+    <string name="duration_picker_minutes">%1$s minutes</string>
+    <string name="duration_picker_seconds">%1$s seconds</string>
+    <string name="duration_minutes_short">min</string>
+    <string name="duration_seconds_short">sec</string>
+    <plurals name="duration_minutes">
+        <item quantity="one">%1$dmin</item>
+        <item quantity="other">%1$dmin</item>
+    </plurals>
+    <plurals name="duration_seconds">
+        <item quantity="one">%1$ds</item>
+        <item quantity="other">%1$ds</item>
+    </plurals>
+
+    <!-- Setup summaries and generated preset names -->
+    <string name="pattern_emom">%1$d × %2$s</string>
+    <string name="pattern_tabata">%1$d × (%2$s work / %3$s rest)</string>
+    <string name="pattern_amrap">%1$s</string>
+    <string name="pattern_custom_with_rest">%1$d × (%2$s work / %3$s rest)</string>
+    <string name="pattern_custom_without_rest">%1$d × %2$s work</string>
+    <string name="preset_default_emom">%1$s / %2$s</string>
+    <string name="preset_default_tabata">%1$s / %2$s work / %3$s rest</string>
+    <string name="preset_default_amrap">%1$s</string>
+    <string name="preset_default_custom_with_rest">%1$d × %2$s work / %3$s rest</string>
+    <string name="preset_default_custom_without_rest">%1$d × %2$s work</string>
+    <string name="preset_summary_emom">%1$s total · every %2$s</string>
+    <string name="preset_summary_tabata">%1$s total · %2$s work · %3$s rest</string>
+    <string name="preset_summary_amrap">%1$s total</string>
+    <string name="preset_summary_custom_with_rest">%1$d sets · %2$s work · %3$s rest</string>
+    <string name="preset_summary_custom_without_rest">%1$d sets · %2$s work</string>
+
+    <!-- Presets -->
+    <string name="presets_title">Presets</string>
+    <string name="presets_empty">No saved presets yet. Save this workout to use it again.</string>
+    <string name="preset_load_accessibility">Load preset %1$s</string>
+    <string name="preset_delete_accessibility">Delete %1$s</string>
+    <string name="preset_save_title">Save Preset</string>
+    <string name="preset_name_label">Preset name</string>
+    <string name="preset_name_counter">%1$d / %2$d</string>
+    <string name="preset_delete_title">Delete Preset</string>
+    <string name="preset_delete_message">Delete "%1$s"?</string>
+
+    <!-- Session -->
+    <string name="phase_prepare">Prepare</string>
+    <string name="phase_work">Work</string>
+    <string name="phase_rest">Rest</string>
+    <string name="phase_complete">Complete</string>
+    <string name="phase_paused">%1$s · paused</string>
+    <string name="session_progress">%1$s %2$d/%3$d</string>
+    <string name="session_round_unit">round</string>
+    <string name="session_set_unit">set</string>
+    <plurals name="session_round_count">
+        <item quantity="one">%1$d round</item>
+        <item quantity="other">%1$d rounds</item>
+    </plurals>
+    <plurals name="session_set_count">
+        <item quantity="one">%1$d set</item>
+        <item quantity="other">%1$d sets</item>
+    </plurals>
+    <string name="exit_workout_title">Exit workout?</string>
+    <string name="exit_workout_message">Your progress in this session will be lost.</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_group_workout">Workout</string>
+    <string name="settings_group_updates">Updates</string>
+    <string name="settings_group_about">About</string>
+    <string name="settings_sound">Sound</string>
+    <string name="settings_sound_description">Timer event beeps · alarm volume · ignores silent mode</string>
+    <string name="settings_vibration">Vibration</string>
+    <string name="settings_vibration_description">Timer event vibrations</string>
+    <string name="settings_countdown_beeps">Countdown beeps</string>
+    <string name="settings_countdown_beeps_description">Last 3 seconds of each interval</string>
+    <string name="settings_allow">Allow</string>
+    <string name="settings_allow_notifications_accessibility">Allow notifications</string>
+    <string name="settings_manage_notifications_accessibility">Manage notification access</string>
+    <string name="settings_allowed_state">Allowed</string>
+    <string name="settings_not_allowed_state">Not allowed</string>
+    <string name="settings_feedback">Feedback</string>
+    <string name="settings_feedback_description">Send feedback or report an issue</string>
+    <string name="settings_open_feedback">Open feedback</string>
+    <string name="settings_licences">Licences</string>
+    <string name="settings_licences_description">Open-source notices</string>
+    <string name="settings_open_licences">Open licences</string>
+    <string name="settings_privacy_policy">Privacy Policy</string>
+    <string name="settings_privacy_policy_description">How Ocho handles data</string>
+    <string name="settings_open_privacy_policy">Open privacy policy</string>
+    <string name="settings_made_by">Made by </string>
+    <string name="settings_version">v%1$s</string>
+    <string name="settings_logo_accessibility">Ocho</string>
+    <string name="feedback_subject">Ocho feedback (v%1$s)</string>
+    <string name="feedback_body">Please describe your feedback or issue here.\n\nOcho version: %1$s</string>
+
+    <!-- Updates -->
+    <string name="update_check_for_updates">Check for updates</string>
+    <string name="update_check">Check</string>
+    <string name="update_up_to_date">You are up to date</string>
+    <string name="update_checking">Checking for updates…</string>
+    <string name="update_checking_play_store">Checking Play Store…</string>
+    <string name="update_available">Update available</string>
+    <string name="update_action">Update</string>
+    <string name="update_available_github">Update available: %1$s</string>
+    <string name="update_download">Download</string>
+    <string name="update_downloading">Downloading update… %1$d%%</string>
+    <string name="update_downloading_play">Downloading Play update… %1$d%%</string>
+    <string name="update_ready">Update ready</string>
+    <string name="update_ready_github">Update %1$s ready to install</string>
+    <string name="update_install">Install</string>
+    <string name="update_restart">Restart</string>
+    <string name="update_try_again">Try again</string>
+    <string name="update_play_store">Google Play</string>
+    <string name="update_check_failed">Update check failed</string>
+    <string name="update_download_failed">Could not start download</string>
+    <string name="update_unofficial_asset">Update asset is not an official Ocho release</string>
+    <string name="update_invalid_apk">Downloaded APK is not a valid Ocho update</string>
+    <string name="update_play_failed">Play update failed</string>
+    <string name="update_play_check_failed">Play update check failed</string>
+    <string name="update_install_failed">Update failed: %1$s</string>
+    <string name="update_banner_available">A Play Store update is available</string>
+    <string name="update_banner_downloading_info">You can keep using Ocho while it downloads.</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">Workout session</string>
+    <string name="notification_channel_description">Shows the running workout and its controls</string>
+    <string name="notification_action_pause">Pause</string>
+    <string name="notification_action_resume">Resume</string>
+    <string name="notification_action_stop">Stop</string>
+    <string name="notification_round_progress">round %1$d/%2$d</string>
+    <string name="notification_phase_paused">%1$s · paused</string>
+    <string name="notification_phase_with_round">%1$s · %2$s</string>
+    <string name="notification_phase_paused_with_round">%1$s · paused · %2$s</string>
+    <string name="update_installed">%1$s updated</string>
 </resources>

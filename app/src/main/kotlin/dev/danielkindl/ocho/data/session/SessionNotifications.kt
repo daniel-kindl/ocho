@@ -48,10 +48,10 @@ class SessionNotifications @Inject constructor(
     fun ensureChannel() {
         val channel = NotificationChannel(
             SESSION_CHANNEL_ID,
-            "Workout session",
+            context.getString(R.string.notification_channel_name),
             NotificationManager.IMPORTANCE_LOW,
         ).apply {
-            description = "Shows the running workout and its controls"
+            description = context.getString(R.string.notification_channel_description)
             setSound(null, null)
             enableVibration(false)
         }
@@ -72,7 +72,7 @@ class SessionNotifications @Inject constructor(
             .setShowWhen(false)
 
         if (snapshot == null) {
-            return builder.setContentTitle("Ocho").build()
+            return builder.setContentTitle(context.getString(R.string.app_name)).build()
         }
 
         val paused = snapshot.status == SessionStatus.Paused
@@ -82,14 +82,17 @@ class SessionNotifications @Inject constructor(
         if (snapshot.isActive) {
             builder.addAction(
                 if (paused) R.drawable.ic_play else R.drawable.ic_pause,
-                if (paused) "Resume" else "Pause",
+                context.getString(
+                    if (paused) R.string.notification_action_resume
+                    else R.string.notification_action_pause,
+                ),
                 servicePendingIntent(
                     if (paused) SessionService.ACTION_RESUME else SessionService.ACTION_PAUSE
                 ),
             )
             builder.addAction(
                 R.drawable.ic_square,
-                "Stop",
+                context.getString(R.string.notification_action_stop),
                 servicePendingIntent(SessionService.ACTION_STOP),
             )
         }
@@ -98,18 +101,33 @@ class SessionNotifications @Inject constructor(
     }
 
     private fun title(snapshot: SessionSnapshot, paused: Boolean): String {
-        val phase = when (snapshot.phase) {
-            Phase.PREPARE -> "Prepare"
-            Phase.WORK -> "Work"
-            Phase.REST -> "Rest"
-            Phase.COMPLETE -> "Complete"
-        }
-        val rounds = if (snapshot.totalRounds > 0) {
-            " · round ${snapshot.currentRound}/${snapshot.totalRounds}"
+        val phase = context.getString(snapshot.phase.labelRes())
+        val round = if (snapshot.totalRounds > 0) {
+            context.getString(
+                R.string.notification_round_progress,
+                snapshot.currentRound,
+                snapshot.totalRounds,
+            )
         } else {
-            ""
+            null
         }
-        return if (paused) "$phase · paused$rounds" else "$phase$rounds"
+        return when {
+            paused && round != null -> context.getString(
+                R.string.notification_phase_paused_with_round,
+                phase,
+                round,
+            )
+            paused -> context.getString(R.string.notification_phase_paused, phase)
+            round != null -> context.getString(R.string.notification_phase_with_round, phase, round)
+            else -> phase
+        }
+    }
+
+    private fun Phase.labelRes(): Int = when (this) {
+        Phase.PREPARE -> R.string.phase_prepare
+        Phase.WORK -> R.string.phase_work
+        Phase.REST -> R.string.phase_rest
+        Phase.COMPLETE -> R.string.phase_complete
     }
 
     // Both factories set the destination with setClass rather than the two-argument

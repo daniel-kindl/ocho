@@ -15,20 +15,23 @@ class UpdateRepositoryImplTest {
 
     private fun releaseJson(
         tagName: String = "v2.3.0",
-        assets: String = "[{\"name\":\"ocho-2.3.0.apk\",\"browser_download_url\":\"https://example.com/app.apk\"}]",
+        assets: String? = null,
         body: String? = "Release notes",
         preRelease: Boolean? = null,
+        assetName: String = GithubAssetPolicy.APK_ASSET_NAME,
+        assetUrl: String? = null,
     ): String {
         val bodyField = body?.let { "\"body\":\"$it\"," }.orEmpty()
         val preReleaseField = preRelease?.let { "\"prerelease\":$it," }.orEmpty()
-        return "{\"tag_name\":\"$tagName\",$preReleaseField$bodyField\"assets\":$assets}"
+        val defaultAssets = "[{\"name\":\"$assetName\",\"browser_download_url\":\"${assetUrl ?: "https://github.com/daniel-kindl/ocho/releases/download/$tagName/${GithubAssetPolicy.APK_ASSET_NAME}"}\"}]"
+        return "{\"tag_name\":\"$tagName\",$preReleaseField$bodyField\"assets\":${assets ?: defaultAssets}}"
     }
 
     @Test fun `parses a valid release`() {
         val update = repository.parseResponse(releaseJson())
         assertEquals(SemVer(2, 3, 0), update.version)
         assertEquals("v2.3.0", update.tagName)
-        assertEquals("https://example.com/app.apk", update.downloadUrl)
+        assertEquals("https://github.com/daniel-kindl/ocho/releases/download/v2.3.0/app-github-release.apk", update.downloadUrl)
         assertEquals("Release notes", update.releaseNotes)
     }
     @Test fun `defaults releaseNotes to empty string when body is missing`() =
@@ -38,6 +41,12 @@ class UpdateRepositoryImplTest {
     }
     @Test fun `throws when no apk asset is present`() = assertThrows(IllegalStateException::class.java) {
         repository.parseResponse(releaseJson(assets = "[{\"name\":\"README.md\",\"browser_download_url\":\"https://example.com/readme\"}]"))
+    }
+    @Test fun `rejects an apk with an unexpected asset name`() = assertThrows(IllegalStateException::class.java) {
+        repository.parseResponse(releaseJson(assetName = "ocho.apk"))
+    }
+    @Test fun `rejects an apk hosted outside the official release path`() = assertThrows(IllegalStateException::class.java) {
+        repository.parseResponse(releaseJson(assetUrl = "https://example.com/app-github-release.apk"))
     }
     @Test fun `throws when tag_name is missing`() = assertThrows(org.json.JSONException::class.java) {
         repository.parseResponse("{\"assets\":[]}")

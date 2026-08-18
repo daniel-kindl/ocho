@@ -5,14 +5,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.clickable
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -20,16 +21,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import dev.danielkindl.ocho.R
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import dev.danielkindl.ocho.R
 
 /**
- * Reusable preset row: header with a save button, chips for each preset.
+ * Reusable preset section: header with a save button and a readable list of presets.
  *
- * Generic so it works with any preset type — callers supply [getKey] and
- * [getLabel] to extract display information without coupling to a specific model.
+ * Generic so it works with any preset type — callers supply [getLabel] and
+ * [getSummary] to extract display information without coupling to a specific model.
  *
  * @param canDelete whether a given preset offers its delete control. Defaults to all of
  *   them; a build's own presets say no, since deleting one would only bring it back on
@@ -39,8 +42,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun <T> PresetsSection(
     presets: List<T>,
-    getKey: (T) -> String,
     getLabel: (T) -> String,
+    getSummary: @Composable (T) -> String,
     onPresetClick: (T) -> Unit,
     onDeleteClick: (T) -> Unit,
     onSavePreset: () -> Unit,
@@ -55,7 +58,7 @@ fun <T> PresetsSection(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text("Presets", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.presets_title), style = MaterialTheme.typography.titleMedium)
             TextButton(onClick = onSavePreset, enabled = saveEnabled) {
                 Icon(
                     painterResource(R.drawable.ic_bookmark_plus),
@@ -63,38 +66,84 @@ fun <T> PresetsSection(
                     modifier = Modifier.size(18.dp),
                 )
                 Spacer(Modifier.width(4.dp))
-                Text("Save")
+                Text(stringResource(R.string.action_save))
             }
         }
         if (presets.isEmpty() && showEmptyMessage) {
-            Text(
-                "Presets appear here after you save a workout.",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            PresetsEmptyState()
         } else {
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(presets, key = { getKey(it) }) { preset ->
-                    InputChip(
-                        modifier = Modifier.semantics {
-                            contentDescription = "Load preset ${getLabel(preset)}"
-                        },
-                        selected = false,
+            Column {
+                presets.forEachIndexed { index, preset ->
+                    PresetRow(
+                        label = getLabel(preset),
+                        summary = getSummary(preset),
                         onClick = { onPresetClick(preset) },
-                        label = { Text(getLabel(preset)) },
-                        trailingIcon = if (canDelete(preset)) {
-                            {
-                                DeletePresetIcon(
-                                    label = getLabel(preset),
-                                    onClick = { onDeleteClick(preset) },
-                                )
-                            }
+                        onDelete = if (canDelete(preset)) {
+                            { onDeleteClick(preset) }
                         } else {
                             null
                         },
                     )
+                    if (index < presets.lastIndex) {
+                        HorizontalDivider(
+                            modifier = Modifier.padding(start = 12.dp),
+                            color = MaterialTheme.colorScheme.outlineVariant,
+                        )
+                    }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun PresetsEmptyState() {
+    Text(
+        stringResource(R.string.presets_empty),
+        modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp),
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+}
+
+@Composable
+private fun PresetRow(
+    label: String,
+    summary: String,
+    onClick: () -> Unit,
+    onDelete: (() -> Unit)?,
+) {
+    val loadDescription = stringResource(R.string.preset_load_accessibility, label)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 64.dp)
+            .clickable(onClick = onClick)
+            .semantics {
+                contentDescription = loadDescription
+            }
+            .padding(start = 12.dp, end = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(
+            modifier = Modifier.weight(1f),
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.titleMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                text = summary,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+        if (onDelete != null) {
+            DeletePresetIcon(label = label, onClick = onDelete)
         }
     }
 }
@@ -104,7 +153,7 @@ private fun DeletePresetIcon(label: String, onClick: () -> Unit) {
     IconButton(onClick = onClick, modifier = Modifier.size(48.dp)) {
         Icon(
             painterResource(R.drawable.ic_x),
-            contentDescription = "Delete $label",
+            contentDescription = stringResource(R.string.preset_delete_accessibility, label),
             modifier = Modifier.size(14.dp),
         )
     }

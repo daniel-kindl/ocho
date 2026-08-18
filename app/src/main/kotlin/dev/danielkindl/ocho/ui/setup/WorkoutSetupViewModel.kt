@@ -82,8 +82,12 @@ class WorkoutSetupViewModel @Inject constructor(
     fun loadPreset(preset: WorkoutPreset) = _uiState.update { it.withPreset(preset) }
 
     /** Saves the current values under [name], falling back to the generated name if blank. */
-    fun savePreset(name: String) {
-        val preset = _uiState.value.toPreset(id = UUID.randomUUID().toString(), name = name)
+    fun savePreset(name: String, fallbackName: String) {
+        val preset = _uiState.value.toPreset(
+            id = UUID.randomUUID().toString(),
+            name = name,
+            fallbackName = fallbackName,
+        )
         viewModelScope.launch { presetRepository.savePreset(preset) }
     }
 
