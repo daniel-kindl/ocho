@@ -80,4 +80,16 @@ foreach ($sourceFile in Get-ChildItem -LiteralPath $ScreenshotDirectory -Filter 
     }
 }
 
+# Keep the newer preset captures available as portable raster assets for README
+# renderers, which do not reliably resolve relative image references embedded in SVGs.
+$presetScreenshotDirectory = Join-Path $RepoRoot "website/public/screenshots/v4"
+foreach ($sourceFile in Get-ChildItem -LiteralPath $presetScreenshotDirectory -Filter *.png -File) {
+    $source = [System.Drawing.Image]::FromFile($sourceFile.FullName)
+    try {
+        Save-PhoneMockup $source (Join-Path $OutputDirectory $sourceFile.Name)
+    } finally {
+        $source.Dispose()
+    }
+}
+
 Write-Output "Created website phone mockups in $OutputDirectory"

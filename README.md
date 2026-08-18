@@ -35,8 +35,8 @@ round count of a classic Tabata.*
 
 <p align="center">
   <img src="website/public/screenshots/mockups/custom-setup.png" width="24%" alt="Custom Timer setup with centered sets, work, and rest controls inside a Pixel 9a mockup.">
-  <img src="website/public/screenshots/mockups/presets.svg" width="24%" alt="EMOM setup with a compact saved preset row, summary, and delete action inside a Pixel 9a phone mockup.">
-  <img src="website/public/screenshots/mockups/amrap-presets.svg" width="24%" alt="AMRAP setup with three distinct compact saved presets—Quick Start, Steady Pace, and Long Burn—inside a Pixel 9a phone mockup.">
+  <img src="website/public/screenshots/mockups/emom-presets.png" width="24%" alt="EMOM setup with a compact saved preset row, summary, and delete action inside a Pixel 9a phone mockup.">
+  <img src="website/public/screenshots/mockups/amrap-presets.png" width="24%" alt="AMRAP setup with three distinct compact saved presets—Quick Start, Steady Pace, and Long Burn—inside a Pixel 9a phone mockup.">
 </p>
 
 These Pixel 9a captures cover the full flow: choosing a mode, configuring a set,
