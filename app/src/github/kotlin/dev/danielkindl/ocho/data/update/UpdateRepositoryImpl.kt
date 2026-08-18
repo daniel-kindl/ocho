@@ -66,7 +66,14 @@ class UpdateRepositoryImpl @Inject constructor(
         val assets = json.getJSONArray("assets")
         val downloadUrl = (0 until assets.length())
             .map { assets.getJSONObject(it) }
-            .firstOrNull { it.getString("name").endsWith(".apk") }
+            .firstOrNull { asset ->
+                GithubAssetPolicy.accepts(
+                    assetName = asset.optString("name"),
+                    downloadUrl = asset.optString("browser_download_url"),
+                    repoSlug = config.repoSlug,
+                    tagName = tagName,
+                )
+            }
             ?.getString("browser_download_url")
             ?: error("No APK asset found in release $tagName")
         return AppUpdate(version, tagName, downloadUrl, json.optString("body", ""))

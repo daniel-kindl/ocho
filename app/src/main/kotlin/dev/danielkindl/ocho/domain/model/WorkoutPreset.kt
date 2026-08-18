@@ -1,5 +1,15 @@
 package dev.danielkindl.ocho.domain.model
 
+/** Maximum number of user-visible Unicode characters in a preset name. */
+const val MAX_PRESET_NAME_LENGTH = 50
+
+/** Truncates a preset name without splitting a Unicode surrogate pair. */
+fun String.limitPresetName(): String {
+    val length = codePointCount(0, this.length)
+    if (length <= MAX_PRESET_NAME_LENGTH) return this
+    return substring(0, offsetByCodePoints(0, MAX_PRESET_NAME_LENGTH))
+}
+
 /**
  * A saved workout configuration, for any mode.
  *
@@ -13,7 +23,8 @@ package dev.danielkindl.ocho.domain.model
  * round trip.
  *
  * @property id stable identifier used to delete the preset; generated at save time.
- * @property name user-facing label, defaulted from the durations if left blank.
+ * @property name user-facing label, defaulted from the durations if left blank and
+ *   limited to [MAX_PRESET_NAME_LENGTH] Unicode characters when saved by setup.
  * @property mode which workout this configures. Setup screens list only their own.
  * @property totalMinutes minutes component of the total duration. All modes.
  * @property totalSeconds seconds component of the total duration. All modes.

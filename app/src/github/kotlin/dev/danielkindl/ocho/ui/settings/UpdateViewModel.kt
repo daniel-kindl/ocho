@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.danielkindl.ocho.data.update.ApkInstaller
 import dev.danielkindl.ocho.data.update.DownloadStatus
+import dev.danielkindl.ocho.data.update.GithubAssetPolicy
+import dev.danielkindl.ocho.data.update.PendingDownload
+import dev.danielkindl.ocho.data.update.PendingDownloadStore
 import dev.danielkindl.ocho.data.update.UpdateCheckCache
 import dev.danielkindl.ocho.data.update.UpdateDownloader
 import dev.danielkindl.ocho.domain.model.AppUpdate
@@ -62,13 +65,19 @@ class UpdateViewModel @Inject constructor(
     private val updateDownloader: UpdateDownloader,
     private val apkInstaller: ApkInstaller,
     updateCheckCache: UpdateCheckCache,
+    private val pendingDownloadStore: PendingDownloadStore,
 ) : ViewModel() {
+    private val repoSlug: String = updateConfig.repoSlug
     private val installedVersion: SemVer? = updateConfig.installedVersion
     private val _uiState = MutableStateFlow<UpdateUiState>(
         updateCheckCache.latestUpdate.value?.let { UpdateUiState.Available(it) } ?: UpdateUiState.Idle
     )
     /** Current state of the check, download, and install flow. */
     val uiState: StateFlow<UpdateUiState> = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch { restorePendingDownload() }
+    }
 
     /** Checks GitHub for a newer eligible release. */
     fun checkForUpdates() {
@@ -91,9 +100,35 @@ class UpdateViewModel @Inject constructor(
     /** Enqueues the selected release APK and polls until it completes. */
     fun startDownload() {
         val update = (_uiState.value as? UpdateUiState.Available)?.update ?: return
+        if (!GithubAssetPolicy.accepts(
+                assetName = GithubAssetPolicy.APK_ASSET_NAME,
+                downloadUrl = update.downloadUrl,
+                repoSlug = repoSlug,
+                tagName = update.tagName,
+            )
+        ) {
+            _uiState.value = UpdateUiState.Error("Update asset is not an official Ocho release")
+            return
+        }
         _uiState.value = UpdateUiState.Downloading(update, 0)
         viewModelScope.launch {
-            pollDownload(update, updateDownloader.enqueue(update))
+            var downloadId: Long? = null
+            runCatching {
+                updateDownloader.cleanupAppOwnedApks()
+                downloadId = updateDownloader.enqueue(update)
+                pendingDownloadStore.write(
+                    PendingDownload(
+                        downloadId = checkNotNull(downloadId),
+                        update = update,
+                        fileName = "ocho-${update.tagName}.apk",
+                    )
+                )
+                pollDownload(update, downloadId)
+            }.onFailure {
+                downloadId?.let(updateDownloader::remove)
+                pendingDownloadStore.clear()
+                _uiState.value = UpdateUiState.Error(it.message ?: "Could not start download")
+            }
         }
     }
 
@@ -105,10 +140,14 @@ class UpdateViewModel @Inject constructor(
                     delay(POLL_INTERVAL_MS)
                 }
                 is DownloadStatus.Successful -> {
+                    pendingDownloadStore.clear()
                     _uiState.value = UpdateUiState.ReadyToInstall(update, status.file)
                     return
                 }
                 is DownloadStatus.Failed -> {
+                    pendingDownloadStore.clear()
+                    updateDownloader.remove(downloadId)
+                    updateDownloader.cleanupAppOwnedApks()
                     _uiState.value = UpdateUiState.Error(status.reason)
                     return
                 }
@@ -118,7 +157,11 @@ class UpdateViewModel @Inject constructor(
 
     /** Starts installation when the current state contains a completed download. */
     fun startInstall() {
-        (_uiState.value as? UpdateUiState.ReadyToInstall)?.let { apkInstaller.install(it.apkFile) }
+        (_uiState.value as? UpdateUiState.ReadyToInstall)?.let {
+            if (!apkInstaller.install(it.apkFile)) {
+                _uiState.value = UpdateUiState.Error("Downloaded APK is not a valid Ocho update")
+            }
+        }
     }
 
     /** Returns whether Android package-install permission is already granted. */
@@ -126,6 +169,26 @@ class UpdateViewModel @Inject constructor(
 
     /** Returns the system settings intent used to grant package-install permission. */
     fun unknownSourcesSettingsIntent(): Intent = apkInstaller.unknownSourcesSettingsIntent()
+
+    private suspend fun restorePendingDownload() {
+        val pending = pendingDownloadStore.read() ?: return
+        when (val status = updateDownloader.queryStatus(pending.downloadId)) {
+            is DownloadStatus.InProgress -> {
+                _uiState.value = UpdateUiState.Downloading(pending.update, status.percent)
+                pollDownload(pending.update, pending.downloadId)
+            }
+            is DownloadStatus.Successful -> {
+                pendingDownloadStore.clear()
+                _uiState.value = UpdateUiState.ReadyToInstall(pending.update, status.file)
+            }
+            is DownloadStatus.Failed -> {
+                pendingDownloadStore.clear()
+                updateDownloader.remove(pending.downloadId)
+                updateDownloader.cleanupAppOwnedApks()
+                _uiState.value = UpdateUiState.Error(status.reason)
+            }
+        }
+    }
 
     private companion object {
         const val POLL_INTERVAL_MS = 500L

@@ -26,7 +26,15 @@ sealed interface DownloadStatus {
 private const val PERCENT_MAX = 100
 
 internal fun computeDownloadPercent(downloadedBytes: Long, totalBytes: Long): Int =
-    if (totalBytes > 0) ((downloadedBytes * PERCENT_MAX) / totalBytes).toInt() else 0
+    if (totalBytes > 0) {
+        ((downloadedBytes * PERCENT_MAX) / totalBytes).toInt().coerceIn(0, PERCENT_MAX)
+    } else {
+        0
+    }
+
+/** Returns whether a filename belongs to the updater's private APK namespace. */
+internal fun isAppOwnedApkName(name: String): Boolean =
+    name.startsWith("ocho-") && name.endsWith(".apk")
 
 /** Downloads release APKs through Android's system DownloadManager. */
 @Singleton
@@ -47,6 +55,17 @@ class UpdateDownloader @Inject constructor(
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             .setMimeType(APK_MIME_TYPE)
         return downloadManager.enqueue(request)
+    }
+
+    /** Removes a previously enqueued job, if Android still knows about it. */
+    fun remove(downloadId: Long): Boolean = downloadManager.remove(downloadId) > 0
+
+    /** Deletes only stale APKs created by this updater. */
+    fun cleanupAppOwnedApks(keepFile: File? = null) {
+        val downloadDirectory = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) ?: return
+        downloadDirectory.listFiles()
+            ?.filter { isAppOwnedApkName(it.name) && it.absolutePath != keepFile?.absolutePath }
+            ?.forEach { it.delete() }
     }
 
     /** Reads the current state of a previously enqueued download. */

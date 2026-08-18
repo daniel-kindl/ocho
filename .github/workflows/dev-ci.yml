@@ -1,10 +1,12 @@
 name: Dev CI
 
+permissions: {}
+
 on:
   push:
     branches: [ dev ]
   pull_request:
-    branches: [ dev ]
+    branches: [ dev, main ]
   workflow_dispatch:
     inputs:
       play_track:
@@ -16,23 +18,26 @@ jobs:
   build-and-test:
     name: Build, Test & Lint
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v5.7.0
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: gradle
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Run unit tests
-        run: ./gradlew testGithubDebugUnitTest --stacktrace
+        run: ./gradlew testGithubDebugUnitTest testPlayDebugUnitTest --stacktrace
 
       # Report-only, never gated. There is no coverage threshold anywhere in this
       # repository on purpose: a percentage is easy to move by writing tests that
@@ -59,7 +64,7 @@ jobs:
 
       - name: Upload coverage report
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: coverage-report
           path: |
@@ -71,10 +76,10 @@ jobs:
         run: ./gradlew detekt --stacktrace
 
       - name: Build debug APK
-        run: ./gradlew assembleGithubDebug --stacktrace
+        run: ./gradlew assembleGithubDebug assemblePlayDebug --stacktrace
 
       - name: Upload debug APK
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: debug-apk
           path: app/build/outputs/apk/github/debug/*.apk
@@ -82,18 +87,40 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: test-results
           path: app/build/reports/tests/
           retention-days: 7
+
+  instrumented-tests:
+    name: Instrumented Tests
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Run Android instrumentation tests
+        uses: ReactiveCircus/android-emulator-runner@1dcd0090116d15e7c562f8db72807de5e036a4ed # v2.34.0
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: Pixel_2
+          script: ./gradlew connectedGithubDebugAndroidTest connectedPlayDebugAndroidTest --stacktrace
 
   # Publishes a dev-channel build for every green push to `dev`, so changes can be
   # tested on a real device before they reach `main`. Lives in this workflow rather
   # than its own so it reuses the test and lint run above instead of repeating it.
   publish-dev:
     name: Publish Dev Prerelease
-    needs: build-and-test
+    needs: instrumented-tests
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
@@ -106,14 +133,15 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v5.7.0
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: gradle
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -138,7 +166,8 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: ./gradlew assembleGithubDev -PdevBuildNumber=${{ github.run_number }} --stacktrace
+          DEV_BUILD_NUMBER: ${{ github.run_number }}
+        run: ./gradlew assembleGithubDev -PdevBuildNumber="$DEV_BUILD_NUMBER" --stacktrace
 
       - name: Compute SHA-256 checksum
         id: checksum
@@ -161,16 +190,18 @@ jobs:
       # signature users can check via `gh attestation verify`. Unlike the checksum,
       # this cannot be reproduced by someone who only controls the release assets.
       - name: Attest build provenance
-        uses: actions/attest-build-provenance@v4
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4
         with:
           subject-path: app/build/outputs/apk/github/dev/*.apk
 
       - name: Resolve dev version
         id: version
+        env:
+          DEV_BUILD_NUMBER: ${{ github.run_number }}
         run: |
           set -euo pipefail
           BASE=$(grep -oP 'versionName\s*=\s*"\K[^"]+' app/build.gradle.kts)
-          echo "TAG=v${BASE}-dev.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+          echo "TAG=v${BASE}-dev.${DEV_BUILD_NUMBER}" >> "$GITHUB_OUTPUT"
 
       # A prerelease, which is what keeps the channels apart: the stable app reads
       # releases/latest, and GitHub excludes prereleases from that endpoint entirely.
@@ -180,7 +211,7 @@ jobs:
       # uploads the first asset and then fails on the second, leaving a release with
       # no downloads attached. Drafts stay writable, so all assets land first.
       - name: Create draft prerelease
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3
         with:
           tag_name: ${{ steps.version.outputs.TAG }}
           name: "Ocho ${{ steps.version.outputs.TAG }}"
@@ -221,7 +252,8 @@ jobs:
       - name: Publish the draft
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release edit "${{ steps.version.outputs.TAG }}" --draft=false --prerelease
+          RELEASE_TAG: ${{ steps.version.outputs.TAG }}
+        run: gh release edit "$RELEASE_TAG" --draft=false --prerelease
 
       # Without this the release list grows by one entry per push, forever.
       - name: Prune old dev prereleases
@@ -241,7 +273,7 @@ jobs:
   # maintainer manually dispatches Dev CI and supplies a Closed-testing track.
   publish-play-candidate:
     name: Publish Play Closed-Test Candidate
-    needs: build-and-test
+    needs: instrumented-tests
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     environment:
@@ -251,14 +283,15 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v5.7.0
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: gradle
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -291,7 +324,7 @@ jobs:
         run: ./gradlew bundlePlayRelease assembleGithubRelease --stacktrace
 
       - name: Retain matching candidate artifacts
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: play-closed-candidate-${{ github.run_number }}
           path: |
@@ -300,7 +333,7 @@ jobs:
           retention-days: 14
 
       - name: Upload matching AAB to Closed testing
-        uses: r0adkll/upload-google-play@v1.1.5
+        uses: r0adkll/upload-google-play@e738b9dd8f2476ea806d921b64aacd24f34515a5 # v1.1.5
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
           packageName: dev.danielkindl.ocho

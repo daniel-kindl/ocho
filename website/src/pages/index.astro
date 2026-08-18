@@ -58,7 +58,7 @@ import PhoneMockup from '../components/PhoneMockup.astro';
         </div>
         <figure class="setup-visual">
           <div class="screen-pair">
-            <PhoneMockup image="screenshots/v3/tabata-setup.png" class="setup-phone" alt="Ocho Tabata setup screen with duration pickers and a visual round preview." />
+            <PhoneMockup image="screenshots/v4/tabata-presets.png" class="setup-phone" alt="Ocho Tabata setup screen with duration pickers and a compact saved preset row." />
             <PhoneMockup image="screenshots/v3/tabata-rest.png" class="rest-phone" alt="Ocho Tabata rest phase screen showing the recovery interval." />
           </div>
           <figcaption><span><Icon name="settings" />SETUP / TABATA</span><span><Icon name="activity" />REST / RECOVERY</span></figcaption>
@@ -86,7 +86,7 @@ import PhoneMockup from '../components/PhoneMockup.astro';
             <figcaption><span>01 / CHOOSE</span><span>pick a mode</span></figcaption>
           </figure>
           <figure class="mode-phone mode-phone-setup">
-            <PhoneMockup image="screenshots/v3/tabata-setup.png" class="setup-phone" alt="Ocho Tabata setup screen with duration pickers and a visual round preview." />
+            <PhoneMockup image="screenshots/v4/tabata-presets.png" class="setup-phone" alt="Ocho Tabata setup screen with duration pickers and a compact saved preset row." />
             <figcaption><span>02 / CONFIGURE</span><span>set the pace</span></figcaption>
           </figure>
           <figure class="mode-phone mode-phone-work">
@@ -128,10 +128,29 @@ import PhoneMockup from '../components/PhoneMockup.astro';
       </div>
     </section>
 
+    <section class="section presets-section" id="presets" aria-labelledby="presets-title">
+      <div class="page feature-grid">
+        <div class="feature-copy">
+          <p class="eyebrow"><span>OCHO / 04</span><span>PRESETS</span></p>
+          <h2 id="presets-title">Keep the rhythm, lose the clutter.</h2>
+          <p class="section-lede">Saved workouts are compact rows rather than a wall of chips. Every mode keeps its useful details visible without pushing the timer controls out of view.</p>
+          <div class="signal-notes">
+            <div><span>01</span><strong>Compact rows</strong><p>Name and summary stay together in a quiet two-line layout.</p></div>
+            <div><span>02</span><strong>Mode-aware details</strong><p>EMOM, Tabata, AMRAP, and Custom each explain their own timing.</p></div>
+            <div><span>03</span><strong>Safe naming</strong><p>A live 50-character counter keeps unusual names readable and stored safely.</p></div>
+          </div>
+        </div>
+        <figure class="presets-visual">
+          <PhoneMockup image="screenshots/v4/emom-presets.png" alt="Ocho EMOM setup screen with a compact saved preset row showing its timing summary." />
+          <figcaption><span><Icon name="activity" />EMOM / SAVED PRESET</span><span>summary stays visible</span></figcaption>
+        </figure>
+      </div>
+    </section>
+
     <section class="section capture-section" id="screenshots" aria-labelledby="screenshots-title">
       <div class="page">
         <div class="capture-heading">
-          <p class="eyebrow"><span>OCHO / 04</span><span>THE FULL FLOW</span></p>
+          <p class="eyebrow"><span>OCHO / 05</span><span>THE FULL FLOW</span></p>
           <h2 id="screenshots-title">Every phase stays obvious.</h2>
           <p class="section-lede">Real Pixel 9a captures from choosing a mode to the final bell. EMOM stays continuous; Tabata makes work and rest unmistakable.</p>
         </div>
@@ -141,8 +160,8 @@ import PhoneMockup from '../components/PhoneMockup.astro';
             <figcaption><strong>01 / CHOOSE</strong><span>pick a mode</span></figcaption>
           </figure>
           <figure class="capture-card">
-            <PhoneMockup image="screenshots/v3/emom-setup.png" alt="Ocho EMOM setup screen with a one-minute interval." />
-            <figcaption><strong>02 / EMOM SETUP</strong><span>set the interval</span></figcaption>
+            <PhoneMockup image="screenshots/v4/emom-presets.png" alt="Ocho EMOM setup screen with a compact saved preset row." />
+            <figcaption><strong>02 / EMOM + PRESETS</strong><span>set the interval and save it</span></figcaption>
           </figure>
           <figure class="capture-card">
             <PhoneMockup image="screenshots/v3/prepare.png" alt="Ocho prepare countdown before the first interval." />
@@ -157,7 +176,7 @@ import PhoneMockup from '../components/PhoneMockup.astro';
             <figcaption><strong>05 / PAUSED</strong><span>resume anytime</span></figcaption>
           </figure>
           <figure class="capture-card">
-            <PhoneMockup image="screenshots/v3/tabata-setup.png" alt="Ocho Tabata setup screen with work, rest, and round controls." />
+            <PhoneMockup image="screenshots/v4/tabata-presets.png" alt="Ocho Tabata setup screen with work, rest, and a compact saved preset row." />
             <figcaption><strong>06 / TABATA SETUP</strong><span>build the rhythm</span></figcaption>
           </figure>
           <figure class="capture-card">
@@ -165,16 +184,20 @@ import PhoneMockup from '../components/PhoneMockup.astro';
             <figcaption><strong>07 / TABATA WORK</strong><span>push the interval</span></figcaption>
           </figure>
           <figure class="capture-card">
-            <PhoneMockup image="screenshots/v3/custom-setup.png" class="setup-phone" alt="Ocho Custom Timer setup screen with rounds, work time, and rest time controls." />
-            <figcaption><strong>08 / CUSTOM SETUP</strong><span>make it yours</span></figcaption>
+            <PhoneMockup image="screenshots/v4/custom-presets.png" class="setup-phone" alt="Ocho Custom Timer setup screen with a compact saved preset row showing sets, work, and rest timing." />
+            <figcaption><strong>08 / CUSTOM + PRESETS</strong><span>make it yours</span></figcaption>
+          </figure>
+          <figure class="capture-card">
+            <PhoneMockup image="screenshots/v4/amrap-presets.png" class="setup-phone" alt="Ocho AMRAP setup screen with three distinct compact saved presets: Quick Start, Steady Pace, and Long Burn." />
+            <figcaption><strong>09 / AMRAP + PRESETS</strong><span>compare distinct total durations</span></figcaption>
           </figure>
           <figure class="capture-card">
             <PhoneMockup image="screenshots/v3/tabata-rest.png" alt="Ocho Tabata rest phase showing the recovery interval." />
-            <figcaption><strong>09 / TABATA REST</strong><span>recover for the next round</span></figcaption>
+            <figcaption><strong>10 / TABATA REST</strong><span>recover for the next round</span></figcaption>
           </figure>
           <figure class="capture-card">
             <PhoneMockup image="screenshots/v3/finish.png" alt="Ocho complete screen showing the finished workout summary." />
-            <figcaption><strong>10 / COMPLETE</strong><span>finish strong</span></figcaption>
+            <figcaption><strong>11 / COMPLETE</strong><span>finish strong</span></figcaption>
           </figure>
         </div>
       </div>
@@ -183,11 +206,11 @@ import PhoneMockup from '../components/PhoneMockup.astro';
     <section class="download-section" id="download" aria-labelledby="download-title">
       <div class="page download-grid">
         <div>
-          <p class="eyebrow"><span>OCHO / 05</span><span>GET THE APP</span></p>
+          <p class="eyebrow"><span>OCHO / 06</span><span>GET THE APP</span></p>
           <h2 id="download-title">Start with the build that exists today.</h2>
         </div>
         <div class="download-copy">
-          <p>Google Play is coming soon. The current GitHub release is available as a manually installed APK for Android 8.0 and later.</p>
+          <p>Google Play is coming soon. The current GitHub release is available as a manually installed APK for Android 8.0 and later. The GitHub updater accepts only Ocho's official release asset and lets Android verify the signing key before an update is installed.</p>
           <DownloadActions />
           <p class="download-note">The GitHub build may ask for permission to install an app from an unknown source.</p>
         </div>

@@ -28,9 +28,23 @@ class ApkInstaller @Inject constructor(
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
     /** Hands the downloaded APK to the appropriate Android installer flow. */
-    fun install(apkFile: File) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) installViaPackageInstaller(apkFile)
-        else installViaIntent(apkFile)
+    fun install(apkFile: File): Boolean {
+        if (!apkFile.isFile || !apkFile.canRead()) return false
+        val packageName = context.packageManager
+            .getPackageArchiveInfo(apkFile.absolutePath, 0)
+            ?.packageName
+        if (!isMatchingPackageName(packageName, context.packageName)) return false
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            installViaPackageInstaller(apkFile)
+            // PackageInstaller has copied the bytes into its session before commit.
+            // Older intent-based installation keeps the source until the next safe
+            // updater cleanup because the receiving installer owns the read timing.
+            if (isSourceSafeToDeleteImmediately(Build.VERSION.SDK_INT)) apkFile.delete()
+        } else {
+            installViaIntent(apkFile)
+        }
+        return true
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -74,3 +88,10 @@ class ApkInstaller @Inject constructor(
         const val SESSION_NAME = "package"
     }
 }
+
+/** Kept separate so the package-identity rule is unit-testable without Android. */
+internal fun isMatchingPackageName(actual: String?, expected: String): Boolean = actual == expected
+
+/** Android S+ copies the APK into a PackageInstaller session before commit. */
+internal fun isSourceSafeToDeleteImmediately(apiLevel: Int): Boolean =
+    apiLevel >= Build.VERSION_CODES.S

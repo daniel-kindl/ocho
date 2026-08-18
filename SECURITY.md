@@ -34,8 +34,14 @@ the app on the device.
 
 The trust model:
 
-- Transport is HTTPS to `api.github.com` and `objects.githubusercontent.com`. A
-  network attacker cannot substitute an APK without breaking TLS.
+- Transport is HTTPS to `api.github.com` and the official GitHub release URL. A
+  network attacker cannot substitute an APK without breaking TLS. The updater rejects
+  non-HTTPS URLs, unexpected hosts, unexpected release paths, and unexpected asset
+  names before Android's downloader is called.
+- The downloaded archive must identify as the Ocho application package before either
+  installer path is launched. App-owned stale APK files are the only files eligible
+  for updater cleanup, and a pending DownloadManager job is persisted so process death
+  does not cause a duplicate download.
 - Integrity rests on Android's signature check, not on anything this app does.
   Release APKs are signed with a private key held only by the maintainer, and
   Android refuses to install an update whose signature does not match the installed
@@ -49,6 +55,25 @@ The trust model:
 Findings in that flow are the ones most worth reporting. So is anything that allows
 an unsigned or third-party APK to be installed, or lets a non-GitHub host serve the
 update.
+
+## CI and release security
+
+GitHub Actions is part of the production supply chain. Workflow actions are pinned to
+verified commit SHAs, checkout does not persist credentials, workflow permissions are
+default-deny and granted per job, and release/publication jobs do not restore shared
+dependency caches. CodeQL scans both Kotlin and workflow files. Dependabot keeps the
+pinned action references current with a short cooldown so updates can be reviewed.
+
+The repository policy protects `main` from direct pushes and requires the CI, CodeQL,
+Actions-analysis, and commit-lint checks. Direct pushes to `dev` remain allowed so the
+development channel can continue to publish its test build. The Play publication
+environment is manually authorized and signing/service-account secrets remain scoped
+to the steps that need them.
+
+If a release or workflow credential is suspected to be compromised, stop publication,
+revoke and rotate the affected secret or signing credential, disable the publication
+environment, inspect recent workflow runs and release assets, and publish a new signed
+release only after the workflow and repository settings have been reviewed.
 
 ## Verifying a release download
 

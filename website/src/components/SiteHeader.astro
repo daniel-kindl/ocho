@@ -20,6 +20,7 @@ const privacyHref = withBase('privacy-policy.html');
     <nav aria-label="Primary navigation">
       <a href={`${homeHref}#session`}>Session</a>
       <a href={`${homeHref}#modes`}>Modes</a>
+      {currentPage === 'home' && <a href={`${homeHref}#presets`}>Presets</a>}
       {currentPage === 'home' && <a href={`${homeHref}#screenshots`}>Screenshots</a>}
       <a href={`${homeHref}#download`}>Download</a>
       <a href={privacyHref} aria-current={currentPage === 'privacy' ? 'page' : undefined}>Privacy</a>

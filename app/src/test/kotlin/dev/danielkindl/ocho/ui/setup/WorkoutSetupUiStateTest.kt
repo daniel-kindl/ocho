@@ -1,6 +1,7 @@
 package dev.danielkindl.ocho.ui.setup
 
 import dev.danielkindl.ocho.domain.model.SessionRequest
+import dev.danielkindl.ocho.domain.model.MAX_PRESET_NAME_LENGTH
 import dev.danielkindl.ocho.domain.model.WorkoutMode
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -309,6 +310,19 @@ class WorkoutSetupUiStateTest {
         // A blank name falls back to the generated one rather than saving an unlabelled preset.
         assertEquals("4min / 20s work / 10s rest", preset.name)
         assertEquals(original, tabata().withPreset(preset))
+    }
+
+    @Test
+    fun `preset names preserve special characters and are capped without splitting emoji`() {
+        val specialCharacters = "!@#$%^&*()[]{}<>/?\\|~\"'… 🙂"
+        val specialPreset = emom().toPreset(id = "special", name = "  $specialCharacters  ")
+        assertEquals(specialCharacters, specialPreset.name)
+
+        val emojiName = "🙂".repeat(MAX_PRESET_NAME_LENGTH + 10)
+        val emojiPreset = emom().toPreset(id = "emoji", name = emojiName)
+
+        assertEquals(MAX_PRESET_NAME_LENGTH, emojiPreset.name.codePointCount(0, emojiPreset.name.length))
+        assertEquals("🙂".repeat(MAX_PRESET_NAME_LENGTH), emojiPreset.name)
     }
 
     @Test

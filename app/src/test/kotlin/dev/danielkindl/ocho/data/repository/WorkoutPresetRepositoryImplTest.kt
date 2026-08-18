@@ -56,6 +56,16 @@ class WorkoutPresetRepositoryImplTest {
     }
 
     @Test
+    fun `preset names with punctuation quotes and emoji survive persistence`() = runTest {
+        val repository = repository()
+        val saved = emomPreset("special", "Quotes \" / slash \\ & emoji 🙂 …")
+
+        repository.savePreset(saved)
+
+        assertEquals(listOf(saved), repository.getPresets(WorkoutMode.EMOM).first())
+    }
+
+    @Test
     fun `savePreset with an existing id replaces rather than duplicates`() = runTest {
         val repository = repository()
         repository.savePreset(emomPreset("1", "Original"))
