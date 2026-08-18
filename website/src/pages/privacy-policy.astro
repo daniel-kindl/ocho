@@ -39,7 +39,7 @@ const homeHref = withBase('');
 
           <h2><span>02</span><span class="policy-heading">Permissions and network access</span></h2>
           <p>Both variants use vibration, foreground-service, wake-lock, and notification permissions for reliable interval timing. The Play build has no network or package-install permission; Play itself manages its optional in-app update flow, and Ocho does not download or install an APK.</p>
-          <p>The GitHub build additionally checks the public GitHub Releases API and uses Android DownloadManager to fetch a release APK. It requests <code>REQUEST_INSTALL_PACKAGES</code> so the user can manually start an install; Android still requires the user to allow unknown-app installation. It does not silently install updates.</p>
+          <p>The GitHub build additionally checks the public GitHub Releases API and uses Android DownloadManager to fetch the official release APK. It validates the release URL and package identity before handing the file to Android, then requests <code>REQUEST_INSTALL_PACKAGES</code> so the user can manually start an install; Android still requires the user to allow unknown-app installation. It does not silently install updates.</p>
 
           <h2><span>03</span><span class="policy-heading">Licenses</span></h2>
           <p>Ocho's own source is GPLv3. Third-party fonts, icons, and libraries retain their separate licenses. Read the <a href="https://github.com/daniel-kindl/ocho/blob/main/LICENSE">GPLv3 license</a> and <a href="https://github.com/daniel-kindl/ocho/blob/main/THIRD-PARTY-NOTICES.md">third-party notices</a>.</p>

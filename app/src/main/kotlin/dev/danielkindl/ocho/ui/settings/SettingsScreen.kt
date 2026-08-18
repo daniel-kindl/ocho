@@ -185,159 +185,161 @@ fun SettingsContent(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-            SettingsGroup(title = "Workout") {
-                ListItem(
-                    leadingContent = {
-                        Icon(Icons.AutoMirrored.Outlined.VolumeUp, contentDescription = null)
-                    },
-                    headlineContent = { Text("Sound") },
-                    supportingContent = {
-                        Text("Timer event beeps · alarm volume · ignores silent mode")
-                    },
-                    trailingContent = {
-                        Switch(
-                            checked = settings.soundEnabled,
-                            onCheckedChange = actions.onSoundEnabled,
-                            modifier = Modifier.semantics {
-                                contentDescription = "Sound"
-                            },
-                        )
-                    },
-                )
-                SettingsDivider()
-                ListItem(
-                    leadingContent = {
-                        Icon(painterResource(R.drawable.ic_zap), contentDescription = null)
-                    },
-                    headlineContent = { Text("Vibration") },
-                    supportingContent = { Text("Timer event vibrations") },
-                    trailingContent = {
-                        Switch(
-                            checked = settings.vibrationEnabled,
-                            onCheckedChange = actions.onVibrationEnabled,
-                            modifier = Modifier.semantics {
-                                contentDescription = "Vibration"
-                            },
-                        )
-                    },
-                )
-                SettingsDivider()
-                ListItem(
-                    leadingContent = {
-                        Icon(painterResource(R.drawable.ic_rotate_cw), contentDescription = null)
-                    },
-                    headlineContent = { Text("Countdown beeps") },
-                    supportingContent = { Text("Last 3 seconds of each interval") },
-                    trailingContent = {
-                        Switch(
-                            checked = settings.countdownBeepsEnabled,
-                            onCheckedChange = actions.onCountdownBeepsEnabled,
-                            enabled = settings.soundEnabled,
-                            modifier = Modifier.semantics {
-                                contentDescription = "Countdown beeps"
-                            },
-                        )
-                    },
-                )
-            }
+            SettingsWorkoutSection(settings, actions)
 
-            SettingsGroup(title = "Notifications") {
-                ListItem(
-                    leadingContent = {
-                        Icon(Icons.Outlined.Notifications, contentDescription = null)
-                    },
-                    headlineContent = { Text(stringResource(R.string.settings_notifications)) },
-                    supportingContent = {
-                        Text(
-                            stringResource(
-                                if (notificationsAllowed) {
-                                    R.string.settings_notifications_allowed
-                                } else {
-                                    R.string.settings_notifications_blocked
-                                }
-                            )
-                        )
-                    },
-                    trailingContent = if (notificationsAllowed) {
-                        {
-                            Text(
-                                stringResource(R.string.settings_notifications_status_allowed),
-                                style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
-                        }
-                    } else {
-                        {
-                            TextButton(
-                                onClick = actions.onOpenNotifications,
-                                modifier = Modifier.semantics {
-                                    contentDescription = "Allow notifications"
-                                },
-                            ) {
-                                Text("Allow")
-                            }
-                        }
-                    },
-                    modifier = Modifier
-                        .clickable(
-                            role = Role.Button,
-                            onClickLabel = if (notificationsAllowed) {
-                                "Manage notification access"
-                            } else {
-                                "Allow notifications"
-                            },
-                            onClick = actions.onOpenNotifications,
-                        )
-                        .semantics {
-                            stateDescription = if (notificationsAllowed) "Allowed" else "Not allowed"
-                        },
-                )
-            }
+            SettingsNotificationsSection(notificationsAllowed, actions)
 
             SettingsGroup(title = "Updates") {
                 actions.updateSection()
             }
 
-            SettingsGroup(title = "About") {
-                ListItem(
-                    headlineContent = { Text("Feedback") },
-                    supportingContent = { Text("Send feedback or report an issue") },
-                    trailingContent = { SettingsChevron() },
-                    modifier = Modifier.clickable(
-                        role = Role.Button,
-                        onClickLabel = "Open feedback",
-                        onClick = actions.onOpenFeedback,
-                    ),
-                )
-                SettingsDivider()
-                // Required, not decorative: the bundled fonts and icons are licensed on
-                // condition that their notices travel with every copy of the software.
-                ListItem(
-                    headlineContent = { Text("Licences") },
-                    supportingContent = { Text("Open-source notices") },
-                    trailingContent = { SettingsChevron() },
-                    modifier = Modifier.clickable(
-                        role = Role.Button,
-                        onClickLabel = "Open licences",
-                        onClick = actions.onOpenLicenses,
-                    ),
-                )
-                SettingsDivider()
-                ListItem(
-                    headlineContent = { Text("Privacy Policy") },
-                    supportingContent = { Text("How Ocho handles data") },
-                    trailingContent = { SettingsChevron() },
-                    modifier = Modifier.clickable(
-                        role = Role.Button,
-                        onClickLabel = "Open privacy policy",
-                        onClick = actions.onOpenPrivacyPolicy,
-                    ),
-                )
-            }
+            SettingsAboutSection(actions)
 
                 SettingsFooter(versionName)
             }
         }
+    }
+}
+
+@Composable
+private fun SettingsWorkoutSection(
+    settings: UserSettings,
+    actions: SettingsContentActions,
+) {
+    SettingsGroup(title = "Workout") {
+        ListItem(
+            leadingContent = {
+                Icon(Icons.AutoMirrored.Outlined.VolumeUp, contentDescription = null)
+            },
+            headlineContent = { Text("Sound") },
+            supportingContent = { Text("Timer event beeps · alarm volume · ignores silent mode") },
+            trailingContent = {
+                Switch(
+                    checked = settings.soundEnabled,
+                    onCheckedChange = actions.onSoundEnabled,
+                    modifier = Modifier.semantics { contentDescription = "Sound" },
+                )
+            },
+        )
+        SettingsDivider()
+        ListItem(
+            leadingContent = { Icon(painterResource(R.drawable.ic_zap), contentDescription = null) },
+            headlineContent = { Text("Vibration") },
+            supportingContent = { Text("Timer event vibrations") },
+            trailingContent = {
+                Switch(
+                    checked = settings.vibrationEnabled,
+                    onCheckedChange = actions.onVibrationEnabled,
+                    modifier = Modifier.semantics { contentDescription = "Vibration" },
+                )
+            },
+        )
+        SettingsDivider()
+        ListItem(
+            leadingContent = { Icon(painterResource(R.drawable.ic_rotate_cw), contentDescription = null) },
+            headlineContent = { Text("Countdown beeps") },
+            supportingContent = { Text("Last 3 seconds of each interval") },
+            trailingContent = {
+                Switch(
+                    checked = settings.countdownBeepsEnabled,
+                    onCheckedChange = actions.onCountdownBeepsEnabled,
+                    enabled = settings.soundEnabled,
+                    modifier = Modifier.semantics { contentDescription = "Countdown beeps" },
+                )
+            },
+        )
+    }
+}
+
+@Composable
+private fun SettingsNotificationsSection(
+    notificationsAllowed: Boolean,
+    actions: SettingsContentActions,
+) {
+    SettingsGroup(title = "Notifications") {
+        ListItem(
+            leadingContent = { Icon(Icons.Outlined.Notifications, contentDescription = null) },
+            headlineContent = { Text(stringResource(R.string.settings_notifications)) },
+            supportingContent = {
+                Text(
+                    stringResource(
+                        if (notificationsAllowed) {
+                            R.string.settings_notifications_allowed
+                        } else {
+                            R.string.settings_notifications_blocked
+                        }
+                    )
+                )
+            },
+            trailingContent = if (notificationsAllowed) {
+                {
+                    Text(
+                        stringResource(R.string.settings_notifications_status_allowed),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
+            } else {
+                {
+                    TextButton(
+                        onClick = actions.onOpenNotifications,
+                        modifier = Modifier.semantics { contentDescription = "Allow notifications" },
+                    ) { Text("Allow") }
+                }
+            },
+            modifier = Modifier
+                .clickable(
+                    role = Role.Button,
+                    onClickLabel = if (notificationsAllowed) {
+                        "Manage notification access"
+                    } else {
+                        "Allow notifications"
+                    },
+                    onClick = actions.onOpenNotifications,
+                )
+                .semantics {
+                    stateDescription = if (notificationsAllowed) "Allowed" else "Not allowed"
+                },
+        )
+    }
+}
+
+@Composable
+private fun SettingsAboutSection(actions: SettingsContentActions) {
+    SettingsGroup(title = "About") {
+        ListItem(
+            headlineContent = { Text("Feedback") },
+            supportingContent = { Text("Send feedback or report an issue") },
+            trailingContent = { SettingsChevron() },
+            modifier = Modifier.clickable(
+                role = Role.Button,
+                onClickLabel = "Open feedback",
+                onClick = actions.onOpenFeedback,
+            ),
+        )
+        SettingsDivider()
+        // Required, not decorative: bundled notices must travel with every copy.
+        ListItem(
+            headlineContent = { Text("Licences") },
+            supportingContent = { Text("Open-source notices") },
+            trailingContent = { SettingsChevron() },
+            modifier = Modifier.clickable(
+                role = Role.Button,
+                onClickLabel = "Open licences",
+                onClick = actions.onOpenLicenses,
+            ),
+        )
+        SettingsDivider()
+        ListItem(
+            headlineContent = { Text("Privacy Policy") },
+            supportingContent = { Text("How Ocho handles data") },
+            trailingContent = { SettingsChevron() },
+            modifier = Modifier.clickable(
+                role = Role.Button,
+                onClickLabel = "Open privacy policy",
+                onClick = actions.onOpenPrivacyPolicy,
+            ),
+        )
     }
 }
 

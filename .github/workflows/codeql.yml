@@ -1,5 +1,7 @@
 name: CodeQL
 
+permissions: {}
+
 # dev is where findings are meant to surface: it is scanned on every push and
 # every PR, so a finding lands during review rather than after it. main is
 # scanned as well, for a different reason — it is the default branch, which is
@@ -14,7 +16,7 @@ on:
   push:
     branches: [ dev, main ]
   pull_request:
-    branches: [ dev ]
+    branches: [ dev, main ]
   schedule:
     - cron: '17 5 * * 1'
 
@@ -30,14 +32,15 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v5.7.0
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: gradle
 
       # Kotlin is analysed by the `java-kotlin` pack, which needs real compilation:
       # a source-only scan would miss anything depending on resolved types.
@@ -46,7 +49,7 @@ jobs:
       # here drags in the release variant, detekt and lint, all of which dev-ci.yml
       # already runs. assembleGithubDebug compiles the common code and GitHub updater.
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
+        uses: github/codeql-action/init@ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd # v4
         with:
           languages: java-kotlin
           build-mode: manual
@@ -58,6 +61,30 @@ jobs:
         run: ./gradlew assembleGithubDebug --stacktrace
 
       - name: Perform CodeQL analysis
-        uses: github/codeql-action/analyze@v4
+        uses: github/codeql-action/analyze@ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd # v4
         with:
           category: "/language:java-kotlin"
+
+  analyze-actions:
+    name: Analyze GitHub Actions
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+      actions: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd # v4
+        with:
+          languages: actions
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd # v4
+        with:
+          category: "/language:actions"

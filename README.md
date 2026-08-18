@@ -35,11 +35,16 @@ round count of a classic Tabata.*
 
 <p align="center">
   <img src="website/public/screenshots/mockups/custom-setup.png" width="24%" alt="Custom Timer setup with centered sets, work, and rest controls inside a Pixel 9a mockup.">
+  <img src="website/public/screenshots/mockups/presets.svg" width="24%" alt="EMOM setup with a compact saved preset row, summary, and delete action inside a Pixel 9a phone mockup.">
+  <img src="website/public/screenshots/mockups/amrap-presets.svg" width="24%" alt="AMRAP setup with three distinct compact saved presets—Quick Start, Steady Pace, and Long Burn—inside a Pixel 9a phone mockup.">
 </p>
 
 These Pixel 9a captures cover the full flow: choosing a mode, configuring a set,
 preparing, working, pausing, resting, and completing a session. The bar above Start
-previews the shape of the workout before it begins.
+previews the shape of the workout before it begins. The preset capture shows the
+current compact two-line list used across every timer mode. The AMRAP example uses
+three distinct saved workouts—Quick Start (1 min), Steady Pace (3 min), and Long
+Burn (5 min)—so each row's total-duration summary is easy to compare.
 
 While a session runs the plate is the entire interface, which is what makes it
 readable across a room. Work and rest are separated by lightness as well as hue.
@@ -60,7 +65,7 @@ readable across a room. Work and rest are separated by lightness as well as hue.
 | Vibration feedback | Different patterns for intervals and for completion |
 | Pause and resume | Freeze mid-session without drift or losing interval alignment |
 | Pre-start countdown | Three seconds before the first interval, to get into position |
-| Presets | Save, name, load, and delete configurations, separately per mode |
+| Presets | Save, name, load, and delete configurations separately per mode; compact rows show a mode-specific summary |
 | Progress and summary | A progress bar during the session, and a recap on completion |
 | Exit confirmation | The back gesture and Stop both ask before ending a running session |
 | In-app updates | GitHub variant uses GitHub Releases; Play variant uses Play-managed updates |
@@ -72,8 +77,10 @@ readable across a room. Work and rest are separated by lightness as well as hue.
 
 Ocho has two alternative distribution channels. The [GitHub APK](https://github.com/daniel-kindl/ocho/releases/latest)
 is manually installed and may require Android's unknown-app installation permission;
-it retains the GitHub self-updater in Settings. The Play variant uses Play-managed
-flexible updates and does not contain the GitHub APK installer.
+it retains the GitHub self-updater in Settings. The updater accepts only the official
+release asset, checks the APK package identity before handing it to Android, and relies
+on Android's signing-key verification for the final install decision. The Play variant
+uses Play-managed flexible updates and does not contain the GitHub APK installer.
 
 ### Update channels
 
@@ -106,9 +113,11 @@ own rounds.
 **Custom Timer.** Set the number of work sets, work duration, and rest duration.
 Rest runs between sets only, so the final work set ends the session immediately.
 
-**Presets.** Tap Save in the Presets row to store the current configuration. The
-name is pre-filled from the configuration, so edit it or accept it. Tap a chip to
-load, or the delete control to remove it.
+**Presets.** Tap Save in the Presets section to store the current configuration.
+The name is pre-filled from the configuration, so edit it or accept it. Names are
+limited to 50 Unicode characters, with a live counter in the save dialog. Tap a
+compact preset row to load it; the summary below the name keeps the mode-specific
+durations visible, while the trailing delete control removes it.
 
 **Settings.** The icon on the home screen toggles sound and vibration independently,
 holds feedback, licence, and privacy-policy links, and shows the distribution's
@@ -124,6 +133,20 @@ reasoning behind the timing, session, and colour design are in
 are documented in [docs/PUBLISHING.md](docs/PUBLISHING.md); the privacy policy is in
 [docs/PRIVACY_POLICY.md](docs/PRIVACY_POLICY.md).
 
+Useful verification commands are:
+
+```powershell
+./gradlew.bat :app:testGithubDebugUnitTest :app:testPlayDebugUnitTest
+./gradlew.bat :app:compileGithubDebugAndroidTestKotlin :app:compilePlayDebugAndroidTestKotlin
+```
+
+The documented emulator pass and CI instrumentation workflow are described in
+[docs/TESTING.md](docs/TESTING.md).
+
+Local instrumentation and manual UI checks use the configured `Pixel_9a` Android
+17 (API 37) emulator. Start it before running the connected test task and wait for
+ADB to report the device as ready.
+
 ---
 
 ## Website
@@ -137,7 +160,8 @@ npm run dev
 ```
 
 Create the production static output with `npm run build`. Pushes to `main` deploy
-`website/dist/` to GitHub Pages through the Pages workflow.
+`website/dist/` to GitHub Pages through the Pages workflow. Pull requests that touch
+the website build it without deploying; only pushes to `main` publish the site.
 
 ---
 

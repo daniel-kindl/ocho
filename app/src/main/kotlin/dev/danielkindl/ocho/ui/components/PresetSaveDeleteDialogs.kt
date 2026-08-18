@@ -6,6 +6,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import dev.danielkindl.ocho.domain.model.MAX_PRESET_NAME_LENGTH
+import dev.danielkindl.ocho.domain.model.limitPresetName
 
 /**
  * Names and saves the current configuration. Shared by both setup screens.
@@ -20,15 +22,22 @@ fun SavePresetDialog(
     onSave: () -> Unit,
     onDismiss: () -> Unit,
 ) {
+    val displayedName = name.limitPresetName()
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Save Preset") },
         text = {
             OutlinedTextField(
-                value = name,
-                onValueChange = onNameChange,
+                value = displayedName,
+                onValueChange = { onNameChange(it.limitPresetName()) },
                 label = { Text("Preset name") },
                 singleLine = true,
+                supportingText = {
+                    Text(
+                        "${displayedName.codePointCount(0, displayedName.length)} " +
+                            "/ $MAX_PRESET_NAME_LENGTH",
+                    )
+                },
             )
         },
         confirmButton = {

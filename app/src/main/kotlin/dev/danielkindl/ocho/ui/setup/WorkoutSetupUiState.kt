@@ -8,6 +8,7 @@ import dev.danielkindl.ocho.domain.model.TimerConfig
 import dev.danielkindl.ocho.domain.model.WorkoutMode
 import dev.danielkindl.ocho.domain.model.WorkoutPreset
 import dev.danielkindl.ocho.domain.model.formatDuration
+import dev.danielkindl.ocho.domain.model.limitPresetName
 import dev.danielkindl.ocho.domain.model.minutesSecondsToMillis
 import dev.danielkindl.ocho.domain.model.toPlan
 
@@ -200,7 +201,7 @@ data class WorkoutSetupUiState(
         }
         return WorkoutPreset(
             id = id,
-            name = name.trim().ifEmpty { defaultPresetName() },
+            name = name.trim().limitPresetName().ifEmpty { defaultPresetName() },
             mode = mode,
             totalMinutes = presetTotalMinutes,
             totalSeconds = presetTotalSeconds,

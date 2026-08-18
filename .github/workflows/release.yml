@@ -1,5 +1,7 @@
 name: Release
 
+permissions: {}
+
 on:
   push:
     tags:
@@ -23,16 +25,16 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v5.7.0
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: gradle
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -116,7 +118,7 @@ jobs:
           echo "Version checks passed for $TAG"
 
       - name: Run full test suite
-        run: ./gradlew testGithubDebugUnitTest --stacktrace
+        run: ./gradlew testGithubDebugUnitTest testPlayDebugUnitTest --stacktrace
 
       - name: Decode signing keystore
         env:
@@ -141,7 +143,7 @@ jobs:
         run: ./gradlew bundlePlayRelease assembleGithubRelease --stacktrace
 
       - name: Retain Play AAB
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: play-release-bundle
           path: app/build/outputs/bundle/playRelease/*.aab
@@ -168,7 +170,7 @@ jobs:
       # signature users can check via `gh attestation verify`. Unlike the checksum,
       # this cannot be reproduced by someone who only controls the release assets.
       - name: Attest build provenance
-        uses: actions/attest-build-provenance@v4
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4
         with:
           subject-path: app/build/outputs/apk/github/release/*.apk
 
@@ -197,7 +199,7 @@ jobs:
       # first asset and then fails on the second, leaving a release users cannot
       # download anything from. Drafts stay writable, so all assets land first.
       - name: Create draft release
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3
         with:
           tag_name: ${{ steps.version.outputs.VERSION }}
           name: "Ocho ${{ steps.version.outputs.VERSION }}"
@@ -236,6 +238,7 @@ jobs:
       - name: Publish the draft
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.version.outputs.VERSION }}
         run: |
-          gh release edit "${{ steps.version.outputs.VERSION }}" \
+          gh release edit "$RELEASE_TAG" \
             --draft=false --prerelease=false --latest
