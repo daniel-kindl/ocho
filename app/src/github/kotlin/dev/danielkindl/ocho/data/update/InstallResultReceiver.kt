@@ -15,13 +15,15 @@ class InstallResultReceiver : BroadcastReceiver() {
             PackageInstaller.STATUS_PENDING_USER_ACTION ->
                 intent.confirmationIntent()?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)?.let(context::startActivity)
             PackageInstaller.STATUS_SUCCESS ->
-                showToast(context, "${context.getString(R.string.app_name)} updated")
-            else -> showToast(context, installFailureMessage(intent, status))
+                showToast(context, context.getString(R.string.update_installed, context.getString(R.string.app_name)))
+            else -> showToast(context, installFailureMessage(context, intent, status))
         }
     }
 
-    private fun installFailureMessage(intent: Intent, status: Int): String =
-        "Update failed: ${intent.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE) ?: "status $status"}"
+    private fun installFailureMessage(context: Context, intent: Intent, status: Int): String =
+        intent.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE)?.let {
+            context.getString(R.string.update_install_failed, it)
+        } ?: context.getString(R.string.update_install_failed, "status $status")
 
     private fun showToast(context: Context, message: String) {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()

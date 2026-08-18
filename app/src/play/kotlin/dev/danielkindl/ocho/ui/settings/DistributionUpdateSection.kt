@@ -8,8 +8,10 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.danielkindl.ocho.R
 import dev.danielkindl.ocho.data.update.PlayUpdateState
 
 /** Settings controls for Play-managed flexible updates. */
@@ -29,44 +31,48 @@ fun DistributionUpdateSection(
         PlayUpdateState.UpToDate,
         is PlayUpdateState.Error,
         -> ListItem(
-            headlineContent = { Text("Check for updates") },
+            headlineContent = { Text(stringResource(R.string.update_check_for_updates)) },
             supportingContent = {
                 Text(
                     if (currentState is PlayUpdateState.UpToDate) {
-                        "You're up to date"
+                        stringResource(R.string.update_up_to_date)
                     } else {
-                        "Google Play"
+                        stringResource(R.string.update_play_store)
                     }
                 )
             },
             trailingContent = {
                 androidx.compose.material3.TextButton(onClick = viewModel::checkForUpdates) {
-                    Text("Check")
+                    Text(stringResource(R.string.update_check))
                 }
             },
         )
 
         PlayUpdateState.Checking -> ListItem(
-            headlineContent = { Text("Checking Play Store…") },
+            headlineContent = { Text(stringResource(R.string.update_checking_play_store)) },
         )
 
         PlayUpdateState.Available -> ListItem(
-            headlineContent = { Text("Update available") },
+            headlineContent = { Text(stringResource(R.string.update_available)) },
             trailingContent = {
-                Button(onClick = { viewModel.startUpdate(launcher) }) { Text("Update") }
+                Button(onClick = { viewModel.startUpdate(launcher) }) {
+                    Text(stringResource(R.string.update_action))
+                }
             },
         )
 
         is PlayUpdateState.Downloading -> ListItem(
             headlineContent = {
-                Text("Downloading update… ${currentState.progressPercent}%")
+                Text(stringResource(R.string.update_downloading_play, currentState.progressPercent))
             },
         )
 
         PlayUpdateState.Downloaded -> ListItem(
-            headlineContent = { Text("Update ready") },
+            headlineContent = { Text(stringResource(R.string.update_ready)) },
             trailingContent = {
-                Button(onClick = viewModel::completeUpdate) { Text("Restart") }
+                Button(onClick = viewModel::completeUpdate) {
+                    Text(stringResource(R.string.update_restart))
+                }
             },
         )
     }

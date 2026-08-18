@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,7 +43,7 @@ import dev.danielkindl.ocho.R
 fun <T> PresetsSection(
     presets: List<T>,
     getLabel: (T) -> String,
-    getSummary: (T) -> String,
+    getSummary: @Composable (T) -> String,
     onPresetClick: (T) -> Unit,
     onDeleteClick: (T) -> Unit,
     onSavePreset: () -> Unit,
@@ -57,7 +58,7 @@ fun <T> PresetsSection(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text("Presets", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.presets_title), style = MaterialTheme.typography.titleMedium)
             TextButton(onClick = onSavePreset, enabled = saveEnabled) {
                 Icon(
                     painterResource(R.drawable.ic_bookmark_plus),
@@ -65,7 +66,7 @@ fun <T> PresetsSection(
                     modifier = Modifier.size(18.dp),
                 )
                 Spacer(Modifier.width(4.dp))
-                Text("Save")
+                Text(stringResource(R.string.action_save))
             }
         }
         if (presets.isEmpty() && showEmptyMessage) {
@@ -98,7 +99,7 @@ fun <T> PresetsSection(
 @Composable
 private fun PresetsEmptyState() {
     Text(
-        "No saved presets yet. Save this workout to use it again.",
+        stringResource(R.string.presets_empty),
         modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp),
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -112,12 +113,15 @@ private fun PresetRow(
     onClick: () -> Unit,
     onDelete: (() -> Unit)?,
 ) {
+    val loadDescription = stringResource(R.string.preset_load_accessibility, label)
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = 64.dp)
             .clickable(onClick = onClick)
-            .semantics { contentDescription = "Load preset $label" }
+            .semantics {
+                contentDescription = loadDescription
+            }
             .padding(start = 12.dp, end = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -149,7 +153,7 @@ private fun DeletePresetIcon(label: String, onClick: () -> Unit) {
     IconButton(onClick = onClick, modifier = Modifier.size(48.dp)) {
         Icon(
             painterResource(R.drawable.ic_x),
-            contentDescription = "Delete $label",
+            contentDescription = stringResource(R.string.preset_delete_accessibility, label),
             modifier = Modifier.size(14.dp),
         )
     }

@@ -1,5 +1,7 @@
 package dev.danielkindl.ocho.ui.settings
 
+import android.content.Context
+import dev.danielkindl.ocho.R
 import dev.danielkindl.ocho.data.update.ApkInstaller
 import dev.danielkindl.ocho.data.update.DownloadStatus
 import dev.danielkindl.ocho.data.update.PendingDownload
@@ -38,10 +40,13 @@ class UpdateViewModelTest {
     private val pendingDownloadStore = mockk<PendingDownloadStore>()
     private val updateCheckCache = UpdateCheckCache()
     private val updateConfig = UpdateConfig("daniel-kindl/ocho", UpdateChannel.Stable, SemVer.parse("2.2.0"))
+    private val context = mockk<Context>(relaxed = true)
 
     @Before
     fun setUp() {
         Dispatchers.setMain(dispatcher)
+        every { context.getString(R.string.update_unofficial_asset) } returns "Update asset is not an official Ocho release"
+        every { context.getString(R.string.update_invalid_apk) } returns "Downloaded APK is not a valid Ocho update"
         coEvery { pendingDownloadStore.read() } returns null
         coEvery { pendingDownloadStore.write(any()) } just Runs
         coEvery { pendingDownloadStore.clear() } just Runs
@@ -50,6 +55,7 @@ class UpdateViewModelTest {
     }
     @After fun tearDown() = Dispatchers.resetMain()
     private fun viewModel() = UpdateViewModel(
+        context,
         updateConfig,
         updateRepository,
         updateDownloader,

@@ -107,6 +107,22 @@ app/src/play/                                       # Play-only source
 
 ---
 
+## Localization boundary
+
+The app is English-only today, but user-facing Android copy is kept in
+`app/src/main/res/values/strings.xml` and the generated locale configuration declares
+English as the default. Compose resolves text with `stringResource()` and quantity
+aware `pluralStringResource()`; services and receivers use `Context.getString()`.
+Setup and preset models expose structured durations and patterns rather than English
+labels, so future translations do not require changes to timing or persistence code.
+
+The Astro website follows the same boundary in `website/src/i18n/en.ts`, with shared
+access through `website/src/i18n/index.ts`. The repository's localization workflow,
+including how to add a second locale, is documented in
+[docs/LOCALIZATION.md](LOCALIZATION.md).
+
+---
+
 ## Session architecture
 
 A workout has to outlive the screen that started it. Rotation, backgrounding, and the

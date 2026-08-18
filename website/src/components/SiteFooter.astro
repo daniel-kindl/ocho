@@ -1,5 +1,6 @@
 ---
 import { withBase } from '../utils/paths';
+import { siteCopy as copy } from '../i18n';
 
 interface Props {
   currentPage?: 'home' | 'privacy';
@@ -12,7 +13,7 @@ const privacyHref = withBase('privacy-policy.html');
 <footer>
   <div class="page footer-inner">
     <span class="footer-wordmark">och<span>o</span></span>
-    <span>open source interval timer</span>
-    <div class="footer-links"><a href="https://github.com/daniel-kindl/ocho">Source</a><a href={privacyHref} aria-current={currentPage === 'privacy' ? 'page' : undefined}>Privacy</a><a href="https://github.com/daniel-kindl/ocho/issues">Support</a></div>
+    <span>{copy.footer.tag}</span>
+    <div class="footer-links"><a href="https://github.com/daniel-kindl/ocho">{copy.footer.source}</a><a href={privacyHref} aria-current={currentPage === 'privacy' ? 'page' : undefined}>{copy.footer.privacy}</a><a href="https://github.com/daniel-kindl/ocho/issues">{copy.footer.support}</a></div>
   </div>
 </footer>

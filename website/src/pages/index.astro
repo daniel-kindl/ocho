@@ -3,65 +3,62 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import DownloadActions from '../components/DownloadActions.astro';
 import Icon from '../components/Icon.astro';
 import PhoneMockup from '../components/PhoneMockup.astro';
+import { siteCopy as copy } from '../i18n';
 ---
 
 <BaseLayout
-  title="Ocho — interval timer for Android"
-  description="Ocho is an offline-first Android interval timer for EMOM, Tabata, AMRAP, and Custom Timer workouts."
+  title={copy.meta.homeTitle}
+  description={copy.meta.homeDescription}
 >
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-grid page">
         <div class="hero-copy">
-          <p class="eyebrow"><span>OCHO / 01</span><span>ANDROID TIMER</span></p>
-          <h1 id="hero-title">Keep your eyes<br><em>on the work.</em></h1>
-          <p class="hero-lede">A clear interval timer for EMOM, Tabata, AMRAP, and Custom Timer workouts. The clock stays big. The phase stays obvious.</p>
+          <p class="eyebrow"><span>{copy.home.hero.eyebrow}</span><span>{copy.home.hero.category}</span></p>
+          <h1 id="hero-title">{copy.home.hero.titleLineOne}<br><em>{copy.home.hero.titleLineTwo}</em></h1>
+          <p class="hero-lede">{copy.home.hero.lede}</p>
           <DownloadActions class="hero-actions" />
           <div class="hero-meta">
-            <span>Android 8.0+</span>
-            <span>No account</span>
-            <span>GPLv3</span>
+            {copy.home.hero.meta.map((item) => <span>{item}</span>)}
           </div>
         </div>
 
-        <div class="session-dashboard" aria-label="Ocho session preview">
+        <div class="session-dashboard" aria-label={copy.home.hero.previewLabel}>
           <div class="phone-stage">
-            <PhoneMockup image="screenshots/v3/tabata-work.png" small={false} alt="Ocho Tabata work phase screen showing the current interval." loading="eager" />
+          <PhoneMockup image="screenshots/v3/tabata-work.png" small={false} alt={copy.home.hero.imageAlt} loading="eager" />
           </div>
-          <div class="run-timeline" aria-label="Tabata run timeline">
+          <div class="run-timeline" aria-label={copy.home.hero.timelineLabel}>
             <span class="timeline-prepare"></span><span class="timeline-work"></span><span class="timeline-rest"></span><span class="timeline-work"></span><span class="timeline-rest"></span><span class="timeline-complete"></span>
           </div>
-          <div class="dashboard-meta"><span><Icon name="rotate-cw" />tabata</span><span>45s work / 15s rest</span></div>
+          <div class="dashboard-meta"><span><Icon name="rotate-cw" />{copy.home.hero.mode}</span><span>{copy.home.hero.timing}</span></div>
         </div>
       </div>
     </section>
 
-    <div class="signal-rail" aria-label="Ocho phase signals">
+    <div class="signal-rail" aria-label={copy.home.signals.label}>
       <div class="page signal-inner">
-        <span class="signal-label phase-prepare">Prepare</span>
-        <span class="signal-label phase-work">Work</span>
-        <span class="signal-label phase-rest">Rest</span>
-        <span class="signal-label phase-complete">Complete</span>
+        <span class="signal-label phase-prepare">{copy.home.signals.prepare}</span>
+        <span class="signal-label phase-work">{copy.home.signals.work}</span>
+        <span class="signal-label phase-rest">{copy.home.signals.rest}</span>
+        <span class="signal-label phase-complete">{copy.home.signals.complete}</span>
       </div>
     </div>
 
     <section class="section session-section" id="session" aria-labelledby="session-title">
       <div class="page feature-grid">
         <div class="feature-copy">
-          <p class="eyebrow"><span>OCHO / 02</span><span>THE SESSION</span></p>
-          <h2 id="session-title">The phase is the interface.</h2>
-          <p class="section-lede">Ocho does not hide the important part in a small label. Work and rest take over the screen, with sound and vibration at the same moment.</p>
+          <p class="eyebrow"><span>{copy.home.session.eyebrow}</span><span>{copy.home.session.category}</span></p>
+          <h2 id="session-title">{copy.home.session.title}</h2>
+          <p class="section-lede">{copy.home.session.lede}</p>
           <div class="signal-notes">
-            <div><span>01</span><strong>See it</strong><p>Full-screen colour and a large clock.</p></div>
-            <div><span>02</span><strong>Hear it</strong><p>A cue at every phase boundary.</p></div>
-            <div><span>03</span><strong>Feel it</strong><p>Vibration when the interval changes.</p></div>
+            {copy.home.session.notes.map((note) => <div><span>{note.index}</span><strong>{note.title}</strong><p>{note.body}</p></div>)}
           </div>
         </div>
         <figure class="setup-visual">
           <div class="screen-pair">
-            <PhoneMockup image="screenshots/v4/tabata-presets.png" class="setup-phone" alt="Ocho Tabata setup screen with duration pickers and a compact saved preset row." />
-            <PhoneMockup image="screenshots/v3/tabata-rest.png" class="rest-phone" alt="Ocho Tabata rest phase screen showing the recovery interval." />
+            <PhoneMockup image="screenshots/v4/tabata-presets.png" class="setup-phone" alt={copy.home.session.setupAlt} />
+            <PhoneMockup image="screenshots/v3/tabata-rest.png" class="rest-phone" alt={copy.home.session.restAlt} />
           </div>
-          <figcaption><span><Icon name="settings" />SETUP / TABATA</span><span><Icon name="activity" />REST / RECOVERY</span></figcaption>
+          <figcaption><span><Icon name="settings" />{copy.home.session.setupCaption}</span><span><Icon name="activity" />{copy.home.session.restCaption}</span></figcaption>
         </figure>
       </div>
     </section>
@@ -69,61 +66,40 @@ import PhoneMockup from '../components/PhoneMockup.astro';
     <section class="section modes-section" id="modes" aria-labelledby="modes-title">
       <div class="page">
         <div class="modes-heading">
-          <p class="eyebrow"><span>OCHO / 03</span><span>CHOOSE A RHYTHM</span></p>
-          <h2 id="modes-title">Choose your timer.</h2>
-          <p class="section-lede">Four formats. No feed, profile, or subscription between you and the start button.</p>
+          <p class="eyebrow"><span>{copy.home.modes.eyebrow}</span><span>{copy.home.modes.category}</span></p>
+          <h2 id="modes-title">{copy.home.modes.title}</h2>
+          <p class="section-lede">{copy.home.modes.lede}</p>
         </div>
         <div class="mode-gallery">
-          <div class="mode-legend" aria-label="Ocho workout modes">
-            <span><strong>EMOM</strong><small>continuous work</small></span>
-            <span><strong>Tabata</strong><small>work / rest</small></span>
-            <span><strong>AMRAP</strong><small>one unbroken block</small></span>
-            <span><strong>Custom</strong><small>sets / intervals</small></span>
+          <div class="mode-legend" aria-label={copy.home.modes.galleryLabel}>
+            {copy.home.modes.legend.map((item) => <span><strong>{item.name}</strong><small>{item.detail}</small></span>)}
           </div>
           <div class="mode-phone-row">
           <figure class="mode-phone mode-phone-home">
-            <PhoneMockup image="screenshots/v3/home.png" alt="Ocho home screen with EMOM, Tabata, AMRAP, and Custom Timer workout modes." />
-            <figcaption><span>01 / CHOOSE</span><span>pick a mode</span></figcaption>
+            <PhoneMockup image="screenshots/v3/home.png" alt={copy.home.modes.homeAlt} />
+            <figcaption><span>{copy.home.modes.flow[0].number}</span><span>{copy.home.modes.flow[0].detail}</span></figcaption>
           </figure>
           <figure class="mode-phone mode-phone-setup">
-            <PhoneMockup image="screenshots/v4/tabata-presets.png" class="setup-phone" alt="Ocho Tabata setup screen with duration pickers and a compact saved preset row." />
-            <figcaption><span>02 / CONFIGURE</span><span>set the pace</span></figcaption>
+            <PhoneMockup image="screenshots/v4/tabata-presets.png" class="setup-phone" alt={copy.home.modes.setupAlt} />
+            <figcaption><span>{copy.home.modes.flow[1].number}</span><span>{copy.home.modes.flow[1].detail}</span></figcaption>
           </figure>
           <figure class="mode-phone mode-phone-work">
-            <PhoneMockup image="screenshots/v3/tabata-work.png" alt="Ocho Tabata work phase showing the current interval." />
-            <figcaption><span>03 / START</span><span>keep moving</span></figcaption>
+            <PhoneMockup image="screenshots/v3/tabata-work.png" alt={copy.home.modes.workAlt} />
+            <figcaption><span>{copy.home.modes.flow[2].number}</span><span>{copy.home.modes.flow[2].detail}</span></figcaption>
           </figure>
           </div>
         </div>
         <div class="mode-cards">
-          <article class="mode-card">
-            <div class="mode-card-top"><span class="mode-number">01</span><svg class="icon mode-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"></path></svg></div>
-            <div class="mode-card-main"><h3>EMOM</h3><p>Every minute on the minute.</p></div>
-            <div class="mode-preview emom-preview" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
-            <span class="mode-card-meta">continuous work / interval cue</span>
-          </article>
-          <article class="mode-card mode-card-featured">
-            <div class="mode-card-top"><span class="mode-number">02</span><svg class="icon mode-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path></svg></div>
-            <div class="mode-card-main"><h3>Tabata</h3><p>Work and rest alternate.</p></div>
-            <div class="mode-preview tabata-preview" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
-            <span class="mode-card-meta">phase colour / audio cue</span>
-          </article>
-          <article class="mode-card">
-            <div class="mode-card-top"><span class="mode-number">03</span><svg class="icon mode-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.914 4a1.5 1.5 0 0 0-2.474-1.561l-9 9A1.5 1.5 0 0 0 5.5 14h4.002a.5.5 0 0 1 .471.666L8.086 20a1.5 1.5 0 0 0 2.475 1.56l9-9A1.5 1.5 0 0 0 18.5 10h-3.997a.5.5 0 0 1-.472-.667z"></path></svg></div>
-            <div class="mode-card-main"><h3>AMRAP</h3><p>As many rounds as possible.</p></div>
-            <div class="mode-preview amrap-preview" aria-hidden="true"><span></span></div>
-            <span class="mode-card-meta">one block / no interval beeps</span>
-          </article>
-          <article class="mode-card">
-            <div class="mode-card-top"><span class="mode-number">04</span><svg class="icon mode-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path></svg></div>
-            <div class="mode-card-main"><h3>Custom Timer</h3><p>Set your own rounds and intervals.</p></div>
-            <div class="mode-preview tabata-preview" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
-            <span class="mode-card-meta">work / rest / no final rest</span>
-          </article>
+          {copy.home.modes.cards.map((card, index) => <article class:list={['mode-card', index === 1 && 'mode-card-featured']}>
+            <div class="mode-card-top"><span class="mode-number">{card.number}</span><svg class="icon mode-icon" viewBox="0 0 24 24" aria-hidden="true"><path d={index === 0 ? 'M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2' : index === 2 ? 'M15.914 4a1.5 1.5 0 0 0-2.474-1.561l-9 9A1.5 1.5 0 0 0 5.5 14h4.002a.5.5 0 0 1 .471.666L8.086 20a1.5 1.5 0 0 0 2.475 1.56l9-9A1.5 1.5 0 0 0 18.5 10h-3.997a.5.5 0 0 1-.472-.667z' : 'M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8'}></path>{index !== 0 && index !== 2 && <path d="M21 3v5h-5"></path>}</svg></div>
+            <div class="mode-card-main"><h3>{card.name}</h3><p>{card.description}</p></div>
+            <div class:list={['mode-preview', `${card.preview}-preview`]} aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <span class="mode-card-meta">{card.meta}</span>
+          </article>)}
         </div>
-        <div class="coming-note" aria-label="More workout modes coming soon">
-          <span class="coming-note-index">04 / NEXT</span>
-          <span class="coming-note-text">More ways to train, coming soon.</span>
+        <div class="coming-note" aria-label={copy.home.modes.comingLabel}>
+          <span class="coming-note-index">{copy.home.modes.comingIndex}</span>
+          <span class="coming-note-text">{copy.home.modes.comingText}</span>
         </div>
       </div>
     </section>
@@ -131,18 +107,16 @@ import PhoneMockup from '../components/PhoneMockup.astro';
     <section class="section presets-section" id="presets" aria-labelledby="presets-title">
       <div class="page feature-grid">
         <div class="feature-copy">
-          <p class="eyebrow"><span>OCHO / 04</span><span>PRESETS</span></p>
-          <h2 id="presets-title">Keep the rhythm, lose the clutter.</h2>
-          <p class="section-lede">Saved workouts are compact rows rather than a wall of chips. Every mode keeps its useful details visible without pushing the timer controls out of view.</p>
+          <p class="eyebrow"><span>{copy.home.presets.eyebrow}</span><span>{copy.home.presets.category}</span></p>
+          <h2 id="presets-title">{copy.home.presets.title}</h2>
+          <p class="section-lede">{copy.home.presets.lede}</p>
           <div class="signal-notes">
-            <div><span>01</span><strong>Compact rows</strong><p>Name and summary stay together in a quiet two-line layout.</p></div>
-            <div><span>02</span><strong>Mode-aware details</strong><p>EMOM, Tabata, AMRAP, and Custom each explain their own timing.</p></div>
-            <div><span>03</span><strong>Safe naming</strong><p>A live 50-character counter keeps unusual names readable and stored safely.</p></div>
+            {copy.home.presets.notes.map((note) => <div><span>{note.index}</span><strong>{note.title}</strong><p>{note.body}</p></div>)}
           </div>
         </div>
         <figure class="presets-visual">
-          <PhoneMockup image="screenshots/v4/emom-presets.png" alt="Ocho EMOM setup screen with a compact saved preset row showing its timing summary." />
-          <figcaption><span><Icon name="activity" />EMOM / SAVED PRESET</span><span>summary stays visible</span></figcaption>
+          <PhoneMockup image="screenshots/v4/emom-presets.png" alt={copy.home.presets.alt} />
+          <figcaption><span><Icon name="activity" />{copy.home.presets.caption}</span><span>{copy.home.presets.detail}</span></figcaption>
         </figure>
       </div>
     </section>
@@ -150,55 +124,15 @@ import PhoneMockup from '../components/PhoneMockup.astro';
     <section class="section capture-section" id="screenshots" aria-labelledby="screenshots-title">
       <div class="page">
         <div class="capture-heading">
-          <p class="eyebrow"><span>OCHO / 05</span><span>THE FULL FLOW</span></p>
-          <h2 id="screenshots-title">Every phase stays obvious.</h2>
-          <p class="section-lede">Real Pixel 9a captures from choosing a mode to the final bell. EMOM stays continuous; Tabata makes work and rest unmistakable.</p>
+          <p class="eyebrow"><span>{copy.home.screenshots.eyebrow}</span><span>{copy.home.screenshots.category}</span></p>
+          <h2 id="screenshots-title">{copy.home.screenshots.title}</h2>
+          <p class="section-lede">{copy.home.screenshots.lede}</p>
         </div>
         <div class="capture-grid">
-          <figure class="capture-card">
-            <PhoneMockup image="screenshots/v3/home.png" alt="Ocho home screen with EMOM, Tabata, AMRAP, and Custom Timer workout modes." />
-            <figcaption><strong>01 / CHOOSE</strong><span>pick a mode</span></figcaption>
-          </figure>
-          <figure class="capture-card">
-            <PhoneMockup image="screenshots/v4/emom-presets.png" alt="Ocho EMOM setup screen with a compact saved preset row." />
-            <figcaption><strong>02 / EMOM + PRESETS</strong><span>set the interval and save it</span></figcaption>
-          </figure>
-          <figure class="capture-card">
-            <PhoneMockup image="screenshots/v3/prepare.png" alt="Ocho prepare countdown before the first interval." />
-            <figcaption><strong>03 / PREPARE</strong><span>get into position</span></figcaption>
-          </figure>
-          <figure class="capture-card">
-            <PhoneMockup image="screenshots/v3/emom-work.png" alt="Ocho EMOM work phase showing the current interval." />
-            <figcaption><strong>04 / EMOM WORK</strong><span>keep moving</span></figcaption>
-          </figure>
-          <figure class="capture-card">
-            <PhoneMockup image="screenshots/v3/emom-paused.png" alt="Ocho paused EMOM session with a clear resume control." />
-            <figcaption><strong>05 / PAUSED</strong><span>resume anytime</span></figcaption>
-          </figure>
-          <figure class="capture-card">
-            <PhoneMockup image="screenshots/v4/tabata-presets.png" alt="Ocho Tabata setup screen with work, rest, and a compact saved preset row." />
-            <figcaption><strong>06 / TABATA SETUP</strong><span>build the rhythm</span></figcaption>
-          </figure>
-          <figure class="capture-card">
-            <PhoneMockup image="screenshots/v3/tabata-work.png" alt="Ocho Tabata work phase showing the current interval." />
-            <figcaption><strong>07 / TABATA WORK</strong><span>push the interval</span></figcaption>
-          </figure>
-          <figure class="capture-card">
-            <PhoneMockup image="screenshots/v4/custom-presets.png" class="setup-phone" alt="Ocho Custom Timer setup screen with a compact saved preset row showing sets, work, and rest timing." />
-            <figcaption><strong>08 / CUSTOM + PRESETS</strong><span>make it yours</span></figcaption>
-          </figure>
-          <figure class="capture-card">
-            <PhoneMockup image="screenshots/v4/amrap-presets.png" class="setup-phone" alt="Ocho AMRAP setup screen with three distinct compact saved presets: Quick Start, Steady Pace, and Long Burn." />
-            <figcaption><strong>09 / AMRAP + PRESETS</strong><span>compare distinct total durations</span></figcaption>
-          </figure>
-          <figure class="capture-card">
-            <PhoneMockup image="screenshots/v3/tabata-rest.png" alt="Ocho Tabata rest phase showing the recovery interval." />
-            <figcaption><strong>10 / TABATA REST</strong><span>recover for the next round</span></figcaption>
-          </figure>
-          <figure class="capture-card">
-            <PhoneMockup image="screenshots/v3/finish.png" alt="Ocho complete screen showing the finished workout summary." />
-            <figcaption><strong>11 / COMPLETE</strong><span>finish strong</span></figcaption>
-          </figure>
+          {copy.home.screenshots.items.map((item) => <figure class="capture-card">
+            <PhoneMockup image={item.image} class={item.setup ? 'setup-phone' : undefined} alt={item.alt} />
+            <figcaption><strong>{item.title}</strong><span>{item.detail}</span></figcaption>
+          </figure>)}
         </div>
       </div>
     </section>
@@ -206,13 +140,13 @@ import PhoneMockup from '../components/PhoneMockup.astro';
     <section class="download-section" id="download" aria-labelledby="download-title">
       <div class="page download-grid">
         <div>
-          <p class="eyebrow"><span>OCHO / 06</span><span>GET THE APP</span></p>
-          <h2 id="download-title">Start with the build that exists today.</h2>
+          <p class="eyebrow"><span>{copy.home.download.eyebrow}</span><span>{copy.home.download.category}</span></p>
+          <h2 id="download-title">{copy.home.download.title}</h2>
         </div>
         <div class="download-copy">
-          <p>Google Play is coming soon. The current GitHub release is available as a manually installed APK for Android 8.0 and later. The GitHub updater accepts only Ocho's official release asset and lets Android verify the signing key before an update is installed.</p>
+          <p>{copy.home.download.body}</p>
           <DownloadActions />
-          <p class="download-note">The GitHub build may ask for permission to install an app from an unknown source.</p>
+          <p class="download-note">{copy.home.download.note}</p>
         </div>
       </div>
     </section>

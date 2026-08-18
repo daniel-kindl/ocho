@@ -1,8 +1,11 @@
+---
+import { siteCopy as copy } from '../../i18n';
+---
 <!doctype html>
-<html lang="en">
+<html lang={copy.locale}>
 <head>
   <meta charset="utf-8">
-  <title>Ocho phone mockup export</title>
+  <title>{copy.tools.mockupExportTitle}</title>
   <style>
     :root {
       --work: #b3282d;
@@ -46,7 +49,7 @@
   </style>
 </head>
 <body>
-  <main class="canvas">
+    <main class="canvas" data-screen-alt-prefix={copy.tools.mockupScreenAltPrefix}>
     <div id="phone" class="phone-shell">
       <div class="phone-speaker" aria-hidden="true"></div>
       <div id="screen" class="phone-screen"><img id="screen-image" alt=""></div>
@@ -76,7 +79,8 @@
     document.getElementById("phone").classList.add(styleKey);
     document.getElementById("screen").classList.add(styleKey);
     document.getElementById("screen-image").src = screens[selected];
-    document.getElementById("screen-image").alt = `Ocho ${selected} screen`;
+    const altPrefix = document.querySelector('.canvas').dataset.screenAltPrefix;
+    document.getElementById("screen-image").alt = `${altPrefix}${selected} screen`;
   </script>
 </body>
 </html>

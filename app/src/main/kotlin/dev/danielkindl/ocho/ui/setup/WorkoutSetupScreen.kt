@@ -37,7 +37,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.annotation.StringRes
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.danielkindl.ocho.R
@@ -46,7 +48,6 @@ import dev.danielkindl.ocho.domain.model.PREPARE_COUNTDOWN_MILLIS
 import dev.danielkindl.ocho.domain.model.SessionRequest
 import dev.danielkindl.ocho.domain.model.WorkoutMode
 import dev.danielkindl.ocho.domain.model.WorkoutPreset
-import dev.danielkindl.ocho.domain.model.formatDuration
 import dev.danielkindl.ocho.domain.model.limitPresetName
 import dev.danielkindl.ocho.domain.model.toPlan
 import dev.danielkindl.ocho.ui.components.DeletePresetDialog
@@ -57,6 +58,9 @@ import dev.danielkindl.ocho.ui.components.RunTimeline
 import dev.danielkindl.ocho.ui.components.SavePresetDialog
 import dev.danielkindl.ocho.ui.components.WheelPicker
 import dev.danielkindl.ocho.ui.components.toRunSegments
+import dev.danielkindl.ocho.ui.text.defaultPresetNameText
+import dev.danielkindl.ocho.ui.text.patternText
+import dev.danielkindl.ocho.ui.text.summaryText
 
 /**
  * Configures a workout of any mode.
@@ -77,6 +81,7 @@ fun WorkoutSetupScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val presets by viewModel.presets.collectAsStateWithLifecycle()
+    val defaultPresetName = state.defaultPresetNameText()
     var showSaveDialog by rememberSaveable { mutableStateOf(false) }
     var dialogPresetName by rememberSaveable { mutableStateOf("") }
     var presetToDelete by remember { mutableStateOf<WorkoutPreset?>(null) }
@@ -86,7 +91,10 @@ fun WorkoutSetupScreen(
             name = dialogPresetName,
             onNameChange = { dialogPresetName = it },
             onSave = {
-                viewModel.savePreset(dialogPresetName.limitPresetName())
+                viewModel.savePreset(
+                    name = dialogPresetName.limitPresetName(),
+                    fallbackName = defaultPresetName,
+                )
                 showSaveDialog = false
             },
             onDismiss = { showSaveDialog = false },
@@ -131,9 +139,7 @@ fun WorkoutSetupScreen(
 
                 if (state.intervalExceedsTotal) {
                     ErrorPlate(
-                        message = "The interval is longer than the total duration, " +
-                            "so no interval beeps will fire. Shorten the interval or " +
-                            "lengthen the workout.",
+                        message = stringResource(R.string.setup_interval_error),
                     )
                 }
 
@@ -148,11 +154,11 @@ fun WorkoutSetupScreen(
                 PresetsSection(
                     presets = presets,
                     getLabel = { it.name },
-                    getSummary = WorkoutPreset::displaySummary,
+                    getSummary = { it.summaryText() },
                     onPresetClick = viewModel::loadPreset,
                     onDeleteClick = { presetToDelete = it },
                     onSavePreset = {
-                        dialogPresetName = state.defaultPresetName()
+                        dialogPresetName = defaultPresetName
                         showSaveDialog = true
                     },
                     saveEnabled = state.isValid,
@@ -170,10 +176,13 @@ private fun WorkoutSetupTopBar(
     onNavigateUp: () -> Unit,
 ) {
     TopAppBar(
-        title = { Text(mode.title()) },
+        title = { Text(stringResource(mode.titleRes())) },
         navigationIcon = {
             IconButton(onClick = onNavigateUp) {
-                Icon(painterResource(R.drawable.ic_arrow_left), contentDescription = "Back")
+                Icon(
+                    painterResource(R.drawable.ic_arrow_left),
+                    contentDescription = stringResource(R.string.action_back),
+                )
             }
         },
     )
@@ -203,7 +212,7 @@ private fun WorkoutSetupBottomBar(
                 modifier = Modifier.size(20.dp),
             )
             Spacer(Modifier.width(10.dp))
-            Text("Start", style = MaterialTheme.typography.titleLarge)
+            Text(stringResource(R.string.action_start), style = MaterialTheme.typography.titleLarge)
         }
     }
 }
@@ -219,7 +228,7 @@ private fun WorkoutModePickers(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             CompactDurationPicker(
-                label = "Total",
+                label = stringResource(R.string.setup_total),
                 minutes = state.totalMinutes,
                 seconds = state.totalSeconds,
                 onMinutesChange = viewModel::setTotalMinutes,
@@ -227,7 +236,7 @@ private fun WorkoutModePickers(
                 modifier = Modifier.weight(1f),
             )
             CompactDurationPicker(
-                label = "Interval",
+                label = stringResource(R.string.setup_interval),
                 minutes = state.intervalMinutes,
                 seconds = state.intervalSeconds,
                 onMinutesChange = viewModel::setIntervalMinutes,
@@ -238,7 +247,7 @@ private fun WorkoutModePickers(
 
         WorkoutMode.TABATA -> Column {
             CompactDurationPicker(
-                label = "Total duration",
+                label = stringResource(R.string.setup_total_duration),
                 minutes = state.totalMinutes,
                 seconds = state.totalSeconds,
                 onMinutesChange = viewModel::setTotalMinutes,
@@ -248,14 +257,14 @@ private fun WorkoutModePickers(
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             PhasePickerRow(
                 work = DurationPickerState(
-                    label = "Work",
+                    label = stringResource(R.string.setup_work),
                     minutes = state.workMinutes,
                     seconds = state.workSeconds,
                     onMinutesChange = viewModel::setWorkMinutes,
                     onSecondsChange = viewModel::setWorkSeconds,
                 ),
                 rest = DurationPickerState(
-                    label = "Rest",
+                    label = stringResource(R.string.setup_rest),
                     minutes = state.restMinutes,
                     seconds = state.restSeconds,
                     onMinutesChange = viewModel::setRestMinutes,
@@ -265,7 +274,7 @@ private fun WorkoutModePickers(
         }
 
         WorkoutMode.AMRAP -> CompactDurationPicker(
-            label = "Total duration",
+            label = stringResource(R.string.setup_total_duration),
             minutes = state.totalMinutes,
             seconds = state.totalSeconds,
             onMinutesChange = viewModel::setTotalMinutes,
@@ -275,7 +284,7 @@ private fun WorkoutModePickers(
 
         WorkoutMode.CUSTOM -> Column {
             CountPicker(
-                label = "Sets",
+                label = stringResource(R.string.setup_sets),
                 count = state.setCount,
                 onCountChange = viewModel::setCount,
                 compact = true,
@@ -283,14 +292,14 @@ private fun WorkoutModePickers(
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             PhasePickerRow(
                 work = DurationPickerState(
-                    label = "Work",
+                    label = stringResource(R.string.setup_work),
                     minutes = state.workMinutes,
                     seconds = state.workSeconds,
                     onMinutesChange = viewModel::setWorkMinutes,
                     onSecondsChange = viewModel::setWorkSeconds,
                 ),
                 rest = DurationPickerState(
-                    label = "Rest",
+                    label = stringResource(R.string.setup_rest),
                     minutes = state.restMinutes,
                     seconds = state.restSeconds,
                     onMinutesChange = viewModel::setRestMinutes,
@@ -327,7 +336,7 @@ private fun SetupSummary(state: WorkoutSetupUiState) {
             }
             Spacer(Modifier.height(8.dp))
             Text(
-                text = state.patternLabel,
+                text = state.patternText(),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface,
             )
@@ -407,12 +416,13 @@ private fun CompactDurationPicker(
     )
 }
 
-/** Screen title for a mode. EMOM and AMRAP are acronyms and stay capitalised. */
-private fun WorkoutMode.title(): String = when (this) {
-    WorkoutMode.EMOM -> "EMOM"
-    WorkoutMode.TABATA -> "Tabata"
-    WorkoutMode.AMRAP -> "AMRAP"
-    WorkoutMode.CUSTOM -> "Custom Timer"
+/** Resource-backed screen title for a mode. */
+@StringRes
+private fun WorkoutMode.titleRes(): Int = when (this) {
+    WorkoutMode.EMOM -> R.string.mode_emom_title
+    WorkoutMode.TABATA -> R.string.mode_tabata_title
+    WorkoutMode.AMRAP -> R.string.mode_amrap_title
+    WorkoutMode.CUSTOM -> R.string.mode_custom_title
 }
 
 private fun WorkoutMode.iconRes(): Int = when (this) {
@@ -420,31 +430,6 @@ private fun WorkoutMode.iconRes(): Int = when (this) {
     WorkoutMode.TABATA -> R.drawable.ic_rotate_cw
     WorkoutMode.AMRAP -> R.drawable.ic_zap
     WorkoutMode.CUSTOM -> R.drawable.ic_rotate_cw
-}
-
-/** Concise, mode-specific details shown below a saved preset's name. */
-private fun WorkoutPreset.displaySummary(): String {
-    val total = formatDuration(totalMinutes, totalSeconds)
-    return when (mode) {
-        WorkoutMode.EMOM ->
-            "$total total · every ${formatDuration(intervalMinutes, intervalSeconds)}"
-
-        WorkoutMode.TABATA ->
-            "$total total · ${formatDuration(workMinutes, workSeconds)} work · " +
-                "${formatDuration(restMinutes, restSeconds)} rest"
-
-        WorkoutMode.AMRAP -> "$total total"
-
-        WorkoutMode.CUSTOM -> {
-            val work = formatDuration(workMinutes, workSeconds)
-            val rest = formatDuration(restMinutes, restSeconds)
-            if (restMinutes > 0 || restSeconds > 0) {
-                "$setCount sets · $work work · $rest rest"
-            } else {
-                "$setCount sets · $work work"
-            }
-        }
-    }
 }
 
 private val MAX_CONTENT_WIDTH = 640.dp
@@ -485,12 +470,12 @@ private fun CountPicker(
                 formatter = { "%02d".format(it + 1) },
                 itemHeight = if (compact) 32.dp else 44.dp,
                 pickerWidth = if (compact) 54.dp else 80.dp,
-                contentDescription = "Sets",
+                contentDescription = stringResource(R.string.setup_sets),
             )
         }
         Spacer(Modifier.height(4.dp))
         Text(
-            text = "sets",
+            text = stringResource(R.string.setup_sets_unit),
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

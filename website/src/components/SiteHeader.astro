@@ -1,6 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import { withBase } from '../utils/paths';
+import { siteCopy as copy } from '../i18n';
 
 interface Props {
   currentPage?: 'home' | 'privacy';
@@ -11,19 +12,19 @@ const homeHref = withBase('');
 const privacyHref = withBase('privacy-policy.html');
 ---
 
-<a class="skip-link" href="#main-content">Skip to content</a>
+<a class="skip-link" href="#main-content">{copy.navigation.skipToContent}</a>
 
 <header class="site-header">
   <div class="page nav-shell">
-    <a class="wordmark" href={homeHref} aria-label="Ocho home">och<span>o</span></a>
-    <p class="nav-context"><Icon name="activity" class="icon icon-sm" /><span class="nav-pulse" aria-hidden="true"></span>Android interval timer</p>
-    <nav aria-label="Primary navigation">
-      <a href={`${homeHref}#session`}>Session</a>
-      <a href={`${homeHref}#modes`}>Modes</a>
-      {currentPage === 'home' && <a href={`${homeHref}#presets`}>Presets</a>}
-      {currentPage === 'home' && <a href={`${homeHref}#screenshots`}>Screenshots</a>}
-      <a href={`${homeHref}#download`}>Download</a>
-      <a href={privacyHref} aria-current={currentPage === 'privacy' ? 'page' : undefined}>Privacy</a>
+    <a class="wordmark" href={homeHref} aria-label={copy.navigation.homeLabel}>och<span>o</span></a>
+    <p class="nav-context"><Icon name="activity" class="icon icon-sm" /><span class="nav-pulse" aria-hidden="true"></span>{copy.navigation.context}</p>
+    <nav aria-label={copy.navigation.primaryLabel}>
+      <a href={`${homeHref}#session`}>{copy.navigation.session}</a>
+      <a href={`${homeHref}#modes`}>{copy.navigation.modes}</a>
+      {currentPage === 'home' && <a href={`${homeHref}#presets`}>{copy.navigation.presets}</a>}
+      {currentPage === 'home' && <a href={`${homeHref}#screenshots`}>{copy.navigation.screenshots}</a>}
+      <a href={`${homeHref}#download`}>{copy.navigation.download}</a>
+      <a href={privacyHref} aria-current={currentPage === 'privacy' ? 'page' : undefined}>{copy.navigation.privacy}</a>
     </nav>
   </div>
 </header>

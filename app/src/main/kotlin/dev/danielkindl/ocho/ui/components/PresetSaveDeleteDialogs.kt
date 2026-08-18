@@ -6,6 +6,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import dev.danielkindl.ocho.R
 import dev.danielkindl.ocho.domain.model.MAX_PRESET_NAME_LENGTH
 import dev.danielkindl.ocho.domain.model.limitPresetName
 
@@ -25,26 +27,29 @@ fun SavePresetDialog(
     val displayedName = name.limitPresetName()
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Save Preset") },
+        title = { Text(stringResource(R.string.preset_save_title)) },
         text = {
             OutlinedTextField(
                 value = displayedName,
                 onValueChange = { onNameChange(it.limitPresetName()) },
-                label = { Text("Preset name") },
+                label = { Text(stringResource(R.string.preset_name_label)) },
                 singleLine = true,
                 supportingText = {
                     Text(
-                        "${displayedName.codePointCount(0, displayedName.length)} " +
-                            "/ $MAX_PRESET_NAME_LENGTH",
+                        stringResource(
+                            R.string.preset_name_counter,
+                            displayedName.codePointCount(0, displayedName.length),
+                            MAX_PRESET_NAME_LENGTH,
+                        ),
                     )
                 },
             )
         },
         confirmButton = {
-            TextButton(onClick = onSave) { Text("Save") }
+            TextButton(onClick = onSave) { Text(stringResource(R.string.action_save)) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel") }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
         },
     )
 }
@@ -58,15 +63,15 @@ fun DeletePresetDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Delete Preset") },
-        text = { Text("Delete \"$presetName\"?") },
+        title = { Text(stringResource(R.string.preset_delete_title)) },
+        text = { Text(stringResource(R.string.preset_delete_message, presetName)) },
         confirmButton = {
             TextButton(onClick = onConfirm) {
-                Text("Delete", color = MaterialTheme.colorScheme.error)
+                Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel") }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
         },
     )
 }

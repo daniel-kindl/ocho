@@ -160,10 +160,13 @@ fun SettingsContent(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Settings") },
+                title = { Text(stringResource(R.string.settings_title)) },
                 navigationIcon = {
                     IconButton(onClick = actions.onNavigateUp) {
-                        Icon(painterResource(R.drawable.ic_arrow_left), contentDescription = "Back")
+                        Icon(
+                            painterResource(R.drawable.ic_arrow_left),
+                            contentDescription = stringResource(R.string.action_back),
+                        )
                     }
                 },
             )
@@ -189,7 +192,7 @@ fun SettingsContent(
 
             SettingsNotificationsSection(notificationsAllowed, actions)
 
-            SettingsGroup(title = "Updates") {
+            SettingsGroup(title = stringResource(R.string.settings_group_updates)) {
                 actions.updateSection()
             }
 
@@ -206,45 +209,48 @@ private fun SettingsWorkoutSection(
     settings: UserSettings,
     actions: SettingsContentActions,
 ) {
-    SettingsGroup(title = "Workout") {
+    val soundLabel = stringResource(R.string.settings_sound)
+    val vibrationLabel = stringResource(R.string.settings_vibration)
+    val countdownLabel = stringResource(R.string.settings_countdown_beeps)
+    SettingsGroup(title = stringResource(R.string.settings_group_workout)) {
         ListItem(
             leadingContent = {
                 Icon(Icons.AutoMirrored.Outlined.VolumeUp, contentDescription = null)
             },
-            headlineContent = { Text("Sound") },
-            supportingContent = { Text("Timer event beeps · alarm volume · ignores silent mode") },
+            headlineContent = { Text(stringResource(R.string.settings_sound)) },
+            supportingContent = { Text(stringResource(R.string.settings_sound_description)) },
             trailingContent = {
                 Switch(
                     checked = settings.soundEnabled,
                     onCheckedChange = actions.onSoundEnabled,
-                    modifier = Modifier.semantics { contentDescription = "Sound" },
+                    modifier = Modifier.semantics { contentDescription = soundLabel },
                 )
             },
         )
         SettingsDivider()
         ListItem(
             leadingContent = { Icon(painterResource(R.drawable.ic_zap), contentDescription = null) },
-            headlineContent = { Text("Vibration") },
-            supportingContent = { Text("Timer event vibrations") },
+            headlineContent = { Text(stringResource(R.string.settings_vibration)) },
+            supportingContent = { Text(stringResource(R.string.settings_vibration_description)) },
             trailingContent = {
                 Switch(
                     checked = settings.vibrationEnabled,
                     onCheckedChange = actions.onVibrationEnabled,
-                    modifier = Modifier.semantics { contentDescription = "Vibration" },
+                    modifier = Modifier.semantics { contentDescription = vibrationLabel },
                 )
             },
         )
         SettingsDivider()
         ListItem(
             leadingContent = { Icon(painterResource(R.drawable.ic_rotate_cw), contentDescription = null) },
-            headlineContent = { Text("Countdown beeps") },
-            supportingContent = { Text("Last 3 seconds of each interval") },
+            headlineContent = { Text(stringResource(R.string.settings_countdown_beeps)) },
+            supportingContent = { Text(stringResource(R.string.settings_countdown_beeps_description)) },
             trailingContent = {
                 Switch(
                     checked = settings.countdownBeepsEnabled,
                     onCheckedChange = actions.onCountdownBeepsEnabled,
                     enabled = settings.soundEnabled,
-                    modifier = Modifier.semantics { contentDescription = "Countdown beeps" },
+                    modifier = Modifier.semantics { contentDescription = countdownLabel },
                 )
             },
         )
@@ -256,7 +262,20 @@ private fun SettingsNotificationsSection(
     notificationsAllowed: Boolean,
     actions: SettingsContentActions,
 ) {
-    SettingsGroup(title = "Notifications") {
+    val allowNotificationsLabel = stringResource(
+        R.string.settings_allow_notifications_accessibility,
+    )
+    val manageNotificationsLabel = stringResource(
+        R.string.settings_manage_notifications_accessibility,
+    )
+    val notificationState = stringResource(
+        if (notificationsAllowed) {
+            R.string.settings_allowed_state
+        } else {
+            R.string.settings_not_allowed_state
+        }
+    )
+    SettingsGroup(title = stringResource(R.string.settings_notifications)) {
         ListItem(
             leadingContent = { Icon(Icons.Outlined.Notifications, contentDescription = null) },
             headlineContent = { Text(stringResource(R.string.settings_notifications)) },
@@ -283,22 +302,24 @@ private fun SettingsNotificationsSection(
                 {
                     TextButton(
                         onClick = actions.onOpenNotifications,
-                        modifier = Modifier.semantics { contentDescription = "Allow notifications" },
-                    ) { Text("Allow") }
+                        modifier = Modifier.semantics {
+                            contentDescription = allowNotificationsLabel
+                        },
+                    ) { Text(stringResource(R.string.settings_allow)) }
                 }
             },
             modifier = Modifier
                 .clickable(
                     role = Role.Button,
                     onClickLabel = if (notificationsAllowed) {
-                        "Manage notification access"
+                        manageNotificationsLabel
                     } else {
-                        "Allow notifications"
+                        allowNotificationsLabel
                     },
                     onClick = actions.onOpenNotifications,
                 )
                 .semantics {
-                    stateDescription = if (notificationsAllowed) "Allowed" else "Not allowed"
+                    stateDescription = notificationState
                 },
         )
     }
@@ -306,37 +327,37 @@ private fun SettingsNotificationsSection(
 
 @Composable
 private fun SettingsAboutSection(actions: SettingsContentActions) {
-    SettingsGroup(title = "About") {
+    SettingsGroup(title = stringResource(R.string.settings_group_about)) {
         ListItem(
-            headlineContent = { Text("Feedback") },
-            supportingContent = { Text("Send feedback or report an issue") },
+            headlineContent = { Text(stringResource(R.string.settings_feedback)) },
+            supportingContent = { Text(stringResource(R.string.settings_feedback_description)) },
             trailingContent = { SettingsChevron() },
             modifier = Modifier.clickable(
                 role = Role.Button,
-                onClickLabel = "Open feedback",
+                onClickLabel = stringResource(R.string.settings_open_feedback),
                 onClick = actions.onOpenFeedback,
             ),
         )
         SettingsDivider()
         // Required, not decorative: bundled notices must travel with every copy.
         ListItem(
-            headlineContent = { Text("Licences") },
-            supportingContent = { Text("Open-source notices") },
+            headlineContent = { Text(stringResource(R.string.settings_licences)) },
+            supportingContent = { Text(stringResource(R.string.settings_licences_description)) },
             trailingContent = { SettingsChevron() },
             modifier = Modifier.clickable(
                 role = Role.Button,
-                onClickLabel = "Open licences",
+                onClickLabel = stringResource(R.string.settings_open_licences),
                 onClick = actions.onOpenLicenses,
             ),
         )
         SettingsDivider()
         ListItem(
-            headlineContent = { Text("Privacy Policy") },
-            supportingContent = { Text("How Ocho handles data") },
+            headlineContent = { Text(stringResource(R.string.settings_privacy_policy)) },
+            supportingContent = { Text(stringResource(R.string.settings_privacy_policy_description)) },
             trailingContent = { SettingsChevron() },
             modifier = Modifier.clickable(
                 role = Role.Button,
-                onClickLabel = "Open privacy policy",
+                onClickLabel = stringResource(R.string.settings_open_privacy_policy),
                 onClick = actions.onOpenPrivacyPolicy,
             ),
         )
@@ -385,11 +406,11 @@ private fun SettingsFooter(versionName: String) {
             painter = painterResource(
                 if (isSystemInDarkTheme()) R.drawable.wordmark_dark else R.drawable.wordmark_light
             ),
-            contentDescription = "Ocho",
+            contentDescription = stringResource(R.string.settings_logo_accessibility),
             modifier = Modifier.height(40.dp),
         )
         val authorLink = buildAnnotatedString {
-            append("Made by ")
+            append(stringResource(R.string.settings_made_by))
             withLink(
                 LinkAnnotation.Url(
                     url = "https://daniel-kindl.github.io/",
@@ -410,7 +431,7 @@ private fun SettingsFooter(versionName: String) {
             modifier = Modifier.padding(top = 8.dp),
         )
         Text(
-            text = "v$versionName",
+            text = stringResource(R.string.settings_version, versionName),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
             textAlign = TextAlign.Center,
@@ -454,10 +475,13 @@ private fun openFeedback(context: Context, versionName: String) {
         Intent.ACTION_SENDTO,
         "mailto:$FEEDBACK_EMAIL".toUri(),
     ).apply {
-        putExtra(Intent.EXTRA_SUBJECT, "Ocho feedback (v$versionName)")
+        putExtra(
+            Intent.EXTRA_SUBJECT,
+            context.getString(R.string.feedback_subject, versionName),
+        )
         putExtra(
             Intent.EXTRA_TEXT,
-            "Please describe your feedback or issue here.\n\nOcho version: $versionName",
+            context.getString(R.string.feedback_body, versionName),
         )
     }
     val target = if (emailIntent.resolveActivity(context.packageManager) != null) {

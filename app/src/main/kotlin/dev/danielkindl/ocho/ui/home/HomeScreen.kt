@@ -53,7 +53,10 @@ fun HomeScreen(
                 title = { Text(stringResource(R.string.app_name)) },
                 actions = {
                     IconButton(onClick = onOpenSettings) {
-                        Icon(painterResource(R.drawable.ic_settings), contentDescription = "Settings")
+                        Icon(
+                            painterResource(R.drawable.ic_settings),
+                            contentDescription = stringResource(R.string.accessibility_settings),
+                        )
                     }
                 },
             )
@@ -70,7 +73,7 @@ fun HomeScreen(
             Spacer(Modifier.height(8.dp))
 
             Text(
-                "Choose a timer",
+                stringResource(R.string.home_choose_timer),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -78,33 +81,33 @@ fun HomeScreen(
             DistributionUpdateBanner()
 
             TimerTypeCard(
-                title = "EMOM",
-                subtitle = "Every minute on the minute",
-                description = "Repeat a timed interval with a beep at each minute.",
+                title = stringResource(R.string.mode_emom_title),
+                subtitle = stringResource(R.string.mode_emom_subtitle),
+                description = stringResource(R.string.mode_emom_description),
                 icon = painterResource(R.drawable.ic_activity),
                 onClick = { onOpenMode(WorkoutMode.EMOM) },
             )
 
             TimerTypeCard(
-                title = "Tabata",
-                subtitle = "Alternating work and rest",
-                description = "Work and rest phases alternate, each with its own colour and beep.",
+                title = stringResource(R.string.mode_tabata_title),
+                subtitle = stringResource(R.string.mode_tabata_subtitle),
+                description = stringResource(R.string.mode_tabata_description),
                 icon = painterResource(R.drawable.ic_rotate_cw),
                 onClick = { onOpenMode(WorkoutMode.TABATA) },
             )
 
             TimerTypeCard(
-                title = "AMRAP",
-                subtitle = "As many rounds as possible",
-                description = "One unbroken block with no interval beeps, counting down to the finish.",
+                title = stringResource(R.string.mode_amrap_title),
+                subtitle = stringResource(R.string.mode_amrap_subtitle),
+                description = stringResource(R.string.mode_amrap_description),
                 icon = painterResource(R.drawable.ic_zap),
                 onClick = { onOpenMode(WorkoutMode.AMRAP) },
             )
 
             TimerTypeCard(
-                title = "Custom Timer",
-                subtitle = "Custom sets and intervals",
-                description = "Set your own rounds, work time, and rest time.",
+                title = stringResource(R.string.mode_custom_title),
+                subtitle = stringResource(R.string.mode_custom_subtitle),
+                description = stringResource(R.string.mode_custom_description),
                 icon = painterResource(R.drawable.ic_rotate_cw),
                 onClick = { onOpenMode(WorkoutMode.CUSTOM) },
             )

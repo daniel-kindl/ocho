@@ -13,6 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -95,10 +97,10 @@ fun SessionScreen(
 @Composable
 private fun PrepareContent(secondsRemaining: Int, onPlate: Color, onStop: () -> Unit) {
     SessionColumn {
-        PhaseLabel("Prepare", onPlate)
+        PhaseLabel(stringResource(R.string.phase_prepare), onPlate)
         PhaseClock(secondsRemaining.toString(), onPlate)
         SecondarySessionControl(
-            label = "Stop",
+            label = stringResource(R.string.action_stop),
             onPlate = onPlate,
             onClick = onStop,
             icon = painterResource(R.drawable.ic_square),
@@ -109,17 +111,32 @@ private fun PrepareContent(secondsRemaining: Int, onPlate: Color, onStop: () -> 
 @Composable
 private fun CompleteContent(state: SessionSnapshot, onPlate: Color, onDone: () -> Unit) {
     SessionColumn {
-        PhaseLabel("Complete", onPlate)
+        PhaseLabel(stringResource(R.string.phase_complete), onPlate)
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             PhaseClock(state.elapsedMillis.formatElapsed(), onPlate)
             // AMRAP reports no round count, since its rounds are whatever the athlete
             // managed. Omitted rather than shown as zero.
             if (state.totalRounds > 0) {
                 Spacer(Modifier.height(8.dp))
-                SubduedLine("${state.totalRounds} ${state.mode.progressUnit()}", onPlate)
+                SubduedLine(
+                    pluralStringResource(
+                        if (state.mode == WorkoutMode.CUSTOM) {
+                            R.plurals.session_set_count
+                        } else {
+                            R.plurals.session_round_count
+                        },
+                        state.totalRounds,
+                        state.totalRounds,
+                    ),
+                    onPlate,
+                )
             }
         }
-        SecondarySessionControl(label = "Done", onPlate = onPlate, onClick = onDone)
+        SecondarySessionControl(
+            label = stringResource(R.string.action_done),
+            onPlate = onPlate,
+            onClick = onDone,
+        )
     }
 }
 
@@ -131,18 +148,27 @@ private fun RunningContent(
     onStop: () -> Unit,
 ) {
     val isPaused = state.status == SessionStatus.Paused
-    val phaseName = if (state.phase == Phase.REST) "Rest" else "Work"
+    val phaseName = stringResource(
+        if (state.phase == Phase.REST) R.string.phase_rest else R.string.phase_work,
+    )
 
     SessionColumn {
-        PhaseLabel(if (isPaused) "$phaseName · paused" else phaseName, onPlate)
+        PhaseLabel(
+            if (isPaused) stringResource(R.string.phase_paused, phaseName) else phaseName,
+            onPlate,
+        )
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             PhaseClock(state.remainingInPhaseMillis.formatCountdown(), onPlate)
             if (state.totalRounds > 0) {
                 Spacer(Modifier.height(12.dp))
                 SubduedLine(
-                    text = "${state.mode.progressUnit().dropLast(1)} " +
-                        "${state.currentRound}/${state.totalRounds}",
+                    text = stringResource(
+                        R.string.session_progress,
+                        stringResource(state.mode.progressUnitRes()),
+                        state.currentRound,
+                        state.totalRounds,
+                    ),
                     onPlate = onPlate,
                     style = MaterialTheme.typography.titleMedium,
                 )
@@ -156,20 +182,26 @@ private fun RunningContent(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             PrimarySessionControl(
-                label = if (isPaused) "Resume" else "Pause",
+                label = stringResource(
+                    if (isPaused) R.string.action_resume else R.string.action_pause,
+                ),
                 icon = painterResource(
                     if (isPaused) R.drawable.ic_play else R.drawable.ic_pause
                 ),
                 onPlate = onPlate,
                 onClick = onPauseResume,
             )
-            SecondarySessionControl(label = "Stop", onPlate = onPlate, onClick = onStop)
+            SecondarySessionControl(
+                label = stringResource(R.string.action_stop),
+                onPlate = onPlate,
+                onClick = onStop,
+            )
         }
     }
 }
 
-private fun WorkoutMode.progressUnit(): String =
-    if (this == WorkoutMode.CUSTOM) "sets" else "rounds"
+private fun WorkoutMode.progressUnitRes(): Int =
+    if (this == WorkoutMode.CUSTOM) R.string.session_set_unit else R.string.session_round_unit
 
 /** Secondary text on a phase plate, at the shared subdued opacity. */
 @Composable

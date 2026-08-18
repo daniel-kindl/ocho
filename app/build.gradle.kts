@@ -137,6 +137,12 @@ android {
         compose = true
         buildConfig = true
     }
+    // Keep the default locale explicit so adding translated values-* resources
+    // later automatically exposes the same languages in Android's per-app
+    // language settings without hand-maintained manifest XML.
+    androidResources {
+        generateLocaleConfig = true
+    }
     packaging {
         resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" }
     }

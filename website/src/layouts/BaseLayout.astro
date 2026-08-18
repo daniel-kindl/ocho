@@ -3,6 +3,7 @@ import '../styles/global.css';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import { withBase } from '../utils/paths';
+import { siteCopy as copy } from '../i18n';
 
 interface Props {
   title: string;
@@ -20,7 +21,7 @@ const socialImageUrl = Astro.site
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={copy.locale}>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">

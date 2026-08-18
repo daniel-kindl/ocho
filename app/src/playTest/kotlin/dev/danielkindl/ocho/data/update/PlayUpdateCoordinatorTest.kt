@@ -1,5 +1,6 @@
 package dev.danielkindl.ocho.data.update
 
+import android.content.Context
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import com.google.android.gms.tasks.TaskCompletionSource
@@ -10,6 +11,7 @@ import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
+import dev.danielkindl.ocho.R
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
@@ -17,9 +19,14 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class PlayUpdateCoordinatorTest {
+    private fun context(): Context = mockk<Context>(relaxed = true) {
+        every { getString(R.string.update_play_failed) } returns "Play update failed"
+        every { getString(R.string.update_play_check_failed) } returns "Play update check failed"
+    }
+
     @Test fun `reports Available only for an allowed flexible update`() {
         val client = FakePlayUpdateClient()
-        val coordinator = PlayUpdateCoordinator(client)
+        val coordinator = PlayUpdateCoordinator(context(), client)
 
         coordinator.checkForUpdates()
         client.succeed(info(UpdateAvailability.UPDATE_AVAILABLE, flexibleAllowed = true))
@@ -29,13 +36,13 @@ class PlayUpdateCoordinatorTest {
 
     @Test fun `reports UpToDate when no update or flexible flow is available`() {
         val unavailableClient = FakePlayUpdateClient()
-        val unavailable = PlayUpdateCoordinator(unavailableClient)
+        val unavailable = PlayUpdateCoordinator(context(), unavailableClient)
         unavailable.checkForUpdates()
         unavailableClient.succeed(info(UpdateAvailability.UPDATE_NOT_AVAILABLE, flexibleAllowed = true))
         assertEquals(PlayUpdateState.UpToDate, unavailable.state.value)
 
         val disallowedClient = FakePlayUpdateClient()
-        val disallowed = PlayUpdateCoordinator(disallowedClient)
+        val disallowed = PlayUpdateCoordinator(context(), disallowedClient)
         disallowed.checkForUpdates()
         disallowedClient.succeed(info(UpdateAvailability.UPDATE_AVAILABLE, flexibleAllowed = false))
         assertEquals(PlayUpdateState.UpToDate, disallowed.state.value)
@@ -43,7 +50,7 @@ class PlayUpdateCoordinatorTest {
 
     @Test fun `reports an error when Play update lookup fails`() {
         val client = FakePlayUpdateClient()
-        val coordinator = PlayUpdateCoordinator(client)
+        val coordinator = PlayUpdateCoordinator(context(), client)
         coordinator.checkForUpdates()
         client.fail(IllegalStateException("offline"))
 
@@ -52,7 +59,7 @@ class PlayUpdateCoordinatorTest {
 
     @Test fun `maps install listener progress and terminal states`() {
         val client = FakePlayUpdateClient()
-        val coordinator = PlayUpdateCoordinator(client)
+        val coordinator = PlayUpdateCoordinator(context(), client)
 
         client.emit(installState(InstallStatus.DOWNLOADING, downloaded = 50, total = 100))
         assertEquals(PlayUpdateState.Downloading(50), coordinator.state.value)
@@ -72,7 +79,7 @@ class PlayUpdateCoordinatorTest {
 
     @Test fun `delegates flexible start and completion only when available`() {
         val client = FakePlayUpdateClient()
-        val coordinator = PlayUpdateCoordinator(client)
+        val coordinator = PlayUpdateCoordinator(context(), client)
         val launcher = mockk<ActivityResultLauncher<IntentSenderRequest>>()
 
         coordinator.startFlexibleUpdate(launcher)

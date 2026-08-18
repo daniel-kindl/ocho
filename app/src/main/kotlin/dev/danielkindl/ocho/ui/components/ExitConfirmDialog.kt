@@ -5,6 +5,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import dev.danielkindl.ocho.R
 
 /**
  * Guards against losing a session in progress, whether by the STOP button or a
@@ -14,15 +16,15 @@ import androidx.compose.runtime.Composable
 fun ExitConfirmDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Exit workout?") },
-        text = { Text("Your progress in this session will be lost.") },
+        title = { Text(stringResource(R.string.exit_workout_title)) },
+        text = { Text(stringResource(R.string.exit_workout_message)) },
         confirmButton = {
             TextButton(onClick = onConfirm) {
-                Text("Exit", color = MaterialTheme.colorScheme.error)
+                Text(stringResource(R.string.action_stop), color = MaterialTheme.colorScheme.error)
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel") }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
         },
     )
 }

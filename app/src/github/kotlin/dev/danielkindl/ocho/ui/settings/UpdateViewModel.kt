@@ -1,5 +1,6 @@
 package dev.danielkindl.ocho.ui.settings
 
+import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,6 +16,8 @@ import dev.danielkindl.ocho.domain.model.SemVer
 import dev.danielkindl.ocho.domain.model.UpdateConfig
 import dev.danielkindl.ocho.domain.repository.UpdateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.danielkindl.ocho.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -59,7 +62,9 @@ sealed interface UpdateUiState {
 
 /** Drives the GitHub build's check, download, and install flow in Settings. */
 @HiltViewModel
+@Suppress("LongParameterList")
 class UpdateViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     updateConfig: UpdateConfig,
     private val updateRepository: UpdateRepository,
     private val updateDownloader: UpdateDownloader,
@@ -85,7 +90,9 @@ class UpdateViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = updateRepository.fetchLatestRelease().fold(
                 onSuccess = ::toUiState,
-                onFailure = { UpdateUiState.Error(it.message ?: "Update check failed") },
+                onFailure = {
+                    UpdateUiState.Error(it.message ?: context.getString(R.string.update_check_failed))
+                },
             )
         }
     }
@@ -107,7 +114,9 @@ class UpdateViewModel @Inject constructor(
                 tagName = update.tagName,
             )
         ) {
-            _uiState.value = UpdateUiState.Error("Update asset is not an official Ocho release")
+            _uiState.value = UpdateUiState.Error(
+                context.getString(R.string.update_unofficial_asset),
+            )
             return
         }
         _uiState.value = UpdateUiState.Downloading(update, 0)
@@ -127,7 +136,9 @@ class UpdateViewModel @Inject constructor(
             }.onFailure {
                 downloadId?.let(updateDownloader::remove)
                 pendingDownloadStore.clear()
-                _uiState.value = UpdateUiState.Error(it.message ?: "Could not start download")
+                _uiState.value = UpdateUiState.Error(
+                    it.message ?: context.getString(R.string.update_download_failed),
+                )
             }
         }
     }
@@ -159,7 +170,9 @@ class UpdateViewModel @Inject constructor(
     fun startInstall() {
         (_uiState.value as? UpdateUiState.ReadyToInstall)?.let {
             if (!apkInstaller.install(it.apkFile)) {
-                _uiState.value = UpdateUiState.Error("Downloaded APK is not a valid Ocho update")
+                _uiState.value = UpdateUiState.Error(
+                    context.getString(R.string.update_invalid_apk),
+                )
             }
         }
     }

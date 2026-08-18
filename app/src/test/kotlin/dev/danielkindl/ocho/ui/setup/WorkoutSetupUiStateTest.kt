@@ -169,34 +169,13 @@ class WorkoutSetupUiStateTest {
         assertTrue(state.isValid)
         assertEquals(10_000L, state.totalDurationMillis)
         assertEquals(
-            "1 × 10s work",
-            state.patternLabel,
+            WorkoutPattern.Custom(
+                sets = 1,
+                work = DurationValue(0, 10),
+                rest = DurationValue(0, 0),
+            ),
+            state.pattern,
         )
-    }
-
-    // Preset naming
-
-    @Test
-    fun `defaultPresetName formats both minutes and seconds when present`() {
-        val state = emom(totalMinutes = 20, totalSeconds = 30, intervalMinutes = 1, intervalSeconds = 5)
-        assertEquals("20min 30s / 1min 5s", state.defaultPresetName())
-    }
-
-    @Test
-    fun `defaultPresetName omits zero components`() {
-        val state = emom(totalMinutes = 20, totalSeconds = 0, intervalMinutes = 0, intervalSeconds = 45)
-        assertEquals("20min / 45s", state.defaultPresetName())
-    }
-
-    @Test
-    fun `defaultPresetName formats total, work, and rest segments`() {
-        val state = tabata(totalMinutes = 20, totalSeconds = 0, workSeconds = 45, restSeconds = 15)
-        assertEquals("20min / 45s work / 15s rest", state.defaultPresetName())
-    }
-
-    @Test
-    fun `defaultPresetName for AMRAP is just the total`() {
-        assertEquals("20min", amrap().defaultPresetName())
     }
 
     // Characterization tables, ported verbatim
@@ -273,8 +252,12 @@ class WorkoutSetupUiStateTest {
     fun `Tabata pattern label over a table of configurations`() {
         val state = tabata(totalMinutes = 4, workSeconds = 20, restSeconds = 10)
         assertEquals(
-            "8 × (20s work / 10s rest)",
-            state.patternLabel,
+            WorkoutPattern.Tabata(
+                rounds = 8,
+                work = DurationValue(0, 20),
+                rest = DurationValue(0, 10),
+            ),
+            state.pattern,
         )
     }
 
@@ -305,7 +288,11 @@ class WorkoutSetupUiStateTest {
     @Test
     fun `a preset round-trips through the setup state`() {
         val original = tabata(totalMinutes = 4, workSeconds = 20, restSeconds = 10)
-        val preset = original.toPreset(id = "1", name = "")
+        val preset = original.toPreset(
+            id = "1",
+            name = "",
+            fallbackName = "4min / 20s work / 10s rest",
+        )
 
         // A blank name falls back to the generated one rather than saving an unlabelled preset.
         assertEquals("4min / 20s work / 10s rest", preset.name)
@@ -315,11 +302,15 @@ class WorkoutSetupUiStateTest {
     @Test
     fun `preset names preserve special characters and are capped without splitting emoji`() {
         val specialCharacters = "!@#$%^&*()[]{}<>/?\\|~\"'… 🙂"
-        val specialPreset = emom().toPreset(id = "special", name = "  $specialCharacters  ")
+        val specialPreset = emom().toPreset(
+            id = "special",
+            name = "  $specialCharacters  ",
+            fallbackName = "fallback",
+        )
         assertEquals(specialCharacters, specialPreset.name)
 
         val emojiName = "🙂".repeat(MAX_PRESET_NAME_LENGTH + 10)
-        val emojiPreset = emom().toPreset(id = "emoji", name = emojiName)
+        val emojiPreset = emom().toPreset(id = "emoji", name = emojiName, fallbackName = "fallback")
 
         assertEquals(MAX_PRESET_NAME_LENGTH, emojiPreset.name.codePointCount(0, emojiPreset.name.length))
         assertEquals("🙂".repeat(MAX_PRESET_NAME_LENGTH), emojiPreset.name)
@@ -328,7 +319,7 @@ class WorkoutSetupUiStateTest {
     @Test
     fun `a Custom Timer preset round-trips its set count`() {
         val original = custom(setCount = 5, workSeconds = 20, restSeconds = 10)
-        val preset = original.toPreset(id = "custom", name = "")
+        val preset = original.toPreset(id = "custom", name = "", fallbackName = "fallback")
         val restored = custom().withPreset(preset)
 
         assertEquals(5, preset.setCount)
@@ -340,10 +331,17 @@ class WorkoutSetupUiStateTest {
 
     @Test
     fun `EMOM pattern label over a table of configurations`() {
-        // The old state exposed the bare interval as `intervalLabel`. It now appears
-        // inside `patternLabel`, so the formatted durations are asserted there.
-        assertEquals("20 × 1min", emom(intervalMinutes = 1, intervalSeconds = 0).patternLabel)
-        assertEquals("27 × 45s", emom(intervalMinutes = 0, intervalSeconds = 45).patternLabel)
-        assertEquals("14 × 1min 30s", emom(intervalMinutes = 1, intervalSeconds = 30).patternLabel)
+        assertEquals(
+            WorkoutPattern.Emom(rounds = 20, interval = DurationValue(1, 0)),
+            emom(intervalMinutes = 1, intervalSeconds = 0).pattern,
+        )
+        assertEquals(
+            WorkoutPattern.Emom(rounds = 27, interval = DurationValue(0, 45)),
+            emom(intervalMinutes = 0, intervalSeconds = 45).pattern,
+        )
+        assertEquals(
+            WorkoutPattern.Emom(rounds = 14, interval = DurationValue(1, 30)),
+            emom(intervalMinutes = 1, intervalSeconds = 30).pattern,
+        )
     }
 }

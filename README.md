@@ -147,6 +147,11 @@ Local instrumentation and manual UI checks use the configured `Pixel_9a` Android
 17 (API 37) emulator. Start it before running the connected test task and wait for
 ADB to report the device as ready.
 
+Localization is prepared but intentionally English-only for now. App strings and
+plural rules live in Android resources; website copy lives in the typed Astro module
+`website/src/i18n/en.ts`. See [docs/LOCALIZATION.md](docs/LOCALIZATION.md) before
+adding a locale.
+
 ---
 
 ## Website

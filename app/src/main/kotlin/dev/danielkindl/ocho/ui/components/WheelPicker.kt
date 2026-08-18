@@ -26,10 +26,12 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.shape.RoundedCornerShape
 import dev.danielkindl.ocho.ui.theme.JetBrainsMonoFamily
+import dev.danielkindl.ocho.R
 
 private const val VIRTUAL_MULTIPLIER = 1_000
 
@@ -51,7 +53,7 @@ fun WheelPicker(
     itemHeight: Dp = 44.dp,
     pickerWidth: Dp = 80.dp,
     formatter: (Int) -> String = { "%02d".format(it) },
-    contentDescription: String = "Value picker",
+    contentDescription: String = stringResource(R.string.duration_picker_value),
 ) {
     val virtualCount = count * VIRTUAL_MULTIPLIER
     // Align to a known multiple so modulo is clean, then back off by 1 so
