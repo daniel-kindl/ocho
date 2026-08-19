@@ -112,15 +112,15 @@ fun WorkoutPreset.summaryText(): String {
         )
         WorkoutMode.AMRAP -> stringResource(R.string.preset_summary_amrap, total)
         WorkoutMode.CUSTOM -> if (restMinutes > 0 || restSeconds > 0) {
-            stringResource(
-                R.string.preset_summary_custom_with_rest,
+            pluralStringResource(
+                R.plurals.preset_summary_custom_with_rest,
                 setCount,
                 durationText(DurationValue(workMinutes, workSeconds)),
                 durationText(DurationValue(restMinutes, restSeconds)),
             )
         } else {
-            stringResource(
-                R.string.preset_summary_custom_without_rest,
+            pluralStringResource(
+                R.plurals.preset_summary_custom_without_rest,
                 setCount,
                 durationText(DurationValue(workMinutes, workSeconds)),
             )
