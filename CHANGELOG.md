@@ -7,7 +7,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
-## [Unreleased]
+## [3.6.1] - 2026-08-19
 
 ### Security
 - Harden the GitHub updater with strict official-asset validation, persisted download
@@ -30,6 +30,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
   store screenshots now reflect the current preset layout.
 
 ---
+
 
 ## [3.6.0] - 2026-08-16
 
@@ -412,7 +413,8 @@ derived from a domain rather than the product name, so future renames are cosmet
 
 ---
 
-[Unreleased]: https://github.com/daniel-kindl/ocho/compare/v3.6.0...HEAD
+[Unreleased]: https://github.com/daniel-kindl/ocho/compare/v3.6.1...HEAD
+[3.6.1]: https://github.com/daniel-kindl/ocho/compare/v3.6.0...v3.6.1
 [3.6.0]: https://github.com/daniel-kindl/ocho/compare/v3.5.0...v3.6.0
 [3.3.1]: https://github.com/daniel-kindl/ocho/compare/v3.3.0...v3.3.1
 [3.3.0]: https://github.com/daniel-kindl/ocho/compare/v3.2.1...v3.3.0
