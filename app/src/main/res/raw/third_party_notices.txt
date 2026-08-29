@@ -188,11 +188,8 @@ jakarta.inject-api, JetBrains annotations, JSpecify, and FindBugs JSR-305.
 All of those components are Apache-2.0 except com.google.code.findbugs:jsr305,
 which is BSD-3-Clause. The Compose BOM is a dependency-management platform and
 is not shipped as code. Hilt compiler, the Android Gradle Plugin, Kotlin/Compose
-compiler plugins and other build tools are build-time only. JUnit, MockK,
-kotlinx-coroutines-test, Espresso, Compose test artifacts, and the test-scoped
-org.json:json dependency are test-only and are not production components.
-
-No Play Core artifact is present in either production runtime classpath.
+compiler plugins and other build tools, along with test dependencies, are not
+production components and are excluded from this inventory.
 
 Sources reviewed for the runtime inventory include the dependency coordinates in
 app/build.gradle.kts, the resolved Gradle classpaths named above, and each
