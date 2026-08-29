@@ -206,6 +206,13 @@ if it is not already enabled. The workflow cannot change that repository setting
 The Google Play CTA intentionally remains “Google Play coming soon” until a real
 listing URL exists.
 
+Before treating the website as production-ready, perform the deployed-site check in
+[docs/WEBSITE_DEPLOYMENT.md](WEBSITE_DEPLOYMENT.md). On 2026-08-29 the deployed
+HTML contained a Cloudflare Insights beacon injected outside the repository. The
+maintainer must disable that hosting-level injection and recheck both public pages;
+this is a release gate because the privacy policy promises no analytics or
+advertising.
+
 The final Play Console foreground-service and Data Safety actions are tracked in
 [docs/PLAY_COMPLIANCE.md](PLAY_COMPLIANCE.md). That checklist must be rerun against
 the final signed AAB before a closed-test submission.
