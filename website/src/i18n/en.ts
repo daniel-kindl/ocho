@@ -158,7 +158,7 @@ export const en = {
     summaryLabel: 'In short',
     summaryLead: 'Ocho operates no server or account system, and the verified source contains no personal-data collection, analytics, crash reporting, advertising, cloud workout synchronisation, or Ocho-operated upload service.',
     summaryPoints: [
-      { title: 'Local only', detail: 'settings stay on-device' },
+      { title: 'No Ocho cloud', detail: 'Ocho does not upload settings' },
       { title: 'No tracking', detail: 'no analytics or ads' },
       { title: 'Open source', detail: 'code and policy are public' },
     ],
