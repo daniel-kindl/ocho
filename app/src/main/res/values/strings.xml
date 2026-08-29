@@ -159,11 +159,6 @@
     <string name="feedback_subject">Ocho feedback (v%1$s)</string>
     <string name="feedback_body">Please describe your feedback or issue here.\n\nOcho version: %1$s</string>
 
-    <!-- Updates -->
-    <string name="update_check_for_updates">Check for updates</string>
-    <string name="update_check">Check</string>
-    <string name="update_up_to_date">You are up to date</string>
-
     <!-- Notifications -->
     <string name="notification_channel_name">Workout session</string>
     <string name="notification_channel_description">Shows the running workout and its controls</string>

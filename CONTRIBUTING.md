@@ -115,15 +115,16 @@ feat(setup)!: remove deprecated preset import format
 
 ## Update channels
 
-Ocho has Play and GitHub distribution flavors. The GitHub flavor updates from GitHub
-Releases; the Play flavor uses Play-managed flexible updates. Development builds remain
-a separate testing channel:
+Ocho has Play and GitHub distribution flavors. The GitHub flavor can update from
+GitHub Releases; the Play flavor has no Ocho-owned update runtime or update UI, because
+Google Play manages its distribution outside the app. Development builds remain a
+separate testing channel:
 
 | Channel | `applicationId` | Reads | Published by |
 |---------|-----------------|-------|--------------|
 | GitHub Stable | `dev.danielkindl.ocho` | `releases/latest` | `release.yml`, on a version tag |
 | GitHub Dev | `dev.danielkindl.ocho.dev` | Newest prerelease | `dev-ci.yml`, on every push to `dev` |
-| Play | `dev.danielkindl.ocho` | Google Play | Manual Play Console upload; Play-managed updater |
+| Play | `dev.danielkindl.ocho` | Google Play | Manual Play Console upload; Google Play-managed |
 
 `releases/latest` excludes prereleases by GitHub's own definition, so a stable GitHub
 install can never be offered a dev build. The GitHub dev `applicationId` means both

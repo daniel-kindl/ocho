@@ -68,12 +68,13 @@ import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import dev.danielkindl.ocho.BuildConfig
 import dev.danielkindl.ocho.R
 import dev.danielkindl.ocho.domain.model.UserSettings
 import dev.danielkindl.ocho.ui.components.POST_NOTIFICATIONS_PERMISSION
 
 /**
- * Feedback toggles, distribution-specific update controls, and app information.
+ * Feedback toggles, GitHub update controls when enabled, and app information.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -192,8 +193,10 @@ fun SettingsContent(
 
             SettingsNotificationsSection(notificationsAllowed, actions)
 
-            SettingsGroup(title = stringResource(R.string.settings_group_updates)) {
-                actions.updateSection()
+            if (BuildConfig.SELF_UPDATER_ENABLED) {
+                SettingsGroup(title = stringResource(R.string.settings_group_updates)) {
+                    actions.updateSection()
+                }
             }
 
             SettingsAboutSection(actions)

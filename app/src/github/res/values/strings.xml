@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="update_check_for_updates">Check for updates</string>
+    <string name="update_check">Check</string>
+    <string name="update_up_to_date">You are up to date</string>
     <string name="update_checking">Checking for updates…</string>
     <string name="update_available_github">Update available: %1$s</string>
     <string name="update_download">Download</string>

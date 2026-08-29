@@ -25,9 +25,9 @@ Both variants use the permissions needed for workout timing:
 - `POST_NOTIFICATIONS` allows the ongoing workout notification on Android 13 and
   newer. The workout can still run if notification access is denied.
 
-The Play variant has no package-install permission and does not contain the GitHub
-APK updater. It may ask Google Play for update availability through the Play-managed
-In-App Updates library; Ocho does not download or install an APK itself.
+The Play variant has no package-install, network, or GitHub updater permissions. Ocho
+does not check for, download, or install updates in that variant; Google Play manages
+delivery outside the application.
 
 The GitHub variant additionally uses:
 

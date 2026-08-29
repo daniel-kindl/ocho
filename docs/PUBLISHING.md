@@ -28,7 +28,7 @@ The flavor/build-type application IDs are:
 
 | Variant | Task | Artifact | Channel behavior |
 | --- | --- | --- | --- |
-| Play release | `bundlePlayRelease` | `app/build/outputs/bundle/playRelease/app-play-release.aab` | Google Play upload; Play-managed flexible updater |
+| Play release | `bundlePlayRelease` | `app/build/outputs/bundle/playRelease/app-play-release.aab` | Google Play upload; updates managed outside Ocho |
 | GitHub release | `assembleGithubRelease` | `app/build/outputs/apk/github/release/app-github-release.apk` | Manual GitHub Release APK; retains self-updater |
 
 The AAB is not directly installable. The GitHub artifact is an APK because GitHub
@@ -94,8 +94,7 @@ app/build/intermediates/merged_manifest/githubRelease/processGithubReleaseMainMa
 
 The Play manifest must not contain `REQUEST_INSTALL_PACKAGES`, the GitHub updater's
 `FileProvider`, `InstallResultReceiver`, or GitHub updater metadata/components. The
-Play source set contains only the Play In-App Updates runtime and its user-driven
-flexible flow. The GitHub manifest intentionally contains
+Play source set contains no updater runtime or update UI. The GitHub manifest intentionally contains
 `INTERNET`, `REQUEST_INSTALL_PACKAGES`, `FileProvider`, and
 `InstallResultReceiver`; its GitHub Settings implementation contains the existing
 check/download/install flow.
@@ -135,8 +134,9 @@ add a no-redistribution EULA or other restriction to either build. Google Play
 Automatic Protection, installer checks, anti-tamper protection, and similar features
 that prevent modification or redistribution must remain disabled for this GPL build.
 
-The Play flavor uses Google's Play In-App Updates runtime; the GitHub flavor retains
-its existing platform-only updater dependencies.
+The Play flavor has no Ocho-owned updater dependency or runtime. Google Play controls
+updates outside the application. The GitHub flavor retains its existing updater and
+platform-only installation dependencies.
 
 ## Google Play release (approval required)
 

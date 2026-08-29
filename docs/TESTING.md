@@ -10,9 +10,8 @@ Run the two flavor-specific JVM suites from the repository root:
 
 The GitHub suite covers release parsing, strict asset validation, updater persistence,
 download policy, installer package identity, and the GitHub update ViewModel. The Play
-suite drives the Play update coordinator through a fake Play Core adapter, including
-availability, flexible-flow eligibility, progress, cancellation, completion, and
-failure.
+suite runs the shared application logic against the Play variant and intentionally has
+no Play update runtime or updater-specific tests.
 
 Compile the shared Compose instrumentation tests for both variants with:
 

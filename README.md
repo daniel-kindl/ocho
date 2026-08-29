@@ -68,7 +68,7 @@ readable across a room. Work and rest are separated by lightness as well as hue.
 | Presets | Save, name, load, and delete configurations separately per mode; compact rows show a mode-specific summary |
 | Progress and summary | A progress bar during the session, and a recap on completion |
 | Exit confirmation | The back gesture and Stop both ask before ending a running session |
-| In-app updates | GitHub variant uses GitHub Releases; Play variant uses Play-managed updates |
+| Updates | GitHub variant can check GitHub Releases; Play has no Ocho-owned updater |
 | Workout-first UI | Large high-contrast display, screen stays on, one-hand friendly |
 
 ---
@@ -80,7 +80,8 @@ is manually installed and may require Android's unknown-app installation permiss
 it retains the GitHub self-updater in Settings. The updater accepts only the official
 release asset, checks the APK package identity before handing it to Android, and relies
 on Android's signing-key verification for the final install decision. The Play variant
-uses Play-managed flexible updates and does not contain the GitHub APK installer.
+does not contain the GitHub APK installer or any Ocho-owned update runtime; updates are
+handled by Google Play outside the app.
 
 ### Update channels
 
@@ -120,8 +121,8 @@ compact preset row to load it; the summary below the name keeps the mode-specifi
 durations visible, while the trailing delete control removes it.
 
 **Settings.** The icon on the home screen toggles sound and vibration independently,
-holds feedback, licence, and privacy-policy links, and shows the distribution's
-update flow.
+holds feedback, licence, and privacy-policy links, and shows the GitHub update flow
+when the GitHub build is installed. The Play build omits the Updates group entirely.
 
 ---
 
