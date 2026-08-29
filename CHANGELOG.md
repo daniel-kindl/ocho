@@ -9,11 +9,12 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [3.7.1] - Unreleased
 
-### Security
-- Add a release-workflow provenance guard that rejects tagged commits not contained
-  in `origin/main`.
-- Remove Play Core's in-app update runtime and UI; the Play build continues to have
-  no `REQUEST_INSTALL_PACKAGES` permission.
+ ### Security
+ - Add a release-workflow provenance guard that rejects tags whose commit is not
+   contained in (an ancestor of) `origin/main`.
+ - Remove the Play build's Play Core in-app update runtime and updater UI. The Play
+   build continues to have no `REQUEST_INSTALL_PACKAGES` permission; Google Play
+   remains responsible for Play-delivered updates.
 - Align the privacy policy and Play Data Safety/foreground-service preparation with
   the final offline runtime and Android/device backup behavior.
 
