@@ -71,7 +71,8 @@ EMOM, Tabata, AMRAP, and Custom Timer. For each type, check the setup summary,
 start/prepare transition, work and rest transitions, final completion state, pause,
 resume, and stop. Also check that timing continues with the screen off and while the
 app is backgrounded, that foreground-service and notification state remain correct,
-and that the wake lock is released after pause, stop, and completion.
+and that the wake lock remains held while the session is active or paused, then is
+released after Stop or natural completion.
 
 Review Settings accessibility semantics in both flavors: the GitHub build exposes
 the Updates group and the Play build does not. Check TalkBack labels, 48dp touch
