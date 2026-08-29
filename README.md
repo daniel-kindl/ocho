@@ -185,8 +185,9 @@ Ocho is free software under the [GNU General Public License v3.0](LICENSE). You
 may use, study, modify and redistribute it. Anything you redistribute must also be
 GPL-3.0 with source available.
 
-Copyright © 2026 Daniel Kindl, sole copyright holder. Ocho may also be offered under
-separate commercial terms.
+Copyright © 2026 Daniel Kindl for his contributions. Contributors retain copyright
+in their contributions; see [CONTRIBUTING.md](CONTRIBUTING.md). Ocho may also be
+offered under separate commercial terms.
 
 The name "Ocho", the wordmark, and the numeral-8 icon are not covered by the GPL.
 Fork freely, but rename and re-brand.
