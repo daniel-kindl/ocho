@@ -125,5 +125,8 @@ package; CI copies that into the job summary. Do not add a threshold, and do not
 write tests to move the number. If a figure looks wrong, check the exclusions in the
 `kover` block before writing anything.
 
-**No emulator is available here.** Verify UI changes by reading the diff and
-reasoning about recomposition, not by running the app.
+CI compiles both flavor instrumentation tests but does not execute an emulator suite.
+The documented local `Pixel_9a` Android 17/API 37 workflow is the place to run
+connected tests and manual UI checks. Hosted emulator attempts had repeated startup
+failures and an instrumentation failure; do not restore that job without a separate
+reliability and cost investigation.

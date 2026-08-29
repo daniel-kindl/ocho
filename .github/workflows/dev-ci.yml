@@ -39,6 +39,9 @@ jobs:
       - name: Run unit tests
         run: ./gradlew testGithubDebugUnitTest testPlayDebugUnitTest --stacktrace
 
+      - name: Compile instrumentation tests for both flavors
+        run: ./gradlew compileGithubDebugAndroidTestKotlin compilePlayDebugAndroidTestKotlin --stacktrace
+
       # Report-only, never gated. There is no coverage threshold anywhere in this
       # repository on purpose: a percentage is easy to move by writing tests that
       # touch lines without asserting anything, and gating rewards exactly that.

@@ -264,9 +264,12 @@ This keeps the anchoring intact across any number of pauses.
 
 `domain/` and `data/` carry the unit tests, because they carry the logic. The GitHub
 updater and its validation are covered by flavor-specific JVM tests. Compose instrumentation tests
-cover Settings and Workout Setup semantics and accessibility. End-to-end checks use
-the configured Pixel 9a AVD; on the development machine its startup can take two
-minutes or more.
+cover Settings and Workout Setup semantics and accessibility, and CI compiles both
+flavor variants. CI does not execute an emulator suite: hosted attempts had repeated
+startup failures and an instrumentation failure. Local end-to-end checks use the
+configured Pixel 9a AVD; on the development machine its startup can take two minutes
+or more. The connected tasks and required manual release checks are in
+`docs/TESTING.md`.
 
 `./gradlew koverLogGithubDebug` prints line coverage per package. Coverage is reported and
 never gated, in CI or locally. A percentage is easy to move by writing tests that
