@@ -6,7 +6,7 @@ on:
   push:
     branches: [ dev ]
   pull_request:
-    branches: [ dev, main ]
+    branches: [ dev, main, 'hardening/**' ]
   workflow_dispatch:
     inputs:
       play_track:
