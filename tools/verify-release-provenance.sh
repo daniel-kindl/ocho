@@ -14,9 +14,9 @@ if ! git rev-parse --verify "${tagged_commit}^{commit}" >/dev/null 2>&1; then
   exit 1
 fi
 
-if ! git merge-base --is-ancestor "${main_ref}^{commit}" "${tagged_commit}^{commit}"; then
-  echo "::error::Tagged commit ${tagged_commit} is not descended from ${main_ref}. Refusing to release." >&2
+if ! git merge-base --is-ancestor "${tagged_commit}^{commit}" "${main_ref}^{commit}"; then
+  echo "::error::Tagged commit ${tagged_commit} is not contained in ${main_ref}. Refusing to release." >&2
   exit 1
 fi
 
-echo "Release provenance passed: ${tagged_commit} descends from ${main_ref}."
+echo "Release provenance passed: ${tagged_commit} is contained in ${main_ref}."

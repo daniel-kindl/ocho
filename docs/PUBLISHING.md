@@ -48,16 +48,16 @@ for both variants.
 ## Stable-branch provenance
 
 The protected `main` branch is the stable release line. A stable tag is valid only
-when its commit is descended from the current `origin/main`; the release workflow
+when its commit is contained in (is an ancestor of) the current `origin/main`; the release workflow
 fetches `main` and checks this with `git merge-base --is-ancestor` before setting up
 Java, running Gradle, signing, or publishing anything. This prevents a tag created
 on an unrelated branch from bypassing the stable review path.
 
 The published `v3.7.0` tag is immutable and remains the historical release point.
-Synchronising stable history means bringing that tag and its ancestors into `main`,
+Synchronising stable history means bringing that tag and its descendants into `main`,
 never moving or recreating the tag. The provenance guard is intentionally tested in
-the workflow with both a descended commit (accepted) and an unrelated commit
-(rejected).
+the workflow with a tag ahead of `main` (rejected), a tag contained in an updated
+`main` (accepted), and an unrelated commit (rejected).
 
 ## Signing and update compatibility
 

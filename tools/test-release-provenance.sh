@@ -11,13 +11,28 @@ git -C "${test_repo}" config user.name "Release provenance test"
 printf 'base\n' > "${test_repo}/file"
 git -C "${test_repo}" add file
 git -C "${test_repo}" commit --quiet -m 'base'
+base_commit="$(git -C "${test_repo}" rev-parse HEAD)"
 git -C "${test_repo}" branch main
 
-printf 'release\n' >> "${test_repo}/file"
-git -C "${test_repo}" commit --quiet -am 'release'
-accepted_commit="$(git -C "${test_repo}" rev-parse HEAD)"
-(cd "${test_repo}" && bash "${script_dir}/verify-release-provenance.sh" \
-  "refs/heads/main" "${accepted_commit}") >/dev/null
+printf 'tag ahead\n' >> "${test_repo}/file"
+git -C "${test_repo}" commit --quiet -am 'tag ahead of main'
+tag_ahead_commit="$(git -C "${test_repo}" rev-parse HEAD)"
+if (cd "${test_repo}" && bash "${script_dir}/verify-release-provenance.sh" \
+  "refs/heads/main" "${tag_ahead_commit}") >/dev/null 2>&1; then
+  echo "Expected a tag ahead of main to be rejected." >&2
+  exit 1
+fi
+
+git -C "${test_repo}" switch --quiet main
+printf 'stable\n' >> "${test_repo}/file"
+git -C "${test_repo}" commit --quiet -am 'stable main update'
+if (cd "${test_repo}" && bash "${script_dir}/verify-release-provenance.sh" \
+  "refs/heads/main" "${base_commit}") >/dev/null; then
+  :
+else
+  echo "Expected a tag contained in main to be accepted." >&2
+  exit 1
+fi
 
 git -C "${test_repo}" switch --quiet --orphan unrelated
 git -C "${test_repo}" rm --quiet --cached --ignore-unmatch -r .
