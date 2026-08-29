@@ -8,7 +8,7 @@ export const en = {
       'Ocho is an offline-first Android interval timer for EMOM, Tabata, AMRAP, and Custom Timer workouts.',
     privacyTitle: 'Ocho — privacy policy',
     privacyDescription:
-      'Ocho privacy policy: an offline-first Android interval timer with no accounts, analytics, or cloud workout synchronisation.',
+      'Ocho privacy policy: an offline-first Android interval timer with no server, accounts, analytics, advertising, or cloud workout synchronisation.',
   },
   navigation: {
     skipToContent: 'Skip to content',
@@ -153,12 +153,12 @@ export const en = {
     category: 'PRIVACY',
     title: 'Privacy policy',
     lede: 'Ocho is an offline-first workout timer. Your sessions stay on your device, with no account or feed between you and the work.',
-    lastUpdated: 'Last updated: 2026-08-12',
+    lastUpdated: 'Last updated: 2026-08-29',
     back: '← Back to Ocho',
     summaryLabel: 'In short',
-    summaryLead: 'The verified source contains no personal-data collection, analytics, crash reporting, advertising, accounts, or cloud workout synchronisation.',
+    summaryLead: 'Ocho operates no server or account system, and the verified source contains no personal-data collection, analytics, crash reporting, advertising, cloud workout synchronisation, or Ocho-operated upload service.',
     summaryPoints: [
-      { title: 'Local only', detail: 'settings stay on-device' },
+      { title: 'No Ocho cloud', detail: 'Ocho does not upload settings' },
       { title: 'No tracking', detail: 'no analytics or ads' },
       { title: 'Open source', detail: 'code and policy are public' },
     ],
@@ -166,13 +166,13 @@ export const en = {
       {
         number: '01',
         title: 'Local data',
-        paragraphs: ['Workout settings and saved workout presets are stored locally in Android DataStore preferences. Ocho does not upload them.'],
+        paragraphs: ['Workout settings and saved workout presets are stored locally in Android DataStore preferences. Ocho does not upload them. Android or a device manufacturer may back up, transfer, or restore eligible copies according to the user\'s device configuration; Ocho does not operate those services or control their retention.'],
       },
       {
         number: '02',
         title: 'Permissions and network access',
         paragraphs: [
-          'Both variants use vibration, foreground-service, wake-lock, and notification permissions for reliable interval timing. The Play build has no network or package-install permission; Play itself manages its optional in-app update flow, and Ocho does not download or install an APK.',
+          'Both variants use vibration, foreground-service, wake-lock, and notification permissions for reliable interval timing. The Play build has no network or package-install permission and contains no Ocho-owned updater; Ocho does not check for, download, or install an update in that variant.',
           'The GitHub build additionally checks the public GitHub Releases API and uses Android DownloadManager to fetch the official release APK. It validates the release URL and package identity before handing the file to Android, then requests REQUEST_INSTALL_PACKAGES so the user can manually start an install; Android still requires the user to allow unknown-app installation. It does not silently install updates.',
         ],
       },
