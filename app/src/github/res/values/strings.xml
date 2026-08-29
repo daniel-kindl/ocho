@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="update_checking">Checking for updates…</string>
+    <string name="update_available_github">Update available: %1$s</string>
+    <string name="update_download">Download</string>
+    <string name="update_downloading">Downloading update… %1$d%%</string>
+    <string name="update_ready_github">Update %1$s ready to install</string>
+    <string name="update_install">Install</string>
+    <string name="update_try_again">Try again</string>
+    <string name="update_check_failed">Update check failed</string>
+    <string name="update_download_failed">Could not start download</string>
+    <string name="update_unofficial_asset">Update asset is not an official Ocho release</string>
+    <string name="update_invalid_apk">Downloaded APK is not a valid Ocho update</string>
+    <string name="update_install_failed">Update failed: %1$s</string>
+    <string name="update_installed">%1$s updated</string>
+</resources>

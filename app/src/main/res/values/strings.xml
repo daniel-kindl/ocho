@@ -52,7 +52,6 @@
     <string name="mode_custom_description">Set your own rounds, work time, and rest time.</string>
 
     <!-- Setup and picker labels -->
-    <string name="setup_back">Back</string>
     <string name="setup_total">Total</string>
     <string name="setup_interval">Interval</string>
     <string name="setup_total_duration">Total duration</string>
@@ -89,8 +88,14 @@
     <string name="preset_summary_emom">%1$s total · every %2$s</string>
     <string name="preset_summary_tabata">%1$s total · %2$s work · %3$s rest</string>
     <string name="preset_summary_amrap">%1$s total</string>
-    <string name="preset_summary_custom_with_rest">%1$d sets · %2$s work · %3$s rest</string>
-    <string name="preset_summary_custom_without_rest">%1$d sets · %2$s work</string>
+    <plurals name="preset_summary_custom_with_rest">
+        <item quantity="one">%1$d set · %2$s work · %3$s rest</item>
+        <item quantity="other">%1$d sets · %2$s work · %3$s rest</item>
+    </plurals>
+    <plurals name="preset_summary_custom_without_rest">
+        <item quantity="one">%1$d set · %2$s work</item>
+        <item quantity="other">%1$d sets · %2$s work</item>
+    </plurals>
 
     <!-- Presets -->
     <string name="presets_title">Presets</string>
@@ -158,29 +163,6 @@
     <string name="update_check_for_updates">Check for updates</string>
     <string name="update_check">Check</string>
     <string name="update_up_to_date">You are up to date</string>
-    <string name="update_checking">Checking for updates…</string>
-    <string name="update_checking_play_store">Checking Play Store…</string>
-    <string name="update_available">Update available</string>
-    <string name="update_action">Update</string>
-    <string name="update_available_github">Update available: %1$s</string>
-    <string name="update_download">Download</string>
-    <string name="update_downloading">Downloading update… %1$d%%</string>
-    <string name="update_downloading_play">Downloading Play update… %1$d%%</string>
-    <string name="update_ready">Update ready</string>
-    <string name="update_ready_github">Update %1$s ready to install</string>
-    <string name="update_install">Install</string>
-    <string name="update_restart">Restart</string>
-    <string name="update_try_again">Try again</string>
-    <string name="update_play_store">Google Play</string>
-    <string name="update_check_failed">Update check failed</string>
-    <string name="update_download_failed">Could not start download</string>
-    <string name="update_unofficial_asset">Update asset is not an official Ocho release</string>
-    <string name="update_invalid_apk">Downloaded APK is not a valid Ocho update</string>
-    <string name="update_play_failed">Play update failed</string>
-    <string name="update_play_check_failed">Play update check failed</string>
-    <string name="update_install_failed">Update failed: %1$s</string>
-    <string name="update_banner_available">A Play Store update is available</string>
-    <string name="update_banner_downloading_info">You can keep using Ocho while it downloads.</string>
 
     <!-- Notifications -->
     <string name="notification_channel_name">Workout session</string>
@@ -192,5 +174,4 @@
     <string name="notification_phase_paused">%1$s · paused</string>
     <string name="notification_phase_with_round">%1$s · %2$s</string>
     <string name="notification_phase_paused_with_round">%1$s · paused · %2$s</string>
-    <string name="update_installed">%1$s updated</string>
 </resources>
