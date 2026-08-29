@@ -54,10 +54,15 @@ Java, running Gradle, signing, or publishing anything. This prevents a tag creat
 on an unrelated branch from bypassing the stable review path.
 
 The published `v3.7.0` tag is immutable and remains the historical release point.
-Synchronising stable history means bringing that tag and its descendants into `main`,
+Synchronising stable history means bringing the tagged commit and its history (its
+ancestors) into `main`,
 never moving or recreating the tag. The provenance guard is intentionally tested in
 the workflow with a tag ahead of `main` (rejected), a tag contained in an updated
 `main` (accepted), and an unrelated commit (rejected).
+
+**Merge method requirement:** merge the stable-history PR with **Create a merge
+commit**. Do not squash-merge or rebase-merge it. The original `v3.7.0` commit must
+remain an ancestor of `main`.
 
 ## Signing and update compatibility
 
