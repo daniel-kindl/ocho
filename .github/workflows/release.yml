@@ -30,6 +30,18 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      # A version tag is a release input, not proof that the tagged commit was
+      # reached through the protected stable branch. Fetch the branch explicitly:
+      # tag pushes do not guarantee that origin/main is present in the checkout.
+      - name: Verify release provenance
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          bash tools/verify-release-provenance.sh origin/main "$GITHUB_SHA"
+
+      - name: Test release provenance guard
+        run: bash tools/test-release-provenance.sh
+
       - name: Set up JDK 17
         uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
