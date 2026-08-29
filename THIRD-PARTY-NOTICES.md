@@ -122,9 +122,9 @@ The following glyphs in `app/src/main/res/drawable/` are Lucide icons converted 
 Android vector drawables: `ic_activity`, `ic_arrow_left`, `ic_bookmark_plus`,
 `ic_octagon_alert`, `ic_pause`, `ic_play`, `ic_rotate_cw`, `ic_settings`,
 `ic_square`, `ic_x`, and `ic_zap`. Lucide is licensed under ISC. Lucide's upstream
-licence identifies `activity`, `arrow-left`, `pause`, `play`, `rotate-cw`,
-`settings`, `square`, `x`, and `zap` as derived from Feather; the other listed
-glyphs are covered by Lucide's ISC notice. Sources and licences:
+licence identifies only `arrow-left`, `square`, and `x` among these exact icon
+names as derived from Feather; the other listed glyphs are covered by Lucide's
+ISC notice. Sources and licences:
 https://github.com/lucide-icons/lucide/blob/main/LICENSE and
 https://github.com/feathericons/feather/blob/master/LICENSE.
 
@@ -155,7 +155,7 @@ The Feather-derived icons are distributed under the MIT licence with this notice
 ```
 The MIT License (MIT)
 
-Copyright (c) 2013-present Cole Bemis
+Copyright (c) 2013-2023 Cole Bemis
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
