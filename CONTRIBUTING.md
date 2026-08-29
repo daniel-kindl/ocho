@@ -18,34 +18,30 @@ Every green push to `dev` publishes a dev-channel APK automatically. See
 
 ## Contributor terms
 
-Ocho is licensed under GPL-3.0, and Daniel Kindl is its sole copyright holder. That
-second fact is deliberate, and it has a consequence worth stating plainly before you
-write any code.
+Ocho is licensed under GPL-3.0. Copyright remains with Daniel Kindl for his own
+work and with each contributor or other copyright holder for their own work.
+Copyright attaches automatically to the author of an original contribution; sending
+a patch and merging it do not assign that copyright to the project.
 
-Copyright is automatic and attaches per author. If you send a patch, you own the
-copyright in it, and merging does not transfer that. The project would only hold a
-GPL licence to your work, and a GPL licence does not permit relicensing. One merged
-contribution would therefore remove the ability to offer Ocho under any other terms
-without tracking you down for permission.
-
-So, to keep that option open:
+Contributions are accepted under the following terms so the project can preserve its
+GPLv3 distribution and retain the option of offering future versions under other
+terms:
 
 > By submitting a contribution to this project, you agree that your contribution is
 > licensed under GPL-3.0, and you grant Daniel Kindl a perpetual, irrevocable,
 > worldwide, royalty-free licence to use, reproduce, modify, sublicense and
-> relicense it, including under commercial terms.
+> relicense that contribution, including under commercial terms.
 
-You keep your copyright. Nothing is assigned. You are granting a licence broad
-enough that the project can be dual-licensed later.
+You keep your copyright. Nothing is assigned. The licence grant is broad enough for
+Daniel Kindl to maintain, distribute, and relicense the contribution as part of Ocho,
+while the contribution remains GPL-3.0 in the versions distributed under GPL-3.0.
 
-Qt, MySQL, GitLab and every project under the Apache ICLA use the same arrangement,
-and it is stated up front precisely so nobody is surprised by it. If you would
-rather not grant that, open an issue describing the change instead of a pull
-request. A good bug report is worth as much as a patch.
+This arrangement is stated up front so nobody is surprised by it. If you would
+rather not grant that, open an issue describing the change instead of a pull request.
 
-Anything already released under GPL-3.0 stays GPL-3.0 permanently. Relicensing can
-only ever apply going forward, so nothing you or anyone else has already received
-can be withdrawn.
+Anything already released under GPL-3.0 stays GPL-3.0. Relicensing can only apply to
+future distributions for which the necessary rights are available; nothing already
+received under GPL-3.0 can be withdrawn.
 
 ---
 
