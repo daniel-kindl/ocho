@@ -205,3 +205,7 @@ repository settings, the maintainer must enable Pages with **Source: GitHub Acti
 if it is not already enabled. The workflow cannot change that repository setting.
 The Google Play CTA intentionally remains “Google Play coming soon” until a real
 listing URL exists.
+
+The final Play Console foreground-service and Data Safety actions are tracked in
+[docs/PLAY_COMPLIANCE.md](PLAY_COMPLIANCE.md). That checklist must be rerun against
+the final signed AAB before a closed-test submission.

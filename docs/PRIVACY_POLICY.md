@@ -1,18 +1,21 @@
 # Ocho privacy policy
 
-Last updated: 2026-08-12
+Last updated: 2026-08-29
 
 Ocho is an offline-first workout timer. This policy describes the Android application
-variants built from this repository. No personal-data collection, analytics, crash
-reporting, advertising, account system, or cloud workout synchronisation is included
-in the verified source code.
+variants built from this repository. Ocho operates no server or account system and
+does not include personal-data collection, analytics, crash reporting, advertising,
+cloud workout synchronisation, or an Ocho-operated upload service in the verified
+source code.
 
 ## Data stored on the device
 
 Workout settings and saved workout presets are stored locally in Android DataStore
 preferences. They remain on the device and are not uploaded by Ocho. Removing the
 app removes its app-private stored data according to the device's normal Android
-uninstall behavior.
+uninstall behavior, but Android or a device manufacturer's configured backup,
+transfer, or restore service may retain or restore eligible copies. Ocho does not
+operate those services and cannot control their retention or deletion.
 
 ## Permissions
 
