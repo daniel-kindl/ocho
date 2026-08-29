@@ -16,8 +16,8 @@ const { title, description, currentPage = 'home', type = 'website' } = Astro.pro
 const canonicalPath = Astro.url.pathname.replace(/\/index\.html$/, '/');
 const canonicalUrl = Astro.site ? new URL(canonicalPath, Astro.site) : new URL(canonicalPath, Astro.url);
 const socialImageUrl = Astro.site
-  ? new URL(withBase('favicon.png'), Astro.site)
-  : new URL(withBase('favicon.png'), Astro.url);
+  ? new URL(withBase('social/ocho-social-1200x630.png'), Astro.site)
+  : new URL(withBase('social/ocho-social-1200x630.png'), Astro.url);
 ---
 
 <!doctype html>
@@ -36,7 +36,10 @@ const socialImageUrl = Astro.site
     <meta property="og:description" content={description}>
     <meta property="og:url" content={canonicalUrl.href}>
     <meta property="og:image" content={socialImageUrl.href}>
-    <meta name="twitter:card" content="summary">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:type" content="image/png">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content={title}>
     <meta name="twitter:description" content={description}>
     <meta name="twitter:image" content={socialImageUrl.href}>

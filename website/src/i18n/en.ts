@@ -29,9 +29,7 @@ export const en = {
     support: 'Support',
   },
   downloads: {
-    playAria: 'Google Play coming soon',
     playName: 'Google Play',
-    playStatus: 'coming soon',
     githubAria: 'Download the latest Ocho GitHub APK',
     githubName: 'GitHub APK',
     githubStatus: 'available now',
