@@ -2,6 +2,8 @@ package dev.danielkindl.ocho.ui.settings
 
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertIsToggleable
+import androidx.compose.ui.test.assertDoesNotExist
+import androidx.compose.ui.test.assertExists
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isHeading
@@ -11,6 +13,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.hasStateDescription
+import dev.danielkindl.ocho.BuildConfig
 import dev.danielkindl.ocho.domain.model.UserSettings
 import dev.danielkindl.ocho.ui.components.WheelPicker
 import dev.danielkindl.ocho.ui.theme.OchoTheme
@@ -101,7 +104,11 @@ class SettingsAccessibilityTest {
 
         composeRule.onNode(hasText("Workout") and isHeading()).assertExists()
         composeRule.onNode(hasText("Notifications") and isHeading()).assertExists()
-        composeRule.onNode(hasText("Updates") and isHeading()).assertExists()
+        if (BuildConfig.SELF_UPDATER_ENABLED) {
+            composeRule.onNode(hasText("Updates") and isHeading()).assertExists()
+        } else {
+            composeRule.onNode(hasText("Updates") and isHeading()).assertDoesNotExist()
+        }
         composeRule.onNode(hasText("About") and isHeading()).assertExists()
     }
 

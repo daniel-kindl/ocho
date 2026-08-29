@@ -23,14 +23,15 @@ rather than hours.
 ## What's actually worth attacking
 
 Ocho is a workout timer with no accounts, no backend, no analytics, and no
-telemetry. It makes exactly one kind of network request, and that request is also
-its entire meaningful attack surface, so it's worth being specific about it.
+telemetry. The GitHub build makes one kind of Ocho-owned network request, and that
+request is its meaningful app-level attack surface, so it's worth being specific about it.
 
-The app updates itself by downloading and installing an APK. It holds `INTERNET`
-and `REQUEST_INSTALL_PACKAGES`, polls the GitHub Releases API for
+The GitHub build updates itself by downloading and installing an APK. It holds
+`INTERNET` and `REQUEST_INSTALL_PACKAGES`, polls the GitHub Releases API for
 `daniel-kindl/ocho`, downloads a release asset via Android's `DownloadManager`, and
 installs it through `PackageInstaller`. Anything that subverts that chain replaces
-the app on the device.
+the app on the device. The Play build has no updater code or network permission;
+Google Play handles its updates outside Ocho.
 
 The trust model:
 
@@ -77,10 +78,11 @@ release only after the workflow and repository settings have been reviewed.
 
 ## Verifying a release download
 
-Every release and dev prerelease publishes two things next to the APK: a
+Every GitHub release and dev prerelease publishes two things next to the APK: a
 `.sha256` file, and a GitHub build provenance attestation. Both are for a human
-checking a manual download. Neither changes how the app updates itself, which
-still relies on Android's signature check as described above.
+checking a manual download. Neither changes how the GitHub app updates itself, which
+still relies on Android's signature check as described above. They do not describe or
+alter the Play delivery path.
 
 ### Checksum
 
@@ -147,8 +149,9 @@ apksigner verify --print-certs ocho-1.2.3.apk
 
 - The app stores no credentials, tokens, or personal data. Presets and settings are
   non-sensitive local `DataStore` values.
-- "Install unknown apps" must be granted by the user for updates to work. That
-  prompt is Android's, and being asked for it is intended behaviour.
+- "Install unknown apps" must be granted by the user for GitHub APK updates to work.
+  That prompt is Android's, and being asked for it is intended behaviour. It does not
+  apply to the Play build.
 - Sideloading and rooted-device attacks. An attacker who can already install
   arbitrary packages does not need this app.
 - Dependency versions are tracked by Dependabot. A known CVE in a transitive

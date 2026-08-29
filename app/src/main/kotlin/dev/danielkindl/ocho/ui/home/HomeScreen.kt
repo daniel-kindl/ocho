@@ -78,8 +78,6 @@ fun HomeScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
-            DistributionUpdateBanner()
-
             TimerTypeCard(
                 title = stringResource(R.string.mode_emom_title),
                 subtitle = stringResource(R.string.mode_emom_subtitle),

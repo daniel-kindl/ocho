@@ -63,7 +63,7 @@ add a screen or a preset type per mode; that is what this release removed.
 
 `core/` clock and formatting · `domain/` model, engines, repository interfaces ·
 `data/` DataStore repos, audio, vibration, `session/` (foreground service) ·
-`github/` GitHub APK updater and `play/` Play Store updater bindings · `ui/`
+`github/` GitHub APK updater and `play/` Play distribution hooks without an updater · `ui/`
 screens and ViewModels · `di/` shared Hilt bindings.
 
 ## Parallelising with subagents
