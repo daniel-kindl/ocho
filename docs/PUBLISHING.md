@@ -207,10 +207,11 @@ The Google Play CTA intentionally remains “Google Play coming soon” until a 
 listing URL exists.
 
 Before treating the website as production-ready, perform the deployed-site check in
-[docs/WEBSITE_DEPLOYMENT.md](WEBSITE_DEPLOYMENT.md). On 2026-08-29 the deployed
-HTML contained a Cloudflare Insights beacon injected outside the repository. The
-maintainer must disable that hosting-level injection and recheck both public pages;
-this is a release gate because the privacy policy promises no analytics or
+[docs/WEBSITE_DEPLOYMENT.md](WEBSITE_DEPLOYMENT.md). A clean request on 2026-08-29
+observed a Cloudflare Insights beacon outside the repository, but a later clean curl
+recheck found no beacon. Recheck both public pages after deployment; if the beacon is
+reproduced, identify and remediate the hosting-level injection or make an explicit
+policy decision before release because the privacy policy promises no analytics or
 advertising.
 
 The final Play Console foreground-service and Data Safety actions are tracked in

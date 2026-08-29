@@ -121,7 +121,8 @@ for (const file of filesUnder(dist)) {
 
   if (extension === 'css') {
     for (const match of contents.matchAll(/url\(["']?([^"')]+)["']?\)/gi)) {
-      const target = distPathForUrl(match[1], 'index.html');
+      const sourcePath = relative(dist, file).replace(/\\/g, '/');
+      const target = distPathForUrl(match[1], sourcePath);
       if (target && !existsSync(target)) fail(`${relative(dist, file)}: missing referenced asset ${match[1]}`);
     }
   }

@@ -4,16 +4,16 @@ interface Props {
 }
 
 import { siteCopy as copy } from '../i18n';
-import { githubReleaseUrl, playListingUrl } from '../site-config';
+import { githubReleaseUrl, playListing } from '../site-config';
 
 const { class: className = 'download-actions' } = Astro.props;
 ---
 
 <div class={className}>
-  {playListingUrl ? (
-    <a class="cta cta-primary" href={playListingUrl} aria-label={copy.downloads.playAria}><span class="cta-copy"><strong>{copy.downloads.playName}</strong><small>{copy.downloads.playStatus}</small></span><span class="cta-mark" aria-hidden="true"></span></a>
+  {playListing.available ? (
+    <a class="cta cta-primary" href={playListing.url} aria-label={playListing.ariaLabel}><span class="cta-copy"><strong>{copy.downloads.playName}</strong><small>{playListing.status}</small></span><span class="cta-mark" aria-hidden="true"></span></a>
   ) : (
-    <span class="cta cta-primary" aria-label={copy.downloads.playAria}><span class="cta-copy"><strong>{copy.downloads.playName}</strong><small>{copy.downloads.playStatus}</small></span><span class="cta-mark" aria-hidden="true"></span></span>
+    <span class="cta cta-primary" aria-label={playListing.ariaLabel}><span class="cta-copy"><strong>{copy.downloads.playName}</strong><small>{playListing.status}</small></span><span class="cta-mark" aria-hidden="true"></span></span>
   )}
   <a class="cta cta-secondary" href={githubReleaseUrl} aria-label={copy.downloads.githubAria}><span class="cta-copy"><strong>{copy.downloads.githubName}</strong><small>{copy.downloads.githubStatus}</small></span><span class="cta-arrow" aria-hidden="true">↗</span></a>
 </div>

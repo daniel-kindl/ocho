@@ -22,20 +22,23 @@ fresh local `website/dist` build. This identifies the script as hosting/edge inj
 not an Astro page or repository asset. No other analytics script was found in the
 deployed HTML during this check.
 
-## Release gate
+## Recheck requirement
 
-The maintainer must disable Cloudflare Web Analytics/Insights injection for this
-Pages site (or remove the equivalent Cloudflare transform/proxy configuration) before
-the website can be considered production-ready. A repository change cannot remove a
-script added after the Pages artifact is served.
+The observation above requires a clean recheck after deployment. A follow-up clean
+`curl` request on 2026-08-29 found no Cloudflare beacon in the response, although the
+response still carried Cloudflare headers. The current evidence therefore does not
+justify prescribing a hosting change. A repository change cannot remove a script added
+after the Pages artifact is served.
 
-After changing the hosting configuration, fetch the deployed home page and privacy
-page again in a clean session and confirm that neither response contains:
+After every website deployment, fetch the deployed home page and privacy page again in
+a clean session and confirm that neither response contains:
 
 - `static.cloudflareinsights.com`
 - `beacon.min.js`
 - any other analytics, advertising, or tracking script
 
-The check is a release gate because the repository privacy policy states that Ocho
-does not use analytics or advertising. Keep the evidence with the release review;
-do not mark the release ready while the deployed-site check still finds the beacon.
+If the beacon is reproduced, identify the hosting or edge configuration that adds it
+and treat its removal or an explicit policy decision as a release gate. If both clean
+responses remain free of the beacon, no hosting change is required based on this
+observation. Keep the evidence with the release review because the repository privacy
+policy states that Ocho does not use analytics or advertising.
