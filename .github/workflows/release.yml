@@ -132,6 +132,9 @@ jobs:
       - name: Run full test suite
         run: ./gradlew testGithubDebugUnitTest testPlayDebugUnitTest --stacktrace
 
+      - name: Compile instrumentation tests for both flavors
+        run: ./gradlew compileGithubDebugAndroidTestKotlin compilePlayDebugAndroidTestKotlin --stacktrace
+
       - name: Decode signing keystore
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}

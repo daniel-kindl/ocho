@@ -141,7 +141,7 @@ Useful verification commands are:
 ./gradlew.bat :app:compileGithubDebugAndroidTestKotlin :app:compilePlayDebugAndroidTestKotlin
 ```
 
-The documented emulator pass and CI instrumentation workflow are described in
+The documented local emulator pass and CI instrumentation-compilation workflow are described in
 [docs/TESTING.md](docs/TESTING.md).
 
 Local instrumentation and manual UI checks use the configured `Pixel_9a` Android

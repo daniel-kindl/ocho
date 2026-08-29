@@ -19,8 +19,11 @@ Compile the shared Compose instrumentation tests for both variants with:
 ./gradlew.bat :app:compileGithubDebugAndroidTestKotlin :app:compilePlayDebugAndroidTestKotlin
 ```
 
-On CI, the instrumented suite runs on an API 35 Google APIs emulator for both debug
-flavors. It covers Settings semantics and the mode-specific Workout Setup controls.
+CI compiles both instrumentation variants, but does not boot an emulator or execute
+instrumentation tests. Earlier hosted-emulator attempts had repeated startup failures,
+followed by an instrumentation failure, so the emulator job is deliberately not a
+release gate. Connected execution remains a local release-candidate check on the
+documented AVD below.
 
 ## Local emulator
 
@@ -60,6 +63,26 @@ Run the instrumentation tests with the local emulator running:
 
 Keep the emulator running after a test session when follow-up manual testing is
 needed.
+
+## Release-candidate manual checks
+
+On the `Pixel_9a` AVD, run both connected tasks and then exercise each workout type:
+EMOM, Tabata, AMRAP, and Custom Timer. For each type, check the setup summary,
+start/prepare transition, work and rest transitions, final completion state, pause,
+resume, and stop. Also check that timing continues with the screen off and while the
+app is backgrounded, that foreground-service and notification state remain correct,
+and that the wake lock remains held while the session is active or paused, then is
+released after Stop or natural completion.
+
+Review Settings accessibility semantics in both flavors: the GitHub build exposes
+the Updates group and the Play build does not. Check TalkBack labels, 48dp touch
+targets, focus order, long text, 1.3× font scale, landscape, and the short portrait
+viewport. Review the Play manifest/AAB and GitHub APK checks from
+[docs/PUBLISHING.md](PUBLISHING.md), then repeat the same checks with the final
+release signing configuration.
+
+These checks are required before final release approval; they are not claims that
+GitHub Actions executes an emulator test.
 
 ## Layout regression pass
 
