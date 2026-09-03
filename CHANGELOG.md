@@ -7,6 +7,29 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [3.7.1] - Unreleased
+
+ ### Security
+ - Add a release-workflow provenance guard that rejects tags whose commit is not
+   contained in (an ancestor of) `origin/main`.
+ - Remove the Play build's Play Core in-app update runtime and updater UI. The Play
+   build continues to have no `REQUEST_INSTALL_PACKAGES` permission; Google Play
+   remains responsible for Play-delivered updates.
+- Align the privacy policy and Play Data Safety/foreground-service preparation with
+  the final offline runtime and Android/device backup behavior.
+
+### Changed
+- Reconcile root and in-app third-party notices with the production runtime
+  dependency graph, bundled font/icon licences, and full applicable licence texts.
+- Preserve contributor copyright while documenting the GPLv3 and future-relicensing
+  terms.
+- Make CI compile both flavor instrumentation tests and document the local
+  Pixel_9a Android 17/API 37 release-candidate checks.
+- Refresh website canonical/social metadata and add deterministic static-output
+  verification. Google Play remains marked coming soon until a public listing exists.
+
+---
+
 ## [3.7.0] - 2026-08-19
 
 ### Security
@@ -413,6 +436,7 @@ derived from a domain rather than the product name, so future renames are cosmet
 ---
 
 [Unreleased]: https://github.com/daniel-kindl/ocho/compare/v3.7.0...HEAD
+[3.7.1]: https://github.com/daniel-kindl/ocho/compare/v3.7.0...v3.7.1
 [3.7.0]: https://github.com/daniel-kindl/ocho/compare/v3.6.0...v3.7.0
 [3.6.1]: https://github.com/daniel-kindl/ocho/compare/v3.6.0...v3.6.1
 [3.6.0]: https://github.com/daniel-kindl/ocho/compare/v3.5.0...v3.6.0

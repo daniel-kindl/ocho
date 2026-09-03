@@ -18,6 +18,13 @@ The `distribution` flavor dimension contains `play` and `github`. Release versio
 and version code are defined in `app/build.gradle.kts`; release tags must match the
 version name and version codes must increase for every published update.
 
+The 2026-08-29 release-candidate calculation found `v3.7.0` to be the latest public
+stable tag, with no `feat` or breaking-change commit since it. The known Play
+candidate artifact was produced by successful Dev CI run [#115](https://github.com/daniel-kindl/ocho/actions/runs/32275637900)
+from source `a90a4d0` and declared `versionCode 16`. This branch therefore uses
+`versionName 3.7.1` and `versionCode 17`. Re-query the Play Console immediately
+before any future upload and raise the code if a newer artifact is already present.
+
 The flavor/build-type application IDs are:
 
 | Variant family | Application ID |
