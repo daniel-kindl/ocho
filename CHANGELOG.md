@@ -7,6 +7,29 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [3.7.1] - Unreleased
+
+ ### Security
+ - Add a release-workflow provenance guard that rejects tags whose commit is not
+   contained in (an ancestor of) `origin/main`.
+ - Remove the Play build's Play Core in-app update runtime and updater UI. The Play
+   build continues to have no `REQUEST_INSTALL_PACKAGES` permission; Google Play
+   remains responsible for Play-delivered updates.
+- Align the privacy policy and Play Data Safety/foreground-service preparation with
+  the final offline runtime and Android/device backup behavior.
+
+### Changed
+- Reconcile root and in-app third-party notices with the production runtime
+  dependency graph, bundled font/icon licences, and full applicable licence texts.
+- Preserve contributor copyright while documenting the GPLv3 and future-relicensing
+  terms.
+- Make CI compile both flavor instrumentation tests and document the local
+  Pixel_9a Android 17/API 37 release-candidate checks.
+- Refresh website canonical/social metadata and add deterministic static-output
+  verification. Google Play remains marked coming soon until a public listing exists.
+
+---
+
 ## [3.7.0] - 2026-08-19
 
 ### Security
@@ -39,10 +62,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
   workout, with presets and a visual timeline.
 - **Two-step onboarding.** A short introduction is followed by the notification
   permission choice, with a clear progress indicator and transition animation.
-- **Play and GitHub distribution variants.** The Play build is an AAB with Play's
-  flexible in-app update flow; the GitHub build remains an APK with its GitHub
-  Releases updater. The project site and hosted privacy policy are now part of the
-  repository.
+- **Play and GitHub distribution variants.** The Play build is an AAB distributed
+  outside Ocho; the GitHub build remains an APK with its GitHub Releases updater. The
+  project site and hosted privacy policy are now part of the repository.
 
 ### Changed
 - **Setup and session presentation.** Timer configuration is shared across modes,
@@ -50,8 +72,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - **Website screenshots and phone mockups.** The project site now shows current
   Pixel 9a captures for all four modes, including Custom Timer.
 - **Updater code is isolated by distribution.** The GitHub flavor retains its
-  release-APK installer, while the Play flavor carries only the Play-managed update
-  client and controls. CI now tests and publishes the appropriate artifacts.
+  release-APK installer, while the Play flavor carries no Ocho-owned update client or
+  controls. CI now tests and publishes the appropriate artifacts.
 - **GitHub Pages deployment.** The site is validated and deployed by a
   least-privilege job in `pages.yml` after pushes to `main`.
 
@@ -414,6 +436,7 @@ derived from a domain rather than the product name, so future renames are cosmet
 ---
 
 [Unreleased]: https://github.com/daniel-kindl/ocho/compare/v3.7.0...HEAD
+[3.7.1]: https://github.com/daniel-kindl/ocho/compare/v3.7.0...v3.7.1
 [3.7.0]: https://github.com/daniel-kindl/ocho/compare/v3.6.0...v3.7.0
 [3.6.1]: https://github.com/daniel-kindl/ocho/compare/v3.6.0...v3.6.1
 [3.6.0]: https://github.com/daniel-kindl/ocho/compare/v3.5.0...v3.6.0

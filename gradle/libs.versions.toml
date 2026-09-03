@@ -1,5 +1,5 @@
 [versions]
-agp = "9.3.1"
+agp = "9.3.2"
 kotlin = "2.4.10"
 composeBom = "2026.08.00"
 hilt = "2.60.1"
@@ -15,7 +15,6 @@ activityCompose = "1.13.0"
 coreKtx = "1.19.0"
 detekt = "1.23.8"
 kover = "0.9.9"
-playAppUpdate = "2.1.0"
 espresso = "3.7.0"
 
 [libraries]
@@ -51,7 +50,6 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 org-json = { group = "org.json", name = "json", version.ref = "orgJson" }
-play-app-update = { group = "com.google.android.play", name = "app-update", version.ref = "playAppUpdate" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

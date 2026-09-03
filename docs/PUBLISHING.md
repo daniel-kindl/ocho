@@ -18,6 +18,13 @@ The `distribution` flavor dimension contains `play` and `github`. Release versio
 and version code are defined in `app/build.gradle.kts`; release tags must match the
 version name and version codes must increase for every published update.
 
+The 2026-08-29 release-candidate calculation found `v3.7.0` to be the latest public
+stable tag, with no `feat` or breaking-change commit since it. The known Play
+candidate artifact was produced by successful Dev CI run [#115](https://github.com/daniel-kindl/ocho/actions/runs/32275637900)
+from source `a90a4d0` and declared `versionCode 16`. This branch therefore uses
+`versionName 3.7.1` and `versionCode 17`. Re-query the Play Console immediately
+before any future upload and raise the code if a newer artifact is already present.
+
 The flavor/build-type application IDs are:
 
 | Variant family | Application ID |
@@ -28,7 +35,7 @@ The flavor/build-type application IDs are:
 
 | Variant | Task | Artifact | Channel behavior |
 | --- | --- | --- | --- |
-| Play release | `bundlePlayRelease` | `app/build/outputs/bundle/playRelease/app-play-release.aab` | Google Play upload; Play-managed flexible updater |
+| Play release | `bundlePlayRelease` | `app/build/outputs/bundle/playRelease/app-play-release.aab` | Google Play upload; updates managed outside Ocho |
 | GitHub release | `assembleGithubRelease` | `app/build/outputs/apk/github/release/app-github-release.apk` | Manual GitHub Release APK; retains self-updater |
 
 The AAB is not directly installable. The GitHub artifact is an APK because GitHub
@@ -94,8 +101,7 @@ app/build/intermediates/merged_manifest/githubRelease/processGithubReleaseMainMa
 
 The Play manifest must not contain `REQUEST_INSTALL_PACKAGES`, the GitHub updater's
 `FileProvider`, `InstallResultReceiver`, or GitHub updater metadata/components. The
-Play source set contains only the Play In-App Updates runtime and its user-driven
-flexible flow. The GitHub manifest intentionally contains
+Play source set contains no updater runtime or update UI. The GitHub manifest intentionally contains
 `INTERNET`, `REQUEST_INSTALL_PACKAGES`, `FileProvider`, and
 `InstallResultReceiver`; its GitHub Settings implementation contains the existing
 check/download/install flow.
@@ -135,8 +141,9 @@ add a no-redistribution EULA or other restriction to either build. Google Play
 Automatic Protection, installer checks, anti-tamper protection, and similar features
 that prevent modification or redistribution must remain disabled for this GPL build.
 
-The Play flavor uses Google's Play In-App Updates runtime; the GitHub flavor retains
-its existing platform-only updater dependencies.
+The Play flavor has no Ocho-owned updater dependency or runtime. Google Play controls
+updates outside the application. The GitHub flavor retains its existing updater and
+platform-only installation dependencies.
 
 ## Google Play release (approval required)
 
@@ -205,3 +212,15 @@ repository settings, the maintainer must enable Pages with **Source: GitHub Acti
 if it is not already enabled. The workflow cannot change that repository setting.
 The Google Play CTA intentionally remains “Google Play coming soon” until a real
 listing URL exists.
+
+Before treating the website as production-ready, perform the deployed-site check in
+[docs/WEBSITE_DEPLOYMENT.md](WEBSITE_DEPLOYMENT.md). A clean request on 2026-08-29
+observed a Cloudflare Insights beacon outside the repository, but a later clean curl
+recheck found no beacon. Recheck both public pages after deployment; if the beacon is
+reproduced, identify and remediate the hosting-level injection or make an explicit
+policy decision before release because the privacy policy promises no analytics or
+advertising.
+
+The final Play Console foreground-service and Data Safety actions are tracked in
+[docs/PLAY_COMPLIANCE.md](PLAY_COMPLIANCE.md). That checklist must be rerun against
+the final signed AAB before a closed-test submission.

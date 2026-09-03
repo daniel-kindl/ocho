@@ -10,7 +10,7 @@ see the [README](../README.md).
 
 | Tool | Version |
 |------|---------|
-| Android Gradle Plugin | 9.3.1 |
+| Android Gradle Plugin | 9.3.2 |
 | Kotlin | 2.4.10 |
 | Gradle wrapper | 9.7 |
 | JDK | 17 |
@@ -84,7 +84,7 @@ app/src/main/kotlin/dev/danielkindl/ocho/       # shared source
     ├── home/           Mode selection
     ├── setup/          One setup screen, state and ViewModel for every mode
     ├── session/        One session screen and ViewModel for every mode
-    ├── settings/       Settings + distribution-specific update section
+    ├── settings/       Settings + distribution-specific update hook
     ├── onboarding/     Two-step first-run setup before the normal app flow
     ├── licenses/       Third-party licence notices
     ├── components/     WheelPicker, DurationPicker, PresetsSection, session scaffolding
@@ -99,10 +99,9 @@ app/src/github/                                     # GitHub-only source
 └── ui/settings/        GitHub updater controls
 
 app/src/play/                                       # Play-only source
-├── data/update/        Play Store in-app update coordinator and testable Play adapter
-├── di/                 Play update startup binding
-├── ui/home/            Non-blocking Play update banner
-└── ui/settings/        Play-managed update controls
+├── di/                 No-op startup binding for the shared application hook
+└── ui/settings/        No-op update-section hook; the Updates group is omitted
+                        from Play Settings entirely
 ```
 
 ---
@@ -263,12 +262,14 @@ This keeps the anchoring intact across any number of pauses.
 
 ## Testing and coverage
 
-`domain/` and `data/` carry the unit tests, because they carry the logic. The updater
-also tests persisted download restoration, trusted asset selection, package identity,
-and both distribution-specific update state machines. Compose instrumentation tests
-cover Settings and Workout Setup semantics and accessibility. End-to-end checks use
-the configured Pixel 9a AVD; on the development machine its startup can take two
-minutes or more.
+`domain/` and `data/` carry the unit tests, because they carry the logic. The GitHub
+updater and its validation are covered by flavor-specific JVM tests. Compose instrumentation tests
+cover Settings and Workout Setup semantics and accessibility, and CI compiles both
+flavor variants. CI does not execute an emulator suite: hosted attempts had repeated
+startup failures and an instrumentation failure. Local end-to-end checks use the
+configured Pixel 9a AVD; on the development machine its startup can take two minutes
+or more. The connected tasks and required manual release checks are in
+`docs/TESTING.md`.
 
 `./gradlew koverLogGithubDebug` prints line coverage per package. Coverage is reported and
 never gated, in CI or locally. A percentage is easy to move by writing tests that

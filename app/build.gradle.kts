@@ -37,8 +37,8 @@ android {
         applicationId = "dev.danielkindl.ocho"
         minSdk = 26
         targetSdk = 36
-        versionCode = 16
-        versionName = "3.7.0"
+        versionCode = 17
+        versionName = "3.7.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
 
@@ -200,8 +200,6 @@ dependencies {
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.junit)
-
-    add("playImplementation", libs.play.app.update)
 
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.test.manifest)
