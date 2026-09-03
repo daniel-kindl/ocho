@@ -1,0 +1,252 @@
+name: Prepare Play Production
+
+permissions: {}
+
+on:
+  pull_request:
+    branches: [dev, main]
+    paths:
+      - '.github/workflows/play-production.yml'
+      - 'tools/play-production-draft.mjs'
+      - 'tools/play-production-draft.test.mjs'
+      - 'docs/PLAY_PRODUCTION.md'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Inspect Play state or create a production draft'
+        required: true
+        default: check
+        type: choice
+        options:
+          - check
+          - create-draft
+      source_track:
+        description: 'Exact Closed-testing track containing the tested candidate'
+        required: true
+        type: string
+      version_code:
+        description: 'Exact tested Play versionCode'
+        required: true
+        type: string
+      release_tag:
+        description: 'Required for create-draft: published stable tag, for example v3.7.1'
+        required: false
+        type: string
+      confirmation:
+        description: 'For create-draft only, enter: CREATE PRODUCTION DRAFT'
+        required: false
+        type: string
+
+concurrency:
+  group: play-production
+  cancel-in-progress: false
+
+jobs:
+  tooling-tests:
+    name: Test Play production tooling
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+
+      - name: Test Play production gate
+        run: node --test tools/play-production-draft.test.mjs
+
+  inspect-preflight:
+    name: Validate Play inspection request
+    needs: tooling-tests
+    if: github.event_name == 'workflow_dispatch' && inputs.mode == 'check'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Validate inspection source
+        env:
+          SOURCE_TRACK: ${{ inputs.source_track }}
+          VERSION_CODE: ${{ inputs.version_code }}
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_REF_NAME" != "dev" && "$GITHUB_REF_NAME" != "main" ]]; then
+            echo "::error::Play inspection must be dispatched from dev or main, not '$GITHUB_REF_NAME'."
+            exit 1
+          fi
+          if [[ "$SOURCE_TRACK" == "production" || -z "$SOURCE_TRACK" ]]; then
+            echo "::error::source_track must name the tested Closed-testing track, not production."
+            exit 1
+          fi
+          if [[ ! "$VERSION_CODE" =~ ^[1-9][0-9]*$ ]]; then
+            echo "::error::version_code must be a positive integer."
+            exit 1
+          fi
+
+  inspect-play:
+    name: Inspect private Play candidate state
+    needs: inspect-preflight
+    runs-on: ubuntu-latest
+    environment:
+      name: play-upload
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+
+      - name: Inspect exact tested Play release
+        env:
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          PLAY_PACKAGE_NAME: dev.danielkindl.ocho
+          PLAY_SOURCE_TRACK: ${{ inputs.source_track }}
+          PLAY_VERSION_CODE: ${{ inputs.version_code }}
+          PLAY_RELEASE_NAME: ${{ inputs.release_tag }}
+          PLAY_PRODUCTION_MODE: check
+        run: |
+          set -euo pipefail
+          if [[ -z "${PLAY_SERVICE_ACCOUNT_JSON:-}" ]]; then
+            echo "::error::PLAY_SERVICE_ACCOUNT_JSON is not configured."
+            exit 1
+          fi
+          node tools/play-production-draft.mjs
+
+  draft-preflight:
+    name: Validate production draft request
+    needs: tooling-tests
+    if: github.event_name == 'workflow_dispatch' && inputs.mode == 'create-draft'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Validate stable source and explicit intent
+        env:
+          SOURCE_TRACK: ${{ inputs.source_track }}
+          VERSION_CODE: ${{ inputs.version_code }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          CONFIRMATION: ${{ inputs.confirmation }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          if [[ "$GITHUB_REF_NAME" != "main" ]]; then
+            echo "::error::Production draft creation must be dispatched from main, not '$GITHUB_REF_NAME'."
+            exit 1
+          fi
+          if [[ "$SOURCE_TRACK" == "production" || -z "$SOURCE_TRACK" ]]; then
+            echo "::error::source_track must name the tested Closed-testing track, not production."
+            exit 1
+          fi
+          if [[ ! "$VERSION_CODE" =~ ^[1-9][0-9]*$ ]]; then
+            echo "::error::version_code must be a positive integer."
+            exit 1
+          fi
+          if [[ ! "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::release_tag must be strict stable SemVer (vMAJOR.MINOR.PATCH)."
+            exit 1
+          fi
+          if [[ "$CONFIRMATION" != "CREATE PRODUCTION DRAFT" ]]; then
+            echo "::error::create-draft requires the exact confirmation text: CREATE PRODUCTION DRAFT"
+            exit 1
+          fi
+
+          git fetch --no-tags origin main
+          git fetch --force origin "refs/tags/$RELEASE_TAG:refs/tags/$RELEASE_TAG"
+          TAG_SHA=$(git rev-parse "$RELEASE_TAG^{commit}")
+          HEAD_SHA=$(git rev-parse HEAD)
+          if [[ "$TAG_SHA" != "$HEAD_SHA" ]]; then
+            echo "::error::$RELEASE_TAG points to $TAG_SHA, but main checkout is $HEAD_SHA. Production must use the tagged main revision."
+            exit 1
+          fi
+          bash tools/verify-release-provenance.sh origin/main "$TAG_SHA"
+
+          BUILD_VERSION=$(grep -oP 'versionName\s*=\s*"\K[^"]+' app/build.gradle.kts)
+          BUILD_CODE=$(grep -oP 'versionCode\s*=\s*\K[0-9]+' app/build.gradle.kts)
+          if [[ "v$BUILD_VERSION" != "$RELEASE_TAG" ]]; then
+            echo "::error::$RELEASE_TAG does not match versionName $BUILD_VERSION."
+            exit 1
+          fi
+          if [[ "$BUILD_CODE" != "$VERSION_CODE" ]]; then
+            echo "::error::Requested versionCode $VERSION_CODE does not match source versionCode $BUILD_CODE."
+            exit 1
+          fi
+
+          RELEASE_STATE=$(gh release view "$RELEASE_TAG" --json isDraft,isPrerelease --jq '[.isDraft,.isPrerelease] | @tsv')
+          if [[ "$RELEASE_STATE" != $'false\tfalse' ]]; then
+            echo "::error::$RELEASE_TAG must already have a published non-prerelease GitHub Release."
+            exit 1
+          fi
+
+  create-production-draft:
+    name: Create Play production draft
+    needs: draft-preflight
+    runs-on: ubuntu-latest
+    environment:
+      name: play-production
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+
+      - name: Promote tested versionCode to a production draft
+        env:
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_PRODUCTION_SERVICE_ACCOUNT_JSON }}
+          PLAY_PACKAGE_NAME: dev.danielkindl.ocho
+          PLAY_SOURCE_TRACK: ${{ inputs.source_track }}
+          PLAY_VERSION_CODE: ${{ inputs.version_code }}
+          PLAY_RELEASE_NAME: ${{ inputs.release_tag }}
+          PLAY_PRODUCTION_MODE: create-draft
+        run: |
+          set -euo pipefail
+          if [[ -z "${PLAY_SERVICE_ACCOUNT_JSON:-}" ]]; then
+            echo "::error::PLAY_PRODUCTION_SERVICE_ACCOUNT_JSON is not configured in the play-production environment."
+            exit 1
+          fi
+          node tools/play-production-draft.mjs
+
+      - name: Record manual rollout gate
+        run: |
+          {
+            echo
+            echo "## Manual release required"
+            echo
+            echo "The workflow created a **draft** production release only."
+            echo "It did not send the release for review or roll it out to users."
+            echo "Review Play Console, FGS declarations/video, Data Safety, countries, and policy state before starting production manually."
+          } >> "$GITHUB_STEP_SUMMARY"
