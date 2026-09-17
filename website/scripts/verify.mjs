@@ -3,6 +3,7 @@ import { join, relative } from 'node:path';
 
 const dist = join(process.cwd(), 'dist');
 const siteOrigin = 'https://daniel-kindl.github.io';
+const siteOrigins = new Set([siteOrigin, 'https://danielkindl.dev']);
 const basePath = '/ocho';
 const socialImage = 'social/ocho-social-1200x630.png';
 const expectedPages = [
@@ -25,6 +26,10 @@ function fail(message) {
   errors.push(message);
 }
 
+function attributeValue(tag, name) {
+  return new RegExp(`\\b${name}=["']([^"']*)["']`, 'i').exec(tag)?.[1];
+}
+
 function metaContent(html, name, value) {
   const escapedValue = value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const tag = new RegExp(`<meta\\s+[^>]*${name}=["']${escapedValue}["'][^>]*>`, 'i').exec(html)?.[0];
@@ -39,6 +44,34 @@ function canonicalHref(html) {
 function expectedCanonical(file) {
   const page = file === 'index.html' ? '' : file;
   return `${siteOrigin}${basePath}/${page}`;
+}
+
+function isInternalSiteUrl(url) {
+  return siteOrigins.has(url.origin)
+    && (url.pathname === basePath || url.pathname.startsWith(`${basePath}/`));
+}
+
+function verifyExternalAnchorTargets(html, pageFile) {
+  for (const match of html.matchAll(/<a\b[^>]*>/gi)) {
+    const tag = match[0];
+    const href = attributeValue(tag, 'href');
+    if (!href || !/^https?:\/\//i.test(href)) continue;
+
+    let url;
+    try {
+      url = new URL(href);
+    } catch {
+      continue;
+    }
+    if (isInternalSiteUrl(url)) continue;
+
+    const target = attributeValue(tag, 'target');
+    const rel = new Set((attributeValue(tag, 'rel') ?? '').toLowerCase().split(/\s+/).filter(Boolean));
+    if (target !== '_blank') fail(`${pageFile}: external link must use target="_blank": ${href}`);
+    if (!rel.has('noopener') || !rel.has('noreferrer')) {
+      fail(`${pageFile}: external link must use rel="noopener noreferrer": ${href}`);
+    }
+  }
 }
 
 function distPathForUrl(raw, pageFile) {
@@ -93,6 +126,8 @@ for (const page of expectedPages) {
     fail(`${page}: Twitter card is not summary_large_image`);
   }
 
+  verifyExternalAnchorTargets(html, page);
+
   const references = [...html.matchAll(/\b(?:href|src)=["']([^"']+)["']/gi)].map((match) => match[1]);
   for (const reference of references) {
     const target = distPathForUrl(reference, page);
@@ -133,4 +168,4 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log(`Verified ${expectedPages.length} production pages, canonical metadata, social metadata, assets, links, and tracking-script absence.`);
+console.log(`Verified ${expectedPages.length} production pages, canonical metadata, social metadata, assets, links, external-link behavior, and tracking-script absence.`);
