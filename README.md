@@ -6,10 +6,14 @@ when you're mid-effort and not looking at the screen.
 [![Dev CI](https://github.com/daniel-kindl/ocho/actions/workflows/dev-ci.yml/badge.svg?branch=dev)](https://github.com/daniel-kindl/ocho/actions/workflows/dev-ci.yml)
 [![Release](https://github.com/daniel-kindl/ocho/actions/workflows/release.yml/badge.svg)](https://github.com/daniel-kindl/ocho/actions/workflows/release.yml)
 [![Latest release](https://img.shields.io/github/v/release/daniel-kindl/ocho?label=latest)](https://github.com/daniel-kindl/ocho/releases/latest)
-[![Google Play](https://img.shields.io/badge/Google_Play-download-414141?logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=dev.danielkindl.ocho)
 [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
 [![API 26+](https://img.shields.io/badge/API-26%2B-brightgreen)](https://developer.android.com/)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.4.10-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
+
+<p>
+  <a href="https://play.google.com/store/apps/details?id=dev.danielkindl.ocho"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="60"></a>
+  <a href="https://github.com/daniel-kindl/ocho/releases/latest"><img src="website/public/badges/github-apk.svg" alt="Download APK from GitHub" height="60"></a>
+</p>
 
 Project site: [daniel-kindl.github.io/ocho](https://daniel-kindl.github.io/ocho/)
 
