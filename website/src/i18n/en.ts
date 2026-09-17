@@ -141,8 +141,8 @@ export const en = {
     download: {
       eyebrow: 'OCHO / 06',
       category: 'GET THE APP',
-      title: 'Start with the build that exists today.',
-      body: "Google Play is coming soon. The current GitHub release is available as a manually installed APK for Android 8.0 and later. The GitHub updater accepts only Ocho's official release asset and lets Android verify the signing key before an update is installed.",
+      title: 'Choose how you want to install Ocho.',
+      body: "Ocho is available on Google Play and as a GitHub APK for Android 8.0 and later. The GitHub build is manually installed and keeps Ocho's GitHub updater; the Play build receives updates through Google Play.",
       note: 'The GitHub build may ask for permission to install an app from an unknown source.',
     },
   },
