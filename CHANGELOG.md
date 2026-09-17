@@ -7,7 +7,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
-## [3.7.1] - Unreleased
+## [3.7.1] - 2026-09-17
 
  ### Security
  - Add a release-workflow provenance guard that rejects tags whose commit is not
@@ -26,7 +26,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Make CI compile both flavor instrumentation tests and document the local
   Pixel_9a Android 17/API 37 release-candidate checks.
 - Refresh website canonical/social metadata and add deterministic static-output
-  verification. Google Play remains marked coming soon until a public listing exists.
+  verification. Google Play is now publicly available for the Play distribution.
 
 ---
 
@@ -435,7 +435,7 @@ derived from a domain rather than the product name, so future renames are cosmet
 
 ---
 
-[Unreleased]: https://github.com/daniel-kindl/ocho/compare/v3.7.0...HEAD
+[Unreleased]: https://github.com/daniel-kindl/ocho/compare/v3.7.1...HEAD
 [3.7.1]: https://github.com/daniel-kindl/ocho/compare/v3.7.0...v3.7.1
 [3.7.0]: https://github.com/daniel-kindl/ocho/compare/v3.6.0...v3.7.0
 [3.6.1]: https://github.com/daniel-kindl/ocho/compare/v3.6.0...v3.6.1
