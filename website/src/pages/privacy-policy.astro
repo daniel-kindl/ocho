@@ -4,6 +4,7 @@ import { withBase } from '../utils/paths';
 import { siteCopy as copy } from '../i18n';
 
 const homeHref = withBase('');
+const installPermission = 'REQUEST_INSTALL_PACKAGES';
 ---
 
 <BaseLayout
@@ -37,8 +38,13 @@ const homeHref = withBase('');
           {copy.privacy.sections[0].paragraphs.map((paragraph) => <p>{paragraph}</p>)}
 
           <h2><span>{copy.privacy.sections[1].number}</span><span class="policy-heading">{copy.privacy.sections[1].title}</span></h2>
-          <p>{copy.privacy.sections[1].paragraphs[0]}</p>
-          <p>{copy.privacy.sections[1].paragraphs[1].split('REQUEST_INSTALL_PACKAGES')[0]}<code>REQUEST_INSTALL_PACKAGES</code>{copy.privacy.sections[1].paragraphs[1].split('REQUEST_INSTALL_PACKAGES')[1]}</p>
+          {copy.privacy.sections[1].paragraphs.map((paragraph) =>
+            paragraph.includes(installPermission) ? (
+              <p>{paragraph.split(installPermission)[0]}<code>{installPermission}</code>{paragraph.split(installPermission)[1]}</p>
+            ) : (
+              <p>{paragraph}</p>
+            )
+          )}
 
           <h2><span>{copy.privacy.sections[2].number}</span><span class="policy-heading">{copy.privacy.sections[2].title}</span></h2>
           <p>{copy.privacy.licenseLead} <a href="https://github.com/daniel-kindl/ocho/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">{copy.privacy.gplLicense}</a> {copy.privacy.licenseJoin} <a href="https://github.com/daniel-kindl/ocho/blob/main/THIRD-PARTY-NOTICES.md" target="_blank" rel="noopener noreferrer">{copy.privacy.thirdPartyNotices}</a>.</p>

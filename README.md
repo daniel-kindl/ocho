@@ -1,20 +1,23 @@
 # Ocho
 
-A minimal, production-quality Android workout interval timer, built to stay readable
-when you're mid-effort and not looking at the screen.
+Ocho is an Android workout interval timer for EMOM, Tabata, AMRAP, and Custom Timer workouts.
+The app uses a large clock, clear phase colours, sound, and vibration so that you can follow a workout without continuous screen interaction.
 
 [![Dev CI](https://github.com/daniel-kindl/ocho/actions/workflows/dev-ci.yml/badge.svg?branch=dev)](https://github.com/daniel-kindl/ocho/actions/workflows/dev-ci.yml)
 [![Release](https://github.com/daniel-kindl/ocho/actions/workflows/release.yml/badge.svg)](https://github.com/daniel-kindl/ocho/actions/workflows/release.yml)
 [![Latest release](https://img.shields.io/github/v/release/daniel-kindl/ocho?label=latest)](https://github.com/daniel-kindl/ocho/releases/latest)
-[![Google Play](https://img.shields.io/badge/Google_Play-download-414141?logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=dev.danielkindl.ocho)
 [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
 [![API 26+](https://img.shields.io/badge/API-26%2B-brightgreen)](https://developer.android.com/)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.4.10-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 
+<p>
+  <a href="https://play.google.com/store/apps/details?id=dev.danielkindl.ocho"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="60"></a>
+  <a href="https://github.com/daniel-kindl/ocho/releases/latest"><img src="website/public/badges/github-apk.svg" alt="Download the Ocho APK from GitHub" height="60"></a>
+</p>
+
 Project site: [daniel-kindl.github.io/ocho](https://daniel-kindl.github.io/ocho/)
 
-*An **ocho** is a figure-eight step in tango. It's also Spanish for **eight**, the
-round count of a classic Tabata.*
+The name **Ocho** has two references. An *ocho* is a figure-eight step in tango. *Ocho* is also Spanish for **eight**, which is the number of rounds in a standard Tabata workout.
 
 ---
 
@@ -37,18 +40,14 @@ round count of a classic Tabata.*
 <p align="center">
   <img src="website/public/screenshots/mockups/custom-setup.png" width="24%" alt="Custom Timer setup with centered sets, work, and rest controls inside a Pixel 9a mockup.">
   <img src="website/public/screenshots/mockups/emom-presets.png" width="24%" alt="EMOM setup with a compact saved preset row, summary, and delete action inside a Pixel 9a phone mockup.">
-  <img src="website/public/screenshots/mockups/amrap-presets.png" width="24%" alt="AMRAP setup with three distinct compact saved presets—Quick Start, Steady Pace, and Long Burn—inside a Pixel 9a phone mockup.">
+  <img src="website/public/screenshots/mockups/amrap-presets.png" width="24%" alt="AMRAP setup with three distinct compact saved presets: Quick Start, Steady Pace, and Long Burn, inside a Pixel 9a phone mockup.">
 </p>
 
-These Pixel 9a captures cover the full flow: choosing a mode, configuring a set,
-preparing, working, pausing, resting, and completing a session. The bar above Start
-previews the shape of the workout before it begins. The preset capture shows the
-current compact two-line list used across every timer mode. The AMRAP example uses
-three distinct saved workouts—Quick Start (1 min), Steady Pace (3 min), and Long
-Burn (5 min)—so each row's total-duration summary is easy to compare.
+The screenshots show the complete workout flow. They include mode selection, timer configuration, preparation, work, pause, rest, and completion. The bar above the Start control previews the workout structure before the workout starts.
 
-While a session runs the plate is the entire interface, which is what makes it
-readable across a room. Work and rest are separated by lightness as well as hue.
+The preset screenshots show the compact two-line preset layout. The AMRAP example contains three saved workouts with different durations so that the values are easy to compare.
+
+During a workout, the current phase uses the complete screen. Work and rest use different colours and different lightness values.
 
 ---
 
@@ -56,110 +55,117 @@ readable across a room. Work and rest are separated by lightness as well as hue.
 
 | Feature | Detail |
 |---------|--------|
-| EMOM timer | Total duration and interval length, set with drum-roll mm:ss pickers |
-| Tabata timer | Total, work, and rest durations; phases alternate automatically |
-| AMRAP timer | Total duration only; one unbroken block with no interval beeps |
-| Custom Timer | Fixed set count with configurable work and rest durations; no final rest |
-| Phase colours | A full-screen amber, red, green, or violet plate per phase, readable across a room and distinguishable without colour vision |
-| Run timeline | Proportional preview of a workout's shape before you start it |
-| Sound feedback | Distinct tones per event, on the alarm stream so silent mode can't mute them |
-| Vibration feedback | Different patterns for intervals and for completion |
-| Pause and resume | Freeze mid-session without drift or losing interval alignment |
-| Pre-start countdown | Three seconds before the first interval, to get into position |
-| Presets | Save, name, load, and delete configurations separately per mode; compact rows show a mode-specific summary |
-| Progress and summary | A progress bar during the session, and a recap on completion |
-| Exit confirmation | The back gesture and Stop both ask before ending a running session |
-| Updates | GitHub variant can check GitHub Releases; Play has no Ocho-owned updater |
-| Workout-first UI | Large high-contrast display, screen stays on, one-hand friendly |
+| EMOM timer | Set the total duration and interval duration. |
+| Tabata timer | Set the total duration, work duration, and rest duration. The app changes phases automatically. |
+| AMRAP timer | Set the total duration. The timer runs as one continuous block. |
+| Custom Timer | Set the number of work sets, work duration, and rest duration. There is no rest phase after the final work set. |
+| Phase colours | Each phase uses a full-screen colour. The colours also use different lightness values. |
+| Run timeline | Preview the relative duration and order of workout phases before the workout starts. |
+| Sound feedback | Use a different sound for each event. Sounds use the Android alarm audio stream. |
+| Vibration feedback | Use different vibration patterns for interval changes and workout completion. |
+| Pause and resume | Pause a workout and continue from the same timer state. |
+| Pre-start countdown | Use a three-second countdown before the first interval. |
+| Presets | Save, load, name, and delete configurations for each timer mode. |
+| Progress and summary | Show workout progress and a completion summary. |
+| Exit confirmation | Ask for confirmation before Stop or the Back gesture ends an active workout. |
+| Updates | The GitHub version can check GitHub Releases for updates. The Google Play version uses Google Play updates. |
+| Workout display | Use a large, high-contrast display and keep the screen on during a workout. |
 
 ---
 
 ## Install
 
-Ocho is available from [Google Play](https://play.google.com/store/apps/details?id=dev.danielkindl.ocho)
-and as a [GitHub APK](https://github.com/daniel-kindl/ocho/releases/latest). The GitHub APK
-is manually installed and may require Android's unknown-app installation permission;
-it retains the GitHub self-updater in Settings. The updater accepts only the official
-release asset, checks the APK package identity before handing it to Android, and relies
-on Android's signing-key verification for the final install decision. The Play variant
-does not contain the GitHub APK installer or any Ocho-owned update runtime; updates are
-handled by Google Play outside the app.
+Ocho has two distribution methods. Choose one method.
+
+### Google Play
+
+Install Ocho from [Google Play](https://play.google.com/store/apps/details?id=dev.danielkindl.ocho).
+Google Play installs and updates this version. The Google Play version does not contain the Ocho GitHub updater or the APK installation function.
+
+### GitHub APK
+
+Download the [latest GitHub release](https://github.com/daniel-kindl/ocho/releases/latest).
+Install the APK manually. Android can require permission to install an app from an unknown source.
+
+The GitHub version includes the Ocho GitHub updater. The updater accepts only the official Ocho release asset. It checks the package identity before it gives the APK to Android. Android verifies the signing key before installation.
 
 ### Update channels
 
-| Channel | Installs as | Source | Published |
-|---------|-------------|--------|-----------|
-| Stable | `Ocho` | `releases/latest` | On each tagged release from `main` |
-| Dev | `Ocho Dev` | Newest prerelease | On every push to `dev` |
+| Channel | Application name | Source | Publication |
+|---------|------------------|--------|-------------|
+| Stable | `Ocho` | `releases/latest` | Each tagged release from `main` |
+| Dev | `Ocho Dev` | Latest prerelease | Each push to `dev` |
 
-The two are separate apps with separate `applicationId`s and separate data, so a dev
-build can be installed alongside the stable one and neither will offer the other's
-updates. Dev builds exist to test changes before they reach `main`, so expect them
-to break.
+The stable and dev versions use different `applicationId` values and different application data. You can install both versions on one device. One version does not offer updates for the other version.
+
+Use the dev version only for testing. It can contain incomplete or unstable changes.
 
 ---
 
 ## Usage
 
-**EMOM.** Set total duration and interval, then Start. The app beeps and vibrates at
-every interval boundary. Pause freezes without drift; Stop ends early after
-confirming.
+### EMOM
 
-**Tabata.** Set total, work, and rest. Phases alternate automatically with distinct
-high and low beeps, and the whole screen switches between a dark red work plate and
-a light green rest one.
+Set the total duration and interval duration. Select Start. Ocho gives a sound and vibration cue at each interval boundary.
 
-**AMRAP.** Set total duration and go. Nothing interrupts you: no interval beeps, no
-round counter, just the clock counting down and a 3-2-1 before it stops. Count your
-own rounds.
+Select Pause to stop the timer temporarily. Select Stop to end the workout. Ocho asks for confirmation before it ends an active workout.
 
-**Custom Timer.** Set the number of work sets, work duration, and rest duration.
-Rest runs between sets only, so the final work set ends the session immediately.
+### Tabata
 
-**Presets.** Tap Save in the Presets section to store the current configuration.
-The name is pre-filled from the configuration, so edit it or accept it. Names are
-limited to 50 Unicode characters, with a live counter in the save dialog. Tap a
-compact preset row to load it; the summary below the name keeps the mode-specific
-durations visible, while the trailing delete control removes it.
+Set the total duration, work duration, and rest duration. Ocho changes between work and rest automatically. Different sounds and screen colours identify the two phases.
 
-**Settings.** The icon on the home screen toggles sound and vibration independently,
-holds feedback, licence, and privacy-policy links, and shows the GitHub update flow
-when the GitHub build is installed. The Play build omits the Updates group entirely.
+### AMRAP
+
+Set the total duration. Select Start. The timer runs as one continuous block and does not give interval cues. A three-second countdown occurs before the timer ends.
+
+Count completed rounds separately.
+
+### Custom Timer
+
+Set the number of work sets, work duration, and rest duration. Ocho runs a rest phase between work sets. It does not run a rest phase after the final work set.
+
+### Presets
+
+Select Save in the Presets section to store the current timer configuration. Ocho provides a default preset name from the configuration. You can edit this name.
+
+A preset name can contain a maximum of 50 Unicode characters. The save dialog shows the current character count.
+
+Select a preset row to load the preset. Select the delete control to remove the preset.
+
+### Settings
+
+Use Settings to enable or disable sound and vibration. Settings also contains feedback, licence, and privacy-policy links.
+
+The Updates section is available only in the GitHub version.
 
 ---
 
-## Building from source
+## Build from source
 
-Build requirements, the Gradle commands, release signing, the package layout, and the
-reasoning behind the timing, session, and colour design are in
-[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Variant publishing and GPLv3 compliance
-are documented in [docs/PUBLISHING.md](docs/PUBLISHING.md); the privacy policy is in
-[docs/PRIVACY_POLICY.md](docs/PRIVACY_POLICY.md).
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for build requirements, Gradle commands, release signing, package structure, and timer design.
 
-Useful verification commands are:
+See [docs/PUBLISHING.md](docs/PUBLISHING.md) for distribution variants and GPLv3 publication requirements. See [docs/PRIVACY_POLICY.md](docs/PRIVACY_POLICY.md) for the privacy policy.
+
+Run these commands to verify the Android project:
 
 ```powershell
 ./gradlew.bat :app:testGithubDebugUnitTest :app:testPlayDebugUnitTest
 ./gradlew.bat :app:compileGithubDebugAndroidTestKotlin :app:compilePlayDebugAndroidTestKotlin
 ```
 
-The documented local emulator pass and CI instrumentation-compilation workflow are described in
-[docs/TESTING.md](docs/TESTING.md).
+See [docs/TESTING.md](docs/TESTING.md) for emulator tests and CI test procedures.
 
-Local instrumentation and manual UI checks use the configured `Pixel_9a` Android
-17 (API 37) emulator. Start it before running the connected test task and wait for
-ADB to report the device as ready.
+Local instrumentation tests use the configured `Pixel_9a` Android 17 (API 37) emulator. Start the emulator before you run a connected test task. Wait until ADB reports that the device is ready.
 
-Localization is prepared but intentionally English-only for now. App strings and
-plural rules live in Android resources; website copy lives in the typed Astro module
-`website/src/i18n/en.ts`. See [docs/LOCALIZATION.md](docs/LOCALIZATION.md) before
-adding a locale.
+The project currently provides English only. Android application text is in Android resources. Website text is in `website/src/i18n/en.ts`. See [docs/LOCALIZATION.md](docs/LOCALIZATION.md) before you add a locale.
 
 ---
 
 ## Website
 
-The GitHub Pages site is an Astro project in `website/`. Run it locally with:
+The website is an Astro project in `website/`.
+
+Run the local development server:
 
 ```bash
 cd website
@@ -167,34 +173,30 @@ npm ci
 npm run dev
 ```
 
-Create the production static output with `npm run build`. Pushes to `main` deploy
-`website/dist/` to GitHub Pages through the Pages workflow. Pull requests that touch
-the website build it without deploying; only pushes to `main` publish the site.
+Create the production static output with `npm run build`.
+
+A push to `main` deploys `website/dist/` to GitHub Pages. A pull request that changes the website builds and verifies the site but does not deploy it.
 
 ---
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for branch rules, commit conventions, the
-release process, and the [contributor terms](CONTRIBUTING.md#contributor-terms).
-Security policy: [SECURITY.md](SECURITY.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md) for branch rules, commit conventions, the release process, and the [contributor terms](CONTRIBUTING.md#contributor-terms).
+
+See [SECURITY.md](SECURITY.md) for the security policy.
 
 ---
 
 ## License
 
-Ocho is free software under the [GNU General Public License v3.0](LICENSE). You
-may use, study, modify and redistribute it. Anything you redistribute must also be
-GPL-3.0 with source available.
+Ocho is free software under the [GNU General Public License v3.0](LICENSE). You can use, study, modify, and redistribute the software under the terms of this licence.
 
-Copyright © 2026 Daniel Kindl for his contributions. Contributors retain copyright
-in their contributions; see [CONTRIBUTING.md](CONTRIBUTING.md). Ocho may also be
-offered under separate commercial terms.
+If you redistribute Ocho, you must comply with the GPLv3 requirements. See the licence for the complete requirements.
 
-The name "Ocho", the wordmark, and the numeral-8 icon are not covered by the GPL.
-Fork freely, but rename and re-brand.
+Copyright © 2026 Daniel Kindl for his contributions. Contributors retain copyright in their contributions. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Bundled fonts (IBM Plex Sans, JetBrains Mono, and Space Grotesk, all SIL OFL 1.1)
-and icons (Lucide, ISC) keep their own licences. Full texts are in
-[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and in the app under Settings,
-then Licences.
+Ocho can also be offered under separate commercial terms.
+
+The name "Ocho", the wordmark, and the numeral-8 icon are not part of the GPL licence grant. If you create a fork for redistribution, use a different name and brand.
+
+Bundled fonts use the SIL Open Font License 1.1. Lucide icons use the ISC licence. Other third-party libraries keep their applicable licences. See [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and Settings > Licences for the complete notices.

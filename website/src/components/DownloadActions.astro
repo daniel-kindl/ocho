@@ -10,10 +10,53 @@ const { class: className = 'download-actions' } = Astro.props;
 ---
 
 <div class={className}>
-  {playListing.available ? (
-    <a class="cta cta-primary" href={playListing.url} target="_blank" rel="noopener noreferrer" aria-label={playListing.ariaLabel}><span class="cta-copy"><strong>{copy.downloads.playName}</strong><small>{playListing.status}</small></span><span class="cta-mark" aria-hidden="true"></span></a>
-  ) : (
-    <span class="cta cta-primary" aria-label={playListing.ariaLabel}><span class="cta-copy"><strong>{copy.downloads.playName}</strong><small>{playListing.status}</small></span><span class="cta-mark" aria-hidden="true"></span></span>
-  )}
-  <a class="cta cta-secondary" href={githubReleaseUrl} target="_blank" rel="noopener noreferrer" aria-label={copy.downloads.githubAria}><span class="cta-copy"><strong>{copy.downloads.githubName}</strong><small>{copy.downloads.githubStatus}</small></span><span class="cta-arrow" aria-hidden="true">↗</span></a>
+  <a class="download-badge-link" href={playListing.url} target="_blank" rel="noopener noreferrer" aria-label={playListing.ariaLabel}>
+    <img
+      class="download-badge"
+      src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+      alt="Get it on Google Play"
+      width="646"
+      height="250"
+      loading="lazy"
+    />
+  </a>
+  <a class="download-badge-link" href={githubReleaseUrl} target="_blank" rel="noopener noreferrer" aria-label={copy.downloads.githubAria}>
+    <img
+      class="download-badge"
+      src="/ocho/badges/github-apk.svg"
+      alt="Download the Ocho APK from GitHub"
+      width="646"
+      height="250"
+      loading="lazy"
+    />
+  </a>
 </div>
+
+<style>
+  .download-badge-link {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 0.5rem;
+    transition: transform 150ms ease, opacity 150ms ease;
+  }
+
+  .download-badge-link:hover {
+    transform: translateY(-2px);
+  }
+
+  .download-badge-link:active {
+    transform: translateY(0);
+  }
+
+  .download-badge {
+    display: block;
+    width: auto;
+    height: 60px;
+  }
+
+  @media (max-width: 480px) {
+    .download-badge {
+      height: 54px;
+    }
+  }
+</style>
