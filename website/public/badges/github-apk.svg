@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="646" height="250" viewBox="0 0 646 250" role="img" aria-labelledby="title desc">
-  <title id="title">Download APK from GitHub</title>
-  <desc id="desc">Black download badge for the Ocho GitHub APK.</desc>
+  <title id="title">Download the Ocho APK from GitHub</title>
+  <desc id="desc">Download badge for the Ocho APK on GitHub.</desc>
   <rect x="41" y="41" width="564" height="168" rx="18" fill="#0d1117"/>
   <rect x="41.75" y="41.75" width="562.5" height="166.5" rx="17.25" fill="none" stroke="#ffffff" stroke-opacity="0.28" stroke-width="1.5"/>
   <g transform="translate(76 82)" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
