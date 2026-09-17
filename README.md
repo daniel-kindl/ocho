@@ -6,6 +6,7 @@ when you're mid-effort and not looking at the screen.
 [![Dev CI](https://github.com/daniel-kindl/ocho/actions/workflows/dev-ci.yml/badge.svg?branch=dev)](https://github.com/daniel-kindl/ocho/actions/workflows/dev-ci.yml)
 [![Release](https://github.com/daniel-kindl/ocho/actions/workflows/release.yml/badge.svg)](https://github.com/daniel-kindl/ocho/actions/workflows/release.yml)
 [![Latest release](https://img.shields.io/github/v/release/daniel-kindl/ocho?label=latest)](https://github.com/daniel-kindl/ocho/releases/latest)
+[![Google Play](https://img.shields.io/badge/Google_Play-download-414141?logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=dev.danielkindl.ocho)
 [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
 [![API 26+](https://img.shields.io/badge/API-26%2B-brightgreen)](https://developer.android.com/)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.4.10-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
@@ -75,7 +76,8 @@ readable across a room. Work and rest are separated by lightness as well as hue.
 
 ## Install
 
-Ocho has two alternative distribution channels. The [GitHub APK](https://github.com/daniel-kindl/ocho/releases/latest)
+Ocho is available from [Google Play](https://play.google.com/store/apps/details?id=dev.danielkindl.ocho)
+and as a [GitHub APK](https://github.com/daniel-kindl/ocho/releases/latest). The GitHub APK
 is manually installed and may require Android's unknown-app installation permission;
 it retains the GitHub self-updater in Settings. The updater accepts only the official
 release asset, checks the APK package identity before handing it to Android, and relies
