@@ -12,8 +12,6 @@ const homeHref = withBase('');
 const privacyHref = withBase('privacy-policy.html');
 ---
 
-<a class="skip-link" href="#main-content">{copy.navigation.skipToContent}</a>
-
 <header class="site-header">
   <div class="page nav-shell">
     <a class="wordmark" href={homeHref} aria-label={copy.navigation.homeLabel}>och<span>o</span></a>
@@ -22,7 +20,7 @@ const privacyHref = withBase('privacy-policy.html');
       <a href={`${homeHref}#session`}>{copy.navigation.session}</a>
       <a href={`${homeHref}#modes`}>{copy.navigation.modes}</a>
       {currentPage === 'home' && <a href={`${homeHref}#presets`}>{copy.navigation.presets}</a>}
-      {currentPage === 'home' && <a href={`${homeHref}#screenshots`}>{copy.navigation.screenshots}</a>}
+      <a href={`${homeHref}#screenshots`}>{copy.navigation.screenshots}</a>
       <a href={`${homeHref}#download`}>{copy.navigation.download}</a>
       <a href={privacyHref} aria-current={currentPage === 'privacy' ? 'page' : undefined}>{copy.navigation.privacy}</a>
     </nav>
