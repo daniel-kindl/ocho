@@ -2,18 +2,19 @@ name: dependabot-auto-merge
 
 # Turns on auto-merge for a Dependabot pull request with a patch or a minor
 # update. The required checks and the rules of the base branch still gate the
-# merge. A major update waits for the owner. This workflow does not check out
-# code and uses no secret.
+# merge. A major update waits for the owner. When another actor pushes to or
+# reopens a Dependabot pull request, the second job turns auto-merge off. This
+# workflow does not check out code and uses no secret.
 #
 # This file is a copy of the dkstack template. It runs only for pull requests
 # to dev, the branch that dependabot.yml targets. A security update that
 # Dependabot opens against main does not get auto-merge, because main changes
-# only through a release. dev must require the CI checks, or the job stops
-# with an error and nothing merges.
+# only through a release. The protect-dev ruleset requires the CI checks.
 
 on:
   pull_request:
     branches: [dev]
+    types: [opened, synchronize, reopened]
 
 permissions: {}
 
@@ -22,7 +23,6 @@ jobs:
     name: auto-merge
     # A Dependabot pull_request run gets a read-only token by default. The
     # job permissions below give it the write access to turn on auto-merge.
-    # The actor check skips the run when a person pushes to the branch.
     if: github.event.pull_request.user.login == 'dependabot[bot]' && github.actor == 'dependabot[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -37,20 +37,48 @@ jobs:
       - name: Turn on auto-merge for a patch or a minor update
         if: steps.metadata.outputs.update-type == 'version-update:semver-patch' || steps.metadata.outputs.update-type == 'version-update:semver-minor'
         env:
+          UPDATES: ${{ steps.metadata.outputs.updated-dependencies-json }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          REPO: ${{ github.repository }}
+          BASE: ${{ github.event.pull_request.base.ref }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # update-type is the highest type in a group, and it ignores an
+          # update with no type. So each update must be a patch or a minor update.
+          if ! jq -e 'type == "array" and length > 0 and all(.[]; .updateType == "version-update:semver-patch" or .updateType == "version-update:semver-minor")' <<< "$UPDATES" > /dev/null 2>&1; then
+            echo "::notice::An update in this pull request is not a patch or a minor update. Auto-merge stays off."
+            exit 0
+          fi
+          # Without a required check, gh merges at once, before CI passes. This
+          # endpoint reads rulesets only, not classic branch protection.
+          checks="$(gh api "repos/$REPO/rules/branches/$BASE" --jq '[.[] | select(.type == "required_status_checks") | .parameters.required_status_checks[]] | length')"
+          if [ "$checks" -eq 0 ]; then
+            echo "::error::No ruleset on $BASE requires a status check. Add one first." >&2
+            exit 1
+          fi
+          gh pr merge --auto --squash --match-head-commit "$HEAD_SHA" "$PR_URL"
+
+  disable-auto-merge:
+    name: disable-auto-merge
+    # A push by a person or an agent with write access does not turn
+    # auto-merge off. So this job turns it off, and the owner decides again.
+    if: github.event.pull_request.user.login == 'dependabot[bot]' && github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Turn off auto-merge
+        env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          # gh merges at once when nothing blocks the pull request. So turn on
-          # auto-merge only when a rule of the base branch blocks the merge,
-          # for example a required check that has not passed yet.
-          state=UNKNOWN
-          for _ in 1 2 3 4 5 6; do
-            state="$(gh pr view "$PR_URL" --json mergeStateStatus --jq .mergeStateStatus)"
-            if [ "$state" != UNKNOWN ]; then break; fi
-            sleep 10
-          done
-          case "$state" in
-            BLOCKED | BEHIND) gh pr merge --auto --squash "$PR_URL" ;;
-            *) echo "::error::The merge state is $state, not BLOCKED or BEHIND. Require the CI checks on the base branch first." >&2; exit 1 ;;
-          esac
+          if [ "$(gh pr view "$PR_URL" --json autoMergeRequest --jq '.autoMergeRequest != null')" = true ]; then
+            gh pr merge --disable-auto "$PR_URL"
+          else
+            echo "Auto-merge is off. Nothing to do."
+          fi
