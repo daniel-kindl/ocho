@@ -112,8 +112,16 @@ feat(setup)!: remove deprecated preset import format
 `.github/workflows/dependabot-auto-merge.yml` turns on auto-merge (squash) for a
 Dependabot pull request to `dev` with a patch or a minor update. A major update,
 and each security update that Dependabot opens against `main`, waits for a manual
-merge. The required checks of `dev` gate the merge. If no rule on `dev` blocks the
-merge, the job stops with an error and nothing merges.
+merge. In a group, each update must be a patch or a minor update. The required checks
+of the `protect-dev` ruleset gate the merge. If no ruleset on `dev` requires a status
+check, the job stops with an error and nothing merges.
+
+When a person or an agent pushes to or reopens a Dependabot pull request, the
+`disable-auto-merge` job turns auto-merge off. Then the normal review applies.
+
+No device check runs before an auto-merge. A patch or minor update of AndroidX,
+Compose or another library merges when CI passes. If an update breaks the app on a
+device, fix it in a new pull request.
 
 A merge by `GITHUB_TOKEN` does not start a `push` workflow. So `dev-ci.yml` does not
 publish a dev-channel APK for a Dependabot merge, and CodeQL does not scan that push.
