@@ -107,6 +107,18 @@ feat(setup)!: remove deprecated preset import format
    origin. Feature branches are disposable. `dev` and `main` are the only
    long-lived branches and are never deleted.
 
+### Dependabot auto-merge
+
+`.github/workflows/dependabot-auto-merge.yml` turns on auto-merge (squash) for a
+Dependabot pull request to `dev` with a patch or a minor update. A major update,
+and each security update that Dependabot opens against `main`, waits for a manual
+merge. The required checks of `dev` gate the merge. If no rule on `dev` blocks the
+merge, the job stops with an error and nothing merges.
+
+A merge by `GITHUB_TOKEN` does not start a `push` workflow. So `dev-ci.yml` does not
+publish a dev-channel APK for a Dependabot merge, and CodeQL does not scan that push.
+The next push to `dev` by a person includes the update.
+
 ---
 
 ## Update channels

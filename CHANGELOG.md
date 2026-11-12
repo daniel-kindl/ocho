@@ -19,6 +19,9 @@ Versioning follows [Semantic Versioning](https://semver.org/).
   the final offline runtime and Android/device backup behavior.
 
 ### Changed
+- Turn on auto-merge (squash) for a Dependabot pull request to `dev` with a patch or
+  a minor update. A major update waits for a manual merge. The required checks of
+  `dev` still gate the merge.
 - Reconcile root and in-app third-party notices with the production runtime
   dependency graph, bundled font/icon licences, and full applicable licence texts.
 - Preserve contributor copyright while documenting the GPLv3 and future-relicensing
